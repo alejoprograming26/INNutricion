@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+@source '../../vendor/livewire/flux/resources/views/**/*.blade.php';
+
+@plugin "@tailwindcss/forms";
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Lime color mapping */
+    --color-lime-50: #f7fee7;
+    --color-lime-100: #ecfccb;
+    --color-lime-200: #d9f99d;
+    --color-lime-300: #bef264;
+    --color-lime-400: #a3e635;
+    --color-lime-500: #84cc16;
+    --color-lime-600: #65a30d;
+    --color-lime-700: #4d7c0f;
+    --color-lime-800: #3f6212;
+    --color-lime-900: #365314;
+
+    /* Flux UI Accent Color palette (lime) */
+    --color-accent-50: #f7fee7;
+    --color-accent-100: #ecfccb;
+    --color-accent-200: #d9f99d;
+    --color-accent-300: #bef264;
+    --color-accent-400: #a3e635;
+    --color-accent-500: #84cc16;
+    --color-accent-600: #65a30d;
+    --color-accent-700: #4d7c0f;
+    --color-accent-800: #3f6212;
+    --color-accent-900: #365314;
+}
+
+/* Accent content: verde lima para modo claro (class .dark es manejada por JS) */
+:root {
+    --color-accent-content: #4d7c0f;
+    /* lime-700 */
+}
+
+/* Modo oscuro basado en clase .dark (no en prefers-color-scheme) */
+.dark {
+    --color-accent-content: #a3e635;
+    /* lime-400 */
+}
+
+/* ── Ítem activo del sidebar ── */
+/* Modo claro y oscuro: verde lima intenso con letra oscura */
+[data-flux-navlist-item][data-current] {
+    background-color: #a3e635 !important;
+    /* lime-400 intenso */
+    color: #0c0f14 !important;
+    /* casi negro — máximo contraste */
+    border-color: #84cc16 !important;
+    /* lime-500 */
+    font-weight: 600 !important;
+}
+
+/* Modo oscuro: mismo verde intenso, misma letra oscura */
+.dark [data-flux-navlist-item][data-current] {
+    background-color: #a3e635 !important;
+    /* lime-400 intenso */
+    color: #0c0f14 !important;
+    /* casi negro — contrasta sobre verde brillante */
+    border-color: #84cc16 !important;
+    font-weight: 600 !important;
+}
+
+/* El ícono del ítem activo también oscuro */
+[data-flux-navlist-item][data-current] svg,
+.dark [data-flux-navlist-item][data-current] svg {
+    color: #0c0f14 !important;
+}
+
+/* ── Brand / Logo del sidebar ──
+   flux:brand envuelve el logo en un div que por defecto tiene h-6.
+   Lo sobreescribimos para permitir un logo más grande y sin distorsión. */
+[data-flux-brand]>div:first-child {
+    height: 2.5rem !important;
+    /* 40px */
+    width: auto !important;
+    /* Ancho dinámico */
+    min-width: 0 !important;
+    overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+[data-flux-brand] img {
+    height: 2.5rem !important;
+    /* 40px fijos */
+    width: auto !important;
+    /* Ancho proporcional para evitar estiramiento */
+    max-width: 160px !important;
+    /* Límite de ancho para logos horizontales */
+    object-fit: contain !important;
+    /* Asegura que la imagen quepa sin deformarse */
+    display: block !important;
+    flex-shrink: 0 !important;
+    /* Evita que flexbox lo aplaste */
+}
