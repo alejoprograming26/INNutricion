@@ -103,7 +103,7 @@ class RoleController extends Component
             ->orderBy('id', 'asc')
             ->paginate(10);
             
-        return view('livewire.admin.roles.roles-index', [
+        return view('livewire.admin.rol.rol-index', [
             'roles' => $roles
         ]);
     }

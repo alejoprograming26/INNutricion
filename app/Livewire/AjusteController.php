@@ -116,6 +116,6 @@ class AjusteController extends Component
 
     public function render()
     {
-        return view('livewire.ajustes.ajustes-index');
+        return view('livewire.ajuste.ajuste-index');
     }
 }

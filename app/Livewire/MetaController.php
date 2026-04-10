@@ -219,7 +219,7 @@ class MetaController extends Component
         // Lista de municipios para la vista (usada en el modal)
         $municipios = Municipio::orderBy('nombre')->get();
 
-        return view('livewire.metas.metas-index', [
+        return view('livewire.meta.meta-index', [
             'metas'      => $metas,
             'municipios' => $municipios,
         ]);
