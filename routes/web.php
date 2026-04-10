@@ -22,6 +22,7 @@ Route::middleware(['auth', 'check.status'])->group(function () {
         Route::get('/sectores', \App\Livewire\SectorController::class)->name('admin.sectores.index');
         Route::get('/comunas', \App\Livewire\ComunaController::class)->name('admin.comunas.index');
         Route::get('/metas', \App\Livewire\MetaController::class)->name('admin.metas.index');
+        Route::get('/transcripciones', \App\Livewire\TranscripcionController::class)->name('admin.transcripciones.index');
         
         Route::get('/logout', function () {
             Auth::logout();

@@ -53,18 +53,39 @@
                 :current="request()->routeIs('admin.roles.index')">Roles</flux:navlist.item>
             <flux:navlist.item icon="users" href="{{ route('admin.usuarios.index') }}"
                 :current="request()->routeIs('admin.usuarios.index')">Usuarios</flux:navlist.item>
-            <flux:navlist.item icon="map-pin" href="{{ route('admin.sectores.index') }}" :current="request()->routeIs('admin.sectores.index')">
+            <flux:navlist.item icon="map-pin" href="{{ route('admin.sectores.index') }}"
+                :current="request()->routeIs('admin.sectores.index')">
                 Sectores</flux:navlist.item>
-
             <flux:navlist.item icon="building-office-2" href="{{ route('admin.comunas.index') }}"
                 :current="request()->routeIs('admin.comunas.index')">Comunas</flux:navlist.item>
             <flux:navlist.item icon="chart-bar" href="{{ route('admin.metas.index') }}"
                 :current="request()->routeIs('admin.metas.index')">Metas</flux:navlist.item>
 
-            <flux:sidebar.group expandable heading="Favorites" class="grid" icon="star">
-                <flux:sidebar.item href="#">Marketing site</flux:sidebar.item>
-                <flux:sidebar.item href="#">Android app</flux:sidebar.item>
-                <flux:sidebar.item href="#">Brand guidelines</flux:sidebar.item>
+            <flux:sidebar.group expandable heading="Transcripciones" class="grid" icon="book-open">
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'VULNERABILIDAD']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'VULNERABILIDAD'">
+                    Vulnerabilidad
+                </flux:sidebar.item>
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'CPLV']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'CPLV'">
+                    CPLV
+                </flux:sidebar.item>
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'LACTANCIA MATERNA']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'LACTANCIA MATERNA'">
+                    Lactancia Materna
+                </flux:sidebar.item>
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'ENCUESTA DIETARIA']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'ENCUESTA DIETARIA'">
+                    Encuesta Dietaria
+                </flux:sidebar.item>
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'AJUSTES DE PRECIO']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'AJUSTES DE PRECIO'">
+                    Ajuste de Precio
+                </flux:sidebar.item>
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'SUGIMA']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'SUGIMA'">
+                    Sujima
+                </flux:sidebar.item>
             </flux:sidebar.group>
             <flux:navlist.item icon="cog-6-tooth" href="{{ route('admin.ajustes.index') }}"
                 :current="request()->routeIs('admin.ajustes.index')">Ajustes

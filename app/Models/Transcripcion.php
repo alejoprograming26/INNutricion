@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Transcripcion extends Model
+{
+    use HasFactory;
+
+    protected $table = 'transcripciones';
+
+    protected $fillable = [
+        'nombre',
+        'responsable',
+        'fecha',
+        'tipo',
+        'municipio_id',
+        'parroquia_id',
+        'sector_id',
+        'comuna_id',
+        'cantidad',
+        'ingreso',
+        'egreso',
+    ];
+
+    protected $casts = [
+        'fecha' => 'date',
+    ];
+
+    // Tipos disponibles
+    public const TIPOS = [
+        'VULNERABILIDAD',
+        'CPLV',
+        'LACTANCIA MATERNA',
+        'ENCUESTA DIETARIA',
+        'AJUSTES DE PRECIO',
+        'SUGIMA',
+    ];
+
+    // Solo SUGIMA tiene ingreso/egreso
+    public const TIPO_CON_INGRESOS_EGRESOS = 'SUGIMA';
+
+    public function municipio()
+    {
+        return $this->belongsTo(Municipio::class, 'municipio_id');
+    }
+
+    public function parroquia()
+    {
+        return $this->belongsTo(Parroquia::class, 'parroquia_id');
+    }
+
+    public function sector()
+    {
+        return $this->belongsTo(Sector::class, 'sector_id');
+    }
+
+    public function comuna()
+    {
+        return $this->belongsTo(Comuna::class, 'comuna_id');
+    }
+}

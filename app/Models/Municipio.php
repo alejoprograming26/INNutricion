@@ -30,4 +30,12 @@ class Municipio extends Model
     {
         return $this->hasMany(DetalleMeta::class, 'municipio_id');
     }
+
+    /**
+     * Un municipio está asociado a múltiples transcripciones.
+     */
+    public function transcripciones()
+    {
+        return $this->hasMany(Transcripcion::class, 'municipio_id');
+    }
 }
