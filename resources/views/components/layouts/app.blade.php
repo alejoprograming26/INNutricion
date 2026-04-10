@@ -53,13 +53,23 @@
                 :current="request()->routeIs('admin.roles.index')">Roles</flux:navlist.item>
             <flux:navlist.item icon="users" href="{{ route('admin.usuarios.index') }}"
                 :current="request()->routeIs('admin.usuarios.index')">Usuarios</flux:navlist.item>
+            <flux:navlist.item icon="map-pin" href="{{ route('admin.sectores.index') }}" :current="request()->routeIs('admin.sectores.index')">
+                Sectores</flux:navlist.item>
+
             <flux:navlist.item icon="building-office-2" href="{{ route('admin.comunas.index') }}"
                 :current="request()->routeIs('admin.comunas.index')">Comunas</flux:navlist.item>
             <flux:navlist.item icon="chart-bar" href="{{ route('admin.metas.index') }}"
                 :current="request()->routeIs('admin.metas.index')">Metas</flux:navlist.item>
+
+            <flux:sidebar.group expandable heading="Favorites" class="grid" icon="star">
+                <flux:sidebar.item href="#">Marketing site</flux:sidebar.item>
+                <flux:sidebar.item href="#">Android app</flux:sidebar.item>
+                <flux:sidebar.item href="#">Brand guidelines</flux:sidebar.item>
+            </flux:sidebar.group>
             <flux:navlist.item icon="cog-6-tooth" href="{{ route('admin.ajustes.index') }}"
                 :current="request()->routeIs('admin.ajustes.index')">Ajustes
             </flux:navlist.item>
+
         </flux:navlist>
     </flux:sidebar>
 

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('comunas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parroquia_id')->constrained('parroquias')->onDelete('cascade');
+            $table->foreignId('sector_id')->constrained('sectores')->onDelete('cascade');
             $table->string('nombre');
             $table->timestamps();
         });

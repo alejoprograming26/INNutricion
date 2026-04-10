@@ -2,14 +2,14 @@
     {{-- Header --}}
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <flux:heading size="xl" level="1">Gestión de Comunas</flux:heading>
-            <flux:subheading size="lg">Administra las comunas del Estado Lara (crear, editar, eliminar).
+            <flux:heading size="xl" level="1">Gestión de Sectores</flux:heading>
+            <flux:subheading size="lg">Administra los sectores del Estado Lara (crear, editar, eliminar).
             </flux:subheading>
         </div>
         <div>
             <flux:button wire:click="create" icon="plus"
                 class="!bg-lime-500 !text-zinc-900 border-none hover:!bg-lime-400 font-bold">
-                Nueva Comuna
+                Nuevo Sector
             </flux:button>
         </div>
     </div>
@@ -18,7 +18,7 @@
     <flux:card class="shadow-sm mb-6">
         <div class="mb-4">
             <flux:input wire:model.live="search" icon="magnifying-glass"
-                placeholder="Buscar por comuna, sector, parroquia o municipio..." class="w-full md:w-1/3" />
+                placeholder="Buscar por sector, parroquia o municipio..." class="w-full md:w-1/3" />
         </div>
 
         <div class="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700">
@@ -27,47 +27,41 @@
                     class="bg-zinc-50 dark:bg-zinc-800/50 text-xs uppercase font-semibold text-zinc-700 dark:text-zinc-300 border-b border-zinc-200 dark:border-zinc-700">
                     <tr class="text-center">
                         <th class="px-4 py-3 w-12">#</th>
-                        <th class="px-4 py-3 text-left">Comuna</th>
-                        <th class="px-4 py-3">Sector</th>
+                        <th class="px-4 py-3 text-left">Sector</th>
                         <th class="px-4 py-3">Parroquia</th>
                         <th class="px-4 py-3">Municipio</th>
                         <th class="px-4 py-3">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
-                    @forelse($comunas as $comuna)
+                    @forelse($sectores as $sector)
                         <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors text-center">
                             <td class="px-4 py-3 font-medium text-zinc-500">
-                                {{ ($comunas->currentPage() - 1) * $comunas->perPage() + $loop->iteration }}
+                                {{ ($sectores->currentPage() - 1) * $sectores->perPage() + $loop->iteration }}
                             </td>
                             <td class="px-4 py-3 text-left font-medium text-zinc-800 dark:text-zinc-100">
-                                {{ $comuna->nombre }}
-                            </td>
-                            <td class="px-4 py-3">
-                                <flux:badge size="sm" color="amber">
-                                    {{ $comuna->sector->nombre }}
-                                </flux:badge>
+                                {{ $sector->nombre }}
                             </td>
                             <td class="px-4 py-3">
                                 <flux:badge size="sm" color="blue">
-                                    {{ $comuna->sector->parroquia->nombre }}
+                                    {{ $sector->parroquia->nombre }}
                                 </flux:badge>
                             </td>
                             <td class="px-4 py-3">
                                 <flux:badge size="sm" color="zinc">
-                                    {{ $comuna->sector->parroquia->municipio->nombre }}
+                                    {{ $sector->parroquia->municipio->nombre }}
                                 </flux:badge>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center justify-center gap-2">
-                                    <flux:button wire:click="show({{ $comuna->id }})" size="sm" variant="ghost"
+                                    <flux:button wire:click="show({{ $sector->id }})" size="sm" variant="ghost"
                                         icon="eye" class="text-zinc-500 hover:text-blue-500" />
 
-                                    <flux:button wire:click="edit({{ $comuna->id }})" size="sm" variant="ghost"
+                                    <flux:button wire:click="edit({{ $sector->id }})" size="sm" variant="ghost"
                                         icon="pencil-square" class="text-zinc-500 hover:text-amber-500" />
 
                                     <flux:button
-                                        @click="confirmAction($wire, {{ $comuna->id }}, 'delete', '¿Eliminar comuna?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')"
+                                        @click="confirmAction($wire, {{ $sector->id }}, 'delete', '¿Eliminar sector?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')"
                                         size="sm" variant="ghost" icon="trash"
                                         class="text-zinc-500 hover:text-red-500" />
                                 </div>
@@ -75,8 +69,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-zinc-500">
-                                No se encontraron comunas.
+                            <td colspan="5" class="px-4 py-8 text-center text-zinc-500">
+                                No se encontraron sectores.
                             </td>
                         </tr>
                     @endforelse
@@ -85,17 +79,17 @@
         </div>
 
         <div class="mt-4">
-            {{ $comunas->links() }}
+            {{ $sectores->links() }}
         </div>
     </flux:card>
 
     {{-- Modal Crear / Editar --}}
     @if ($isModalOpen)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" wire:key="comuna-modal-{{ $comuna_id ?? 'new' }}">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" wire:key="sector-modal-{{ $sector_id ?? 'new' }}">
         <div class="bg-white dark:bg-zinc-900 w-full max-w-md p-6 rounded-xl shadow-xl flex flex-col space-y-4 mx-4">
             <div>
-                <flux:heading size="lg">{{ $comuna_id ? 'Editar Comuna' : 'Nueva Comuna' }}</flux:heading>
-                <flux:subheading>Ingresa los datos de la comuna a continuación.</flux:subheading>
+                <flux:heading size="lg">{{ $sector_id ? 'Editar Sector' : 'Nuevo Sector' }}</flux:heading>
+                <flux:subheading>Ingresa los datos del sector a continuación.</flux:subheading>
             </div>
 
             <form wire:submit="store" class="space-y-4">
@@ -110,7 +104,7 @@
                 @enderror
 
                 {{-- Parroquia --}}
-                <flux:select wire:model.live="parroquia_id" label="Parroquia *"
+                <flux:select wire:model="parroquia_id" label="Parroquia *"
                     placeholder="{{ $municipio_id ? 'Selecciona una parroquia' : 'Primero selecciona un municipio' }}"
                     :disabled="!$municipio_id" required wire:key="select-parroquia-{{ $municipio_id ?? 'none' }}">
                     @foreach($parroquiasFiltradas as $parroquia)
@@ -121,21 +115,9 @@
                     <span class="text-sm text-red-500 font-medium">{{ $message }}</span>
                 @enderror
 
-                {{-- Sector --}}
-                <flux:select wire:model="sector_id" label="Sector *"
-                    placeholder="{{ $parroquia_id ? 'Selecciona un sector' : 'Primero selecciona una parroquia' }}"
-                    :disabled="!$parroquia_id" required wire:key="select-sector-{{ $parroquia_id ?? 'none' }}">
-                    @foreach($sectoresFiltrados as $sector)
-                        <flux:select.option value="{{ $sector->id }}" wire:key="sec-{{ $sector->id }}">{{ $sector->nombre }}</flux:select.option>
-                    @endforeach
-                </flux:select>
-                @error('sector_id')
-                    <span class="text-sm text-red-500 font-medium">{{ $message }}</span>
-                @enderror
-
-                {{-- Nombre de la comuna --}}
-                <flux:input wire:model="nombre" label="Nombre de la Comuna *"
-                    placeholder="Ej. NUEVA SEGOVIA" required class="uppercase" />
+                {{-- Nombre del sector --}}
+                <flux:input wire:model="nombre" label="Nombre del Sector *"
+                    placeholder="Ej. CENTRO" required class="uppercase" />
 
                 <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800">
                     <flux:button wire:click="closeModal" variant="ghost">Cancelar</flux:button>
@@ -155,7 +137,7 @@
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
         <div class="bg-white dark:bg-zinc-900 w-full max-w-sm p-6 rounded-xl shadow-xl flex flex-col space-y-4 mx-4">
             <div>
-                <flux:heading size="lg">Detalle de la Comuna</flux:heading>
+                <flux:heading size="lg">Detalle del Sector</flux:heading>
             </div>
 
             <div class="space-y-4">
@@ -169,10 +151,6 @@
                 </div>
                 <div>
                     <span class="block text-sm font-medium text-zinc-500 font-semibold uppercase tracking-wide">Sector</span>
-                    <span class="block text-base font-medium text-zinc-800 dark:text-zinc-100">{{ $view_sector }}</span>
-                </div>
-                <div>
-                    <span class="block text-sm font-medium text-zinc-500 font-semibold uppercase tracking-wide">Comuna</span>
                     <span class="block text-lg font-semibold text-lime-600 dark:text-lime-400">{{ $view_nombre }}</span>
                 </div>
             </div>

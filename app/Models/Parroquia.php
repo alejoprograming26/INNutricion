@@ -25,10 +25,10 @@ class Parroquia extends Model
     }
 
     /**
-     * Una parroquia tiene muchas comunas.
+     * Una parroquia tiene muchos sectores.
      */
-    public function comunas()
+    public function sectores()
     {
-        return $this->hasMany(Comuna::class, 'parroquia_id');
+        return $this->hasMany(Sector::class, 'parroquia_id');
     }
 }

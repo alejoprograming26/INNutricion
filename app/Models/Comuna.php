@@ -12,15 +12,15 @@ class Comuna extends Model
     protected $table = 'comunas';
 
     protected $fillable = [
-        'parroquia_id',
+        'sector_id',
         'nombre',
     ];
 
     /**
-     * Una comuna pertenece a una parroquia.
+     * Una comuna pertenece a un sector.
      */
-    public function parroquia()
+    public function sector()
     {
-        return $this->belongsTo(Parroquia::class, 'parroquia_id');
+        return $this->belongsTo(Sector::class, 'sector_id');
     }
 }
