@@ -293,12 +293,16 @@
     ═══════════════════════════════════════════════════ --}}
     <flux:card class="shadow-sm mb-6">
         <div class="mb-4">
-            <h2 class="text-lg font-bold text-zinc-800 dark:text-zinc-100 uppercase tracking-wide">Relación por Municipio</h2>
-            <p class="text-sm text-zinc-500">Resumen de la actividad en cada municipio para el tipo <span class="font-bold text-zinc-700 dark:text-zinc-300">{{ $tipoLabels[$tipoActivo] ?? $tipoActivo }}</span></p>
+            <h2 class="text-lg font-bold text-zinc-800 dark:text-zinc-100 uppercase tracking-wide">Relación por
+                Municipio</h2>
+            <p class="text-sm text-zinc-500">Resumen de la actividad en cada municipio para el tipo <span
+                    class="font-bold text-zinc-700 dark:text-zinc-300">{{ $tipoLabels[$tipoActivo] ?? $tipoActivo }}</span>
+            </p>
         </div>
         <div class="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700">
             <table class="w-full text-sm text-left text-zinc-600 dark:text-zinc-400">
-                <thead class="bg-zinc-50 dark:bg-zinc-800/50 text-xs uppercase font-semibold text-zinc-700 dark:text-zinc-300 border-b border-zinc-200 dark:border-zinc-700">
+                <thead
+                    class="bg-zinc-50 dark:bg-zinc-800/50 text-xs uppercase font-semibold text-zinc-700 dark:text-zinc-300 border-b border-zinc-200 dark:border-zinc-700">
                     <tr class="text-center">
                         <th class="px-3 py-3 text-left">Municipio</th>
                         <th class="px-3 py-3">Total Anual</th>
@@ -314,29 +318,34 @@
                                 {{ $m->nombre }}
                             </td>
                             <td class="px-3 py-3">
-                                <span class="bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300 px-2 py-1 rounded text-xs font-bold">
+                                <span
+                                    class="bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300 px-2 py-1 rounded text-xs font-bold">
                                     {{ number_format($m->total_anual ?? 0) }}
                                 </span>
                             </td>
                             <td class="px-3 py-3">
-                                <span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 px-2 py-1 rounded text-xs font-bold">
+                                <span
+                                    class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 px-2 py-1 rounded text-xs font-bold">
                                     {{ number_format($m->total_mes ?? 0) }}
                                 </span>
                             </td>
                             <td class="px-3 py-3">
-                                <span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300 px-2 py-1 rounded text-xs font-bold">
+                                <span
+                                    class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300 px-2 py-1 rounded text-xs font-bold">
                                     {{ number_format($m->total_semana ?? 0) }}
                                 </span>
                             </td>
                             <td class="px-3 py-3">
-                                <span class="bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300 px-2 py-1 rounded text-xs font-bold">
+                                <span
+                                    class="bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300 px-2 py-1 rounded text-xs font-bold">
                                     {{ number_format($m->transcripciones_mes_count ?? 0) }}
                                 </span>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-8 text-center text-zinc-500">No hay municipios registrados en el sistema.</td>
+                            <td colspan="5" class="px-4 py-8 text-center text-zinc-500">No hay municipios
+                                registrados en el sistema.</td>
                         </tr>
                     @endforelse
                 </tbody>
