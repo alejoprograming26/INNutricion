@@ -34,7 +34,7 @@ class RoleController extends Component
         $this->name = mb_strtoupper($this->name, 'UTF-8');
 
         $this->validate([
-            'name' => 'required|string|max:125|unique:roles,name,' . $this->role_id,
+            'name' => ['required', 'string', 'max:125', \Illuminate\Validation\Rule::unique('roles', 'name')->ignore($this->role_id)],
         ]);
 
         if ($this->role_id) {

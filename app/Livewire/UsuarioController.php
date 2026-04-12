@@ -42,7 +42,7 @@ class UsuarioController extends Component
 
         $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $this->user_id,
+            'email' => ['required', 'email', 'max:255', \Illuminate\Validation\Rule::unique('users', 'email')->ignore($this->user_id)],
             'role_id' => 'required|exists:roles,id',
             'telefono' => 'nullable|string|max:20',
             'new_foto_perfil' => 'nullable|image|max:3048', // Max 3MB
