@@ -15,8 +15,6 @@ return new class extends Migration
             $table->string('sucursal');
             $table->text('direccion');
             $table->string('telefonos');
-            $table->string('logo');
-            $table->string('imagen_login');
             $table->string('email');
             $table->string('pagina_web')->nullable();
             $table->timestamps();

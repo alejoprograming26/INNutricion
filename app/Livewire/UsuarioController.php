@@ -15,13 +15,10 @@ use Spatie\Permission\Models\Role;
 #[Layout('components.layouts.app')]
 class UsuarioController extends Component
 {
-    use WithPagination, WithFileUploads;
+    use WithPagination;
 
     public $search = '';
     public $user_id, $name, $email, $password, $password_confirmation, $telefono, $role_id;
-    public $foto_perfil; // Ruta actual de la foto
-    /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile|null */
-    public $new_foto_perfil; // Para carga de nueva foto
 
     public $isModalOpen = false;
     public $isViewModalOpen = false;
@@ -45,7 +42,6 @@ class UsuarioController extends Component
             'email' => ['required', 'email', 'max:255', \Illuminate\Validation\Rule::unique('users', 'email')->ignore($this->user_id)],
             'role_id' => 'required|exists:roles,id',
             'telefono' => 'nullable|string|max:20',
-            'new_foto_perfil' => 'nullable|image|max:3048', // Max 3MB
         ];
 
         // Reglas de contraseña
@@ -57,21 +53,10 @@ class UsuarioController extends Component
 
         $this->validate($rules);
 
-        $fotoPath = $this->foto_perfil;
-
-        // Subir nueva foto si existe
-        if ($this->new_foto_perfil) {
-            if ($this->foto_perfil && Storage::disk('public')->exists($this->foto_perfil)) {
-                Storage::disk('public')->delete($this->foto_perfil);
-            }
-            $fotoPath = $this->new_foto_perfil->store('usuarios', 'public');
-        }
-
         $data = [
             'name' => $this->name,
             'email' => $this->email,
             'telefono' => $this->telefono,
-            'foto_perfil' => $fotoPath,
         ];
 
         // Validar si actualiza contraseña
@@ -103,7 +88,6 @@ class UsuarioController extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         $this->telefono = $user->telefono;
-        $this->foto_perfil = $user->foto_perfil;
         
         $role = $user->roles->first();
         if ($role) {
@@ -120,7 +104,6 @@ class UsuarioController extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         $this->telefono = $user->telefono;
-        $this->foto_perfil = $user->foto_perfil;
         $this->isViewModalOpen = true;
     }
 
@@ -140,19 +123,6 @@ class UsuarioController extends Component
         $this->dispatch('swal', ['icon' => 'success', 'title' => "Usuario $estado correctamente."]);
     }
 
-    public function removePhoto()
-    {
-        if ($this->foto_perfil && Storage::disk('public')->exists($this->foto_perfil)) {
-            Storage::disk('public')->delete($this->foto_perfil);
-            
-            if ($this->user_id) {
-                User::query()->find($this->user_id, ['*'])->update(['foto_perfil' => null]);
-            }
-            $this->foto_perfil = null;
-        }
-        $this->new_foto_perfil = null;
-    }
-
     public function closeModal()
     {
         $this->isModalOpen = false;
@@ -169,8 +139,6 @@ class UsuarioController extends Component
         $this->password_confirmation = '';
         $this->telefono = '';
         $this->role_id = '';
-        $this->foto_perfil = null;
-        $this->new_foto_perfil = null;
         $this->resetValidation();
     }
 

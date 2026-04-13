@@ -24,8 +24,6 @@ class Ajuste extends Model
         'sucursal',
         'direccion',
         'telefonos',
-        'logo',
-        'imagen_login',
         'email',
         'pagina_web',
     ];

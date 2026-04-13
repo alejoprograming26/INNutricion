@@ -41,7 +41,7 @@
                             <td class="px-4 py-3 flex items-center gap-3">
                                 <div class="relative">
                                     <flux:profile
-                                        avatar="{{ $user->foto_perfil ? asset('storage/' . $user->foto_perfil) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&color=0c0f14&background=a3e635' }}"
+                                        avatar="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&color=0c0f14&background=a3e635"
                                         name="{{ $user->name }}" description="{{ $user->email }}" />
                                 </div>
                             </td>
@@ -103,71 +103,11 @@
         <div class="space-y-4">
             <div>
                 <flux:heading size="lg">{{ $user_id ? 'Editar Usuario' : 'Crear Usuario' }}</flux:heading>
-                <flux:subheading>Completa los campos. Usa una foto de perfil profesional si es posible.
-                </flux:subheading>
+                <flux:subheading>Completa los campos del formulario para gestionar el acceso.</flux:subheading>
             </div>
 
             <form wire:submit="store" class="space-y-4">
-                <!-- Foto de perfil -->
-                <div class="flex flex-col items-center justify-center gap-4 py-4">
-                    <div
-                        class="relative w-28 h-28 rounded-full overflow-hidden border-4 border-zinc-100 dark:border-zinc-800 shadow-md flex-shrink-0">
-                        @if ($new_foto_perfil)
-                            <img src="{{ $new_foto_perfil->temporaryUrl() }}" class="w-full h-full object-cover">
-                        @elseif ($foto_perfil)
-                            <img src="{{ asset('storage/' . $foto_perfil) }}" class="w-full h-full object-cover">
-                        @else
-                            <div
-                                class="w-full h-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                                </svg>
-                            </div>
-                        @endif
 
-                        <div wire:loading wire:target="new_foto_perfil"
-                            class="absolute inset-0 bg-black/50 flex items-center justify-center text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 animate-spin">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <label for="dropzone-file"
-                            class="flex flex-col items-center justify-center px-4 py-2 border border-zinc-300 rounded-lg cursor-pointer bg-white text-zinc-700 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-300 shadow-sm transition-colors">
-                            <div class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                                </svg>
-                                <span>Subir foto</span>
-                            </div>
-                            <input id="dropzone-file" wire:model.live="new_foto_perfil" type="file"
-                                class="hidden" accept="image/*" />
-                        </label>
-
-                        @if ($foto_perfil || $new_foto_perfil)
-                            <button type="button" wire:click="removePhoto"
-                                class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 rounded-lg transition-colors flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                </svg>
-                                Eliminar
-                            </button>
-                        @endif
-                    </div>
-                    @error('new_foto_perfil')
-                        <span class="text-sm text-red-500 font-medium">{{ $message }}</span>
-                    @enderror
-                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <flux:input wire:model="name" class="uppercase" label="Nombre Completo *"
@@ -217,18 +157,8 @@
             <div class="flex items-center gap-4">
                 <div
                     class="w-20 h-20 rounded-full overflow-hidden border-2 border-zinc-200 dark:border-zinc-700 shadow-sm flex-shrink-0">
-                    @if ($foto_perfil)
-                        <img src="{{ asset('storage/' . $foto_perfil) }}" class="w-full h-full object-cover">
-                    @else
-                        <div
-                            class="w-full h-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="w-10 h-10">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                            </svg>
-                        </div>
-                    @endif
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($name) }}&color=0c0f14&background=a3e635"
+                        class="w-full h-full object-cover">
                 </div>
                 <div class="overflow-hidden">
                     <flux:heading size="lg" class="truncate">{{ $name }}</flux:heading>

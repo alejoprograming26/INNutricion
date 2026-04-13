@@ -6,13 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>{{ $title ?? ($ajuste->nombre ?? 'INNutricion') }}</title>
-    @if ($ajuste && $ajuste->logo)
-        <link rel="icon" type="image/x-icon"
-            href="{{ asset('storage/' . $ajuste->logo) }}?v={{ $ajuste->updated_at->timestamp ?? '1' }}">
-        <link rel="shortcut icon"
-            href="{{ asset('storage/' . $ajuste->logo) }}?v={{ $ajuste->updated_at->timestamp ?? '1' }}">
-    @endif
-
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,14 +33,8 @@
 
         <flux:brand href="/dashboard" class="px-4 py-2" name="{{ $ajuste->nombre ?? 'INNutricion' }}">
             <x-slot name="logo" class="!h-10 !w-auto !overflow-visible !min-w-0 !shrink-0">
-                @if ($ajuste && $ajuste->logo)
-                    <img src="{{ asset('storage/' . $ajuste->logo) }}?v={{ $ajuste->updated_at->timestamp ?? '1' }}"
-                        alt="Logo" class="h-10 w-auto object-contain rounded">
-                @else
-                    <div class="size-10 rounded-lg flex items-center justify-center font-extrabold text-base"
-                        style="background: linear-gradient(135deg, #a3e635, #65a30d); color: #0c0f14; flex-shrink:0;">IN
-                    </div>
-                @endif
+                <img src="{{ asset('assets/logo.png') }}"
+                    alt="Logo" class="h-10 w-auto object-contain rounded">
             </x-slot>
         </flux:brand>
         <flux:navlist variant="outline">
