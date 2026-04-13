@@ -23,11 +23,15 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        Schema::defaultStringLength(191);
+
         // Compartir $ajuste con los layouts principales (Cacheado)
-        View::composer(['components.layouts.app', 'components.layouts.auth'], function ($view) {
-            $view->with('ajuste', \Illuminate\Support\Facades\Cache::rememberForever('global_ajuste', function () {
-                return \App\Models\Ajuste::first();
-            }));
-        });
+        if (!app()->runningInConsole()) {
+            View::composer(['components.layouts.app', 'components.layouts.auth'], function ($view) {
+                $view->with('ajuste', \Illuminate\Support\Facades\Cache::rememberForever('global_ajuste', function () {
+                    return \App\Models\Ajuste::first();
+                }));
+            });
+        }
     }
 }
