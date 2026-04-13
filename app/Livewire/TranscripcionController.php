@@ -7,6 +7,7 @@ use App\Models\Municipio;
 use App\Models\Parroquia;
 use App\Models\Sector;
 use App\Models\Transcripcion;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -187,6 +188,8 @@ class TranscripcionController extends Component
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Transcripción creada exitosamente.']);
         }
 
+        Cache::forget('transcripcion_metrics_' . $this->tipoActivo);
+
         $this->closeModal();
     }
 
@@ -238,6 +241,7 @@ class TranscripcionController extends Component
     public function delete(int $id): void
     {
         Transcripcion::findOrFail($id)->delete();
+        Cache::forget('transcripcion_metrics_' . $this->tipoActivo);
         $this->dispatch('swal', ['icon' => 'success', 'title' => 'Transcripción eliminada correctamente.']);
     }
 
@@ -286,35 +290,46 @@ class TranscripcionController extends Component
     {
         $now = now();
         
-        // Base query for totals filtered by active type
+        // Métricas cacheadas para evitar latencia de Supabase en cada pulsación de tecla
+        $metrics = Cache::rememberForever('transcripcion_metrics_' . $this->tipoActivo, function () use ($now) {
+            $queryBase = Transcripcion::where('tipo', $this->tipoActivo);
+
+            $totalAnual = (clone $queryBase)->whereYear('fecha', $now->year)->sum('cantidad');
+            $totalMes   = (clone $queryBase)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->sum('cantidad');
+            
+            $startOfWeek = $now->copy()->startOfWeek();
+            $endOfWeek   = $now->copy()->endOfWeek();
+            $totalSemana = (clone $queryBase)->whereBetween('fecha', [$startOfWeek, $endOfWeek])->sum('cantidad');
+
+            $transcripcionesMes = (clone $queryBase)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->count();
+
+            $municipiosConTotales = Municipio::query()
+                ->withSum(['transcripciones as total_anual' => function ($q) use ($now) {
+                    $q->where('tipo', $this->tipoActivo)->whereYear('fecha', $now->year);
+                }], 'cantidad')
+                ->withSum(['transcripciones as total_mes' => function ($q) use ($now) {
+                    $q->where('tipo', $this->tipoActivo)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month);
+                }], 'cantidad')
+                ->withSum(['transcripciones as total_semana' => function ($q) use ($startOfWeek, $endOfWeek) {
+                    $q->where('tipo', $this->tipoActivo)->whereBetween('fecha', [$startOfWeek, $endOfWeek]);
+                }], 'cantidad')
+                ->withCount(['transcripciones as transcripciones_mes_count' => function ($q) use ($now) {
+                    $q->where('tipo', $this->tipoActivo)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month);
+                }])
+                ->orderBy('nombre')
+                ->get();
+
+            return [
+                'totalAnual' => $totalAnual,
+                'totalMes' => $totalMes,
+                'totalSemana' => $totalSemana,
+                'transcripcionesMes' => $transcripcionesMes,
+                'municipiosConTotales' => $municipiosConTotales,
+            ];
+        });
+
+        // Base query for the paginated table (this remains dynamic for search)
         $queryBase = Transcripcion::where('tipo', $this->tipoActivo);
-
-        // Calculate Totals
-        $totalAnual = (clone $queryBase)->whereYear('fecha', $now->year)->sum('cantidad');
-        $totalMes   = (clone $queryBase)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->sum('cantidad');
-        
-        $startOfWeek = $now->copy()->startOfWeek();
-        $endOfWeek   = $now->copy()->endOfWeek();
-        $totalSemana = (clone $queryBase)->whereBetween('fecha', [$startOfWeek, $endOfWeek])->sum('cantidad');
-
-        $transcripcionesMes = (clone $queryBase)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->count();
-
-        // Totales desglosados por municipio para el tipo activo
-        $municipiosConTotales = Municipio::query()
-            ->withSum(['transcripciones as total_anual' => function ($q) use ($now) {
-                $q->where('tipo', $this->tipoActivo)->whereYear('fecha', $now->year);
-            }], 'cantidad')
-            ->withSum(['transcripciones as total_mes' => function ($q) use ($now) {
-                $q->where('tipo', $this->tipoActivo)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month);
-            }], 'cantidad')
-            ->withSum(['transcripciones as total_semana' => function ($q) use ($startOfWeek, $endOfWeek) {
-                $q->where('tipo', $this->tipoActivo)->whereBetween('fecha', [$startOfWeek, $endOfWeek]);
-            }], 'cantidad')
-            ->withCount(['transcripciones as transcripciones_mes_count' => function ($q) use ($now) {
-                $q->where('tipo', $this->tipoActivo)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month);
-            }])
-            ->orderBy('nombre')
-            ->get();
 
         // Paginated records
         $transcripciones = (clone $queryBase)
@@ -333,14 +348,14 @@ class TranscripcionController extends Component
         return view('livewire.transcripcion.transcripcion-index', [
             'transcripciones'      => $transcripciones,
             'municipios'           => Municipio::orderBy('nombre')->get(),
-            'municipiosConTotales' => $municipiosConTotales,
+            'municipiosConTotales' => $metrics['municipiosConTotales'],
             'tipos'                => Transcripcion::TIPOS,
             'tipoLabels'           => self::$tipoLabels,
             'esSugima'             => $this->tipoActivo === Transcripcion::TIPO_CON_INGRESOS_EGRESOS,
-            'totalAnual'           => $totalAnual,
-            'totalMes'             => $totalMes,
-            'totalSemana'          => $totalSemana,
-            'transcripcionesMes'   => $transcripcionesMes,
+            'totalAnual'           => $metrics['totalAnual'],
+            'totalMes'             => $metrics['totalMes'],
+            'totalSemana'          => $metrics['totalSemana'],
+            'transcripcionesMes'   => $metrics['transcripcionesMes'],
         ]);
     }
 }

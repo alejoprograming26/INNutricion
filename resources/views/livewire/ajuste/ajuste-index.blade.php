@@ -57,7 +57,9 @@
                             @if ($logo && is_object($logo))
                                 <img wire:key="temp-logo-{{ $logo->temporaryUrl() }}" src="{{ $logo->temporaryUrl() }}" class="object-contain w-full h-full p-2 transition-transform hover:scale-105 duration-300">
                             @elseif ($logo_actual)
-                                <img wire:key="actual-logo-{{ $logo_actual }}" src="{{ asset('storage/' . $logo_actual) }}?v={{ time() }}" class="object-contain w-full h-full p-2 transition-transform hover:scale-105 duration-300">
+                                <img wire:key="actual-logo-{{ $logo_actual }}"
+                                    src="{{ asset('storage/' . $logo_actual) }}?v={{ \App\Models\Ajuste::first()->updated_at->timestamp ?? '1' }}"
+                                    class="object-contain w-full h-full p-2 transition-transform hover:scale-105 duration-300">
                             @else
                                 <div class="flex flex-col items-center">
                                     <flux:icon.photo class="size-10 text-zinc-200 dark:text-zinc-700 mb-2" />
@@ -90,7 +92,9 @@
                             @if ($imagen_login && is_object($imagen_login))
                                 <img wire:key="temp-login-{{ $imagen_login->temporaryUrl() }}" src="{{ $imagen_login->temporaryUrl() }}" class="object-cover w-full h-full transition-opacity opacity-90 hover:opacity-100 duration-300">
                             @elseif ($imagen_login_actual)
-                                <img wire:key="actual-login-{{ $imagen_login_actual }}" src="{{ asset('storage/' . $imagen_login_actual) }}?v={{ time() }}" class="object-cover w-full h-full transition-opacity opacity-90 hover:opacity-100 duration-300">
+                                <img wire:key="actual-login-{{ $imagen_login_actual }}"
+                                    src="{{ asset('storage/' . $imagen_login_actual) }}?v={{ \App\Models\Ajuste::first()->updated_at->timestamp ?? '1' }}"
+                                    class="object-cover w-full h-full transition-opacity opacity-90 hover:opacity-100 duration-300">
                             @else
                                 <div class="flex flex-col items-center">
                                     <flux:icon.photo class="size-10 text-zinc-200 dark:text-zinc-700 mb-2" />

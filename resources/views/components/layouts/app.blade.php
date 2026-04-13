@@ -7,8 +7,10 @@
 
     <title>{{ $title ?? ($ajuste->nombre ?? 'INNutricion') }}</title>
     @if ($ajuste && $ajuste->logo)
-        <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . $ajuste->logo) }}?v={{ time() }}">
-        <link rel="shortcut icon" href="{{ asset('storage/' . $ajuste->logo) }}?v={{ time() }}">
+        <link rel="icon" type="image/x-icon"
+            href="{{ asset('storage/' . $ajuste->logo) }}?v={{ $ajuste->updated_at->timestamp ?? '1' }}">
+        <link rel="shortcut icon"
+            href="{{ asset('storage/' . $ajuste->logo) }}?v={{ $ajuste->updated_at->timestamp ?? '1' }}">
     @endif
 
 
@@ -37,8 +39,8 @@
         <flux:brand href="/dashboard" class="px-4 py-2" name="{{ $ajuste->nombre ?? 'INNutricion' }}">
             <x-slot name="logo" class="!h-10 !w-auto !overflow-visible !min-w-0 !shrink-0">
                 @if ($ajuste && $ajuste->logo)
-                    <img src="{{ asset('storage/' . $ajuste->logo) }}?v={{ time() }}" alt="Logo"
-                        class="h-10 w-auto object-contain rounded">
+                    <img src="{{ asset('storage/' . $ajuste->logo) }}?v={{ $ajuste->updated_at->timestamp ?? '1' }}"
+                        alt="Logo" class="h-10 w-auto object-contain rounded">
                 @else
                     <div class="size-10 rounded-lg flex items-center justify-center font-extrabold text-base"
                         style="background: linear-gradient(135deg, #a3e635, #65a30d); color: #0c0f14; flex-shrink:0;">IN
@@ -61,7 +63,8 @@
             <flux:navlist.item icon="chart-bar" href="{{ route('admin.metas.index') }}"
                 :current="request()->routeIs('admin.metas.index')">Metas</flux:navlist.item>
 
-            <flux:sidebar.group expandable heading="Transcripciones" class="grid" icon="book-open">
+            <flux:sidebar.group expandable :expanded="request()->routeIs('admin.transcripciones.*')"
+                heading="Transcripciones" class="grid" icon="book-open">
                 <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'VULNERABILIDAD']) }}"
                     :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'VULNERABILIDAD'">
                     Vulnerabilidad

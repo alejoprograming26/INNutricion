@@ -105,6 +105,9 @@ class AjusteController extends Component
             $nuevoAjuste = Ajuste::create($data);
             $this->ajuste_id = $nuevoAjuste->id;
         }
+        
+        \Illuminate\Support\Facades\Cache::forget('global_ajuste');
+        
         // Limpiar propiedades de subida para que se refleje la imagen validada y no se quede pegado el obj temporal
         $this->reset(['logo', 'imagen_login']);
 
