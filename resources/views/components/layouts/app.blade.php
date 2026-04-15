@@ -33,8 +33,7 @@
 
         <flux:brand href="/dashboard" class="px-4 py-2" name="{{ $ajuste->nombre ?? 'INNutricion' }}">
             <x-slot name="logo" class="!h-10 !w-auto !overflow-visible !min-w-0 !shrink-0">
-                <img src="{{ asset('assets/logo.png') }}"
-                    alt="Logo" class="h-10 w-auto object-contain rounded">
+                <img src="{{ asset('assets/logo.png') }}" alt="Logo" class="h-10 w-auto object-contain rounded">
             </x-slot>
         </flux:brand>
         <flux:navlist variant="outline">
@@ -44,11 +43,11 @@
                 :current="request()->routeIs('admin.roles.index')">Roles</flux:navlist.item>
             <flux:navlist.item icon="users" href="{{ route('admin.usuarios.index') }}"
                 :current="request()->routeIs('admin.usuarios.index')">Usuarios</flux:navlist.item>
+            <flux:navlist.item icon="building-office-2" href="{{ route('admin.comunas.index') }}"
+                :current="request()->routeIs('admin.comunas.index')">Comunas</flux:navlist.item>
             <flux:navlist.item icon="map-pin" href="{{ route('admin.sectores.index') }}"
                 :current="request()->routeIs('admin.sectores.index')">
                 Sectores</flux:navlist.item>
-            <flux:navlist.item icon="building-office-2" href="{{ route('admin.comunas.index') }}"
-                :current="request()->routeIs('admin.comunas.index')">Comunas</flux:navlist.item>
             <flux:navlist.item icon="chart-bar" href="{{ route('admin.metas.index') }}"
                 :current="request()->routeIs('admin.metas.index')">Metas</flux:navlist.item>
 

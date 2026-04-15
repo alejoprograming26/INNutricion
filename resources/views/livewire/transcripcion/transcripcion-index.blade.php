@@ -199,8 +199,8 @@
                         <th class="px-3 py-3">Fecha</th>
                         <th class="px-3 py-3">Municipio</th>
                         <th class="px-3 py-3">Parroquia</th>
-                        <th class="px-3 py-3">Sector</th>
                         <th class="px-3 py-3">Comuna</th>
+                        <th class="px-3 py-3">Sector</th>
                         <th class="px-3 py-3">Cantidad</th>
                         @if ($esSugima)
                             <th class="px-3 py-3">Ingreso</th>
@@ -237,13 +237,13 @@
                                 </flux:badge>
                             </td>
                             <td class="px-3 py-3">
-                                <flux:badge size="sm" color="amber">
-                                    {{ $t->sector->nombre }}
+                                <flux:badge size="sm" color="green">
+                                    {{ $t->comuna->nombre }}
                                 </flux:badge>
                             </td>
                             <td class="px-3 py-3">
-                                <flux:badge size="sm" color="green">
-                                    {{ $t->comuna->nombre }}
+                                <flux:badge size="sm" color="amber">
+                                    {{ $t->sector->nombre }}
                                 </flux:badge>
                             </td>
                             <td class="px-3 py-3 font-semibold text-zinc-800 dark:text-zinc-100">
@@ -439,26 +439,10 @@
                                 @enderror
                             </div>
                             <div>
-                                <flux:select wire:model.live="sector_id" label="Sector *"
+                                <flux:select wire:model.live="comuna_id" label="Comuna *"
                                     placeholder="{{ $parroquia_id ? 'Selecciona...' : '— Primero parroquia —' }}"
                                     :disabled="!$parroquia_id" required
-                                    wire:key="select-sector-{{ $parroquia_id ?: 'none' }}">
-                                    @foreach ($sectoresFiltrados as $sector)
-                                        <flux:select.option value="{{ $sector->id }}"
-                                            wire:key="sec-{{ $sector->id }}">
-                                            {{ $sector->nombre }}
-                                        </flux:select.option>
-                                    @endforeach
-                                </flux:select>
-                                @error('sector_id')
-                                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div>
-                                <flux:select wire:model="comuna_id" label="Comuna *"
-                                    placeholder="{{ $sector_id ? 'Selecciona...' : '— Primero sector —' }}"
-                                    :disabled="!$sector_id" required
-                                    wire:key="select-comuna-{{ $sector_id ?: 'none' }}">
+                                    wire:key="select-comuna-{{ $parroquia_id ?: 'none' }}">
                                     @foreach ($comunasFiltradas as $comuna)
                                         <flux:select.option value="{{ $comuna->id }}"
                                             wire:key="com-{{ $comuna->id }}">
@@ -467,6 +451,22 @@
                                     @endforeach
                                 </flux:select>
                                 @error('comuna_id')
+                                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <flux:select wire:model="sector_id" label="Sector *"
+                                    placeholder="{{ $comuna_id ? 'Selecciona...' : '— Primero comuna —' }}"
+                                    :disabled="!$comuna_id" required
+                                    wire:key="select-sector-{{ $comuna_id ?: 'none' }}">
+                                    @foreach ($sectoresFiltrados as $sector)
+                                        <flux:select.option value="{{ $sector->id }}"
+                                            wire:key="sec-{{ $sector->id }}">
+                                            {{ $sector->nombre }}
+                                        </flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                                @error('sector_id')
                                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -562,15 +562,15 @@
                     </div>
                     <div>
                         <span
-                            class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Sector</span>
-                        <span
-                            class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_sector }}</span>
-                    </div>
-                    <div>
-                        <span
                             class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Comuna</span>
                         <span
                             class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_comuna }}</span>
+                    </div>
+                    <div>
+                        <span
+                            class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Sector</span>
+                        <span
+                            class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_sector }}</span>
                     </div>
                     <div>
                         <span

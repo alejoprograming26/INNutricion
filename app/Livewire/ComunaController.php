@@ -22,12 +22,10 @@ class ComunaController extends Component
     public ?int $comuna_id    = null;
     public ?string $municipio_id = '';
     public ?string $parroquia_id = '';
-    public ?string $sector_id    = '';
     public string $nombre     = '';
 
     // Filtros en cascada
     public $parroquiasFiltradas = [];
-    public $sectoresFiltrados = [];
 
     // Control de modales
     public bool $isModalOpen     = false;
@@ -35,7 +33,6 @@ class ComunaController extends Component
 
     // Datos del modal "Ver"
     public string $view_nombre     = '';
-    public string $view_sector     = '';
     public string $view_parroquia  = '';
     public string $view_municipio  = '';
 
@@ -50,25 +47,14 @@ class ComunaController extends Component
     public function updatedMunicipioId($value): void
     {
         $this->parroquia_id = '';
-        $this->sector_id    = '';
-        $this->sectoresFiltrados = [];
 
         $this->parroquiasFiltradas = $value
             ? Parroquia::where('municipio_id', $value)->orderBy('nombre')->get()
             : [];
     }
 
-    /**
-     * Cuando cambia la parroquia, cargar sectores.
-     */
-    public function updatedParroquiaId($value): void
-    {
-        $this->sector_id = '';
-
-        $this->sectoresFiltrados = $value
-            ? Sector::where('parroquia_id', $value)->orderBy('nombre')->get()
-            : [];
-    }
+    // Eliminado updatedParroquiaId ya que no hay niveles inferiores que filtrar aquí que dependan de la parroquia aparte de lo que ya hace municipio.
+    // Bueno, en realidad no necesitamos cargar sectores porque la comuna ya no pertenece a uno.
 
     public function create(): void
     {
@@ -81,12 +67,10 @@ class ComunaController extends Component
         $this->validate([
             'municipio_id' => 'required|exists:municipios,id',
             'parroquia_id' => 'required|exists:parroquias,id',
-            'sector_id'    => 'required|exists:sectores,id',
             'nombre'       => 'required|string|max:255',
         ], [
             'municipio_id.required' => 'Selecciona un municipio.',
             'parroquia_id.required' => 'Selecciona una parroquia.',
-            'sector_id.required'    => 'Selecciona un sector.',
             'nombre.required'       => 'El nombre de la comuna es obligatorio.',
         ]);
 
@@ -95,24 +79,24 @@ class ComunaController extends Component
 
         $duplicado = \Illuminate\Support\Facades\DB::table('comunas')
             ->whereRaw('UPPER(nombre) = ?', [$nombreUpper])
-            ->where('sector_id', $this->sector_id)
+            ->where('parroquia_id', $this->parroquia_id)
             ->when($this->comuna_id, fn($q) => $q->where('id', '!=', $this->comuna_id))
             ->exists();
 
         if ($duplicado) {
-            $this->addError('nombre', 'Ya existe una comuna con ese nombre en el sector seleccionado.');
+            $this->addError('nombre', 'Ya existe una comuna con ese nombre en la parroquia seleccionada.');
             return;
         }
 
         if ($this->comuna_id) {
             Comuna::findOrFail($this->comuna_id)->update([
-                'sector_id' => $this->sector_id,
+                'parroquia_id' => $this->parroquia_id,
                 'nombre'    => mb_strtoupper(trim($this->nombre), 'UTF-8'),
             ]);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Comuna actualizada exitosamente.']);
         } else {
             Comuna::create([
-                'sector_id' => $this->sector_id,
+                'parroquia_id' => $this->parroquia_id,
                 'nombre'    => mb_strtoupper(trim($this->nombre), 'UTF-8'),
             ]);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Comuna creada exitosamente.']);
@@ -124,20 +108,15 @@ class ComunaController extends Component
     public function edit(int $id): void
     {
         $this->resetInputFields();
-        $comuna = Comuna::with('sector.parroquia.municipio')->findOrFail($id);
+        $comuna = Comuna::with('parroquia.municipio')->findOrFail($id);
 
         $this->comuna_id    = $comuna->id;
         $this->nombre       = $comuna->nombre;
-        $this->sector_id    = (string) $comuna->sector_id;
-        $this->parroquia_id = (string) $comuna->sector->parroquia_id;
-        $this->municipio_id = (string) $comuna->sector->parroquia->municipio_id;
+        $this->parroquia_id = (string) $comuna->parroquia_id;
+        $this->municipio_id = (string) $comuna->parroquia->municipio_id;
 
         // Cargar combos
         $this->parroquiasFiltradas = Parroquia::where('municipio_id', $this->municipio_id)
-            ->orderBy('nombre')
-            ->get();
-            
-        $this->sectoresFiltrados = Sector::where('parroquia_id', $this->parroquia_id)
             ->orderBy('nombre')
             ->get();
 
@@ -146,12 +125,11 @@ class ComunaController extends Component
 
     public function show(int $id): void
     {
-        $comuna = Comuna::with('sector.parroquia.municipio')->findOrFail($id);
+        $comuna = Comuna::with('parroquia.municipio')->findOrFail($id);
 
         $this->view_nombre    = $comuna->nombre;
-        $this->view_sector    = $comuna->sector->nombre;
-        $this->view_parroquia = $comuna->sector->parroquia->nombre;
-        $this->view_municipio = $comuna->sector->parroquia->municipio->nombre;
+        $this->view_parroquia = $comuna->parroquia->nombre;
+        $this->view_municipio = $comuna->parroquia->municipio->nombre;
 
         $this->isViewModalOpen = true;
     }
@@ -174,12 +152,9 @@ class ComunaController extends Component
         $this->comuna_id           = null;
         $this->municipio_id        = '';
         $this->parroquia_id        = '';
-        $this->sector_id           = '';
         $this->nombre              = '';
         $this->parroquiasFiltradas = [];
-        $this->sectoresFiltrados   = [];
         $this->view_nombre         = '';
-        $this->view_sector         = '';
         $this->view_parroquia      = '';
         $this->view_municipio      = '';
         $this->resetValidation();
@@ -187,14 +162,11 @@ class ComunaController extends Component
 
     public function render()
     {
-        $comunas = Comuna::with(['sector', 'parroquia.municipio'])
-            ->whereHas('sector', function ($q) {
+        $comunas = Comuna::with(['parroquia.municipio'])
+            ->whereHas('parroquia', function ($q) {
                 $q->where('nombre', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('parroquia', function ($q2) {
-                      $q2->where('nombre', 'like', '%' . $this->search . '%')
-                         ->orWhereHas('municipio', function ($q3) {
-                             $q3->where('nombre', 'like', '%' . $this->search . '%');
-                         });
+                  ->orWhereHas('municipio', function ($q2) {
+                      $q2->where('nombre', 'like', '%' . $this->search . '%');
                   });
             })
             ->orWhere('nombre', 'like', '%' . $this->search . '%')

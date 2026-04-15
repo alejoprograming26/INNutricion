@@ -28,7 +28,6 @@
                     <tr class="text-center">
                         <th class="px-4 py-3 w-12">#</th>
                         <th class="px-4 py-3 text-left">Comuna</th>
-                        <th class="px-4 py-3">Sector</th>
                         <th class="px-4 py-3">Parroquia</th>
                         <th class="px-4 py-3">Municipio</th>
                         <th class="px-4 py-3">Acciones</th>
@@ -42,11 +41,6 @@
                             </td>
                             <td class="px-4 py-3 text-left font-medium text-zinc-800 dark:text-zinc-100">
                                 {{ $comuna->nombre }}
-                            </td>
-                            <td class="px-4 py-3">
-                                <flux:badge size="sm" color="amber">
-                                    {{ $comuna->sector->nombre }}
-                                </flux:badge>
                             </td>
                             <td class="px-4 py-3">
                                 <flux:badge size="sm" color="blue">
@@ -75,7 +69,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-zinc-500">
+                            <td colspan="5" class="px-4 py-8 text-center text-zinc-500">
                                 No se encontraron comunas.
                             </td>
                         </tr>
@@ -121,19 +115,7 @@
                     <span class="text-sm text-red-500 font-medium">{{ $message }}</span>
                 @enderror
 
-                {{-- Sector --}}
-                <flux:select wire:model="sector_id" label="Sector *"
-                    placeholder="{{ $parroquia_id ? 'Selecciona un sector' : 'Primero selecciona una parroquia' }}"
-                    :disabled="!$parroquia_id" required wire:key="select-sector-{{ $parroquia_id ?? 'none' }}">
-                    @foreach($sectoresFiltrados as $sector)
-                        <flux:select.option value="{{ $sector->id }}" wire:key="sec-{{ $sector->id }}">{{ $sector->nombre }}</flux:select.option>
-                    @endforeach
-                </flux:select>
-                @error('sector_id')
-                    <span class="text-sm text-red-500 font-medium">{{ $message }}</span>
-                @enderror
-
-                {{-- Nombre de la comuna --}}
+                {{-- Comuna --}}
                 <flux:input wire:model="nombre" label="Nombre de la Comuna *"
                     placeholder="Ej. NUEVA SEGOVIA" required class="uppercase" />
 
@@ -166,10 +148,6 @@
                 <div>
                     <span class="block text-sm font-medium text-zinc-500 font-semibold uppercase tracking-wide">Parroquia</span>
                     <span class="block text-base font-medium text-zinc-800 dark:text-zinc-100">{{ $view_parroquia }}</span>
-                </div>
-                <div>
-                    <span class="block text-sm font-medium text-zinc-500 font-semibold uppercase tracking-wide">Sector</span>
-                    <span class="block text-base font-medium text-zinc-800 dark:text-zinc-100">{{ $view_sector }}</span>
                 </div>
                 <div>
                     <span class="block text-sm font-medium text-zinc-500 font-semibold uppercase tracking-wide">Comuna</span>

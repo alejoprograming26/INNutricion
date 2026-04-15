@@ -12,38 +12,41 @@ class Sector extends Model
     protected $table = 'sectores';
 
     protected $fillable = [
-        'parroquia_id',
+        'comuna_id',
         'nombre',
     ];
 
     /**
-     * Un sector pertenece a una parroquia.
+     * Un sector pertenece a una comuna.
      */
-    public function parroquia()
+    public function comuna()
     {
-        return $this->belongsTo(Parroquia::class, 'parroquia_id');
+        return $this->belongsTo(Comuna::class, 'comuna_id');
     }
 
     /**
-     * Un sector pertenece a un municipio (a través de parroquia).
+     * Un sector pertenece a una parroquia (a través de comuna).
      */
-    public function municipio()
+    public function parroquia()
     {
         return $this->hasOneThrough(
-            Municipio::class,
             Parroquia::class,
+            Comuna::class,
+            'id', // FK en comunas (id de la comuna)
             'id', // FK en parroquias (id de la parroquia)
-            'id', // FK en municipios (id del municipio)
-            'parroquia_id', // Local Key en sectores (parroquia_id)
-            'municipio_id' // Local Key en parroquias (municipio_id)
+            'comuna_id', // Local Key en sectores (comuna_id)
+            'parroquia_id' // Local Key en comunas (parroquia_id)
         );
     }
 
     /**
-     * Un sector tiene muchas comunas.
+     * Un sector pertenece a un municipio (a través de comuna).
      */
-    public function comunas()
+    public function municipio()
     {
-        return $this->hasMany(Comuna::class, 'sector_id');
+        // Pasamos por Comuna y luego Parroquia es un poco complejo para hasOneThrough estándar de 2 niveles.
+        // Pero podemos intentar llegar al municipio si la jerarquía es clara.
+        // O simplemente usar:
+        return $this->comuna->parroquia->municipio();
     }
 }

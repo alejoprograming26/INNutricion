@@ -103,23 +103,25 @@ class TranscripcionController extends Component
 
     public function updatedParroquiaId($value): void
     {
-        $this->sector_id  = '';
         $this->comuna_id  = '';
-        $this->comunasFiltradas = [];
-
-        $this->sectoresFiltrados = $value
-            ? Sector::where('parroquia_id', $value)->orderBy('nombre')->get()
-            : [];
-    }
-
-    public function updatedSectorId($value): void
-    {
-        $this->comuna_id = '';
+        $this->sector_id  = '';
+        $this->sectoresFiltrados = [];
 
         $this->comunasFiltradas = $value
-            ? Comuna::where('sector_id', $value)->orderBy('nombre')->get()
+            ? Comuna::where('parroquia_id', $value)->orderBy('nombre')->get()
             : [];
     }
+
+    public function updatedComunaId($value): void
+    {
+        $this->sector_id = '';
+
+        $this->sectoresFiltrados = $value
+            ? Sector::where('comuna_id', $value)->orderBy('nombre')->get()
+            : [];
+    }
+
+    // Eliminado el antiguo updatedSectorId ya que ahora es el último nivel o se movió de lugar.
 
     // ── CRUD ──────────────────────────────────────────────────────────────────
 
@@ -213,8 +215,8 @@ class TranscripcionController extends Component
 
         // Cargar combos
         $this->parroquiasFiltradas = Parroquia::where('municipio_id', $this->municipio_id)->orderBy('nombre')->get();
-        $this->sectoresFiltrados   = Sector::where('parroquia_id', $this->parroquia_id)->orderBy('nombre')->get();
-        $this->comunasFiltradas    = Comuna::where('sector_id', $this->sector_id)->orderBy('nombre')->get();
+        $this->comunasFiltradas    = Comuna::where('parroquia_id', $this->parroquia_id)->orderBy('nombre')->get();
+        $this->sectoresFiltrados   = Sector::where('comuna_id', $this->comuna_id)->orderBy('nombre')->get();
 
         $this->isModalOpen = true;
     }

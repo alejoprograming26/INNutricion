@@ -28,6 +28,7 @@
                     <tr class="text-center">
                         <th class="px-4 py-3 w-12">#</th>
                         <th class="px-4 py-3 text-left">Sector</th>
+                        <th class="px-4 py-3">Comuna</th>
                         <th class="px-4 py-3">Parroquia</th>
                         <th class="px-4 py-3">Municipio</th>
                         <th class="px-4 py-3">Acciones</th>
@@ -41,6 +42,11 @@
                             </td>
                             <td class="px-4 py-3 text-left font-medium text-zinc-800 dark:text-zinc-100">
                                 {{ $sector->nombre }}
+                            </td>
+                            <td class="px-4 py-3">
+                                <flux:badge size="sm" color="green">
+                                    {{ $sector->comuna->nombre }}
+                                </flux:badge>
                             </td>
                             <td class="px-4 py-3">
                                 <flux:badge size="sm" color="blue">
@@ -104,7 +110,7 @@
                 @enderror
 
                 {{-- Parroquia --}}
-                <flux:select wire:model="parroquia_id" label="Parroquia *"
+                <flux:select wire:model.live="parroquia_id" label="Parroquia *"
                     placeholder="{{ $municipio_id ? 'Selecciona una parroquia' : 'Primero selecciona un municipio' }}"
                     :disabled="!$municipio_id" required wire:key="select-parroquia-{{ $municipio_id ?? 'none' }}">
                     @foreach($parroquiasFiltradas as $parroquia)
@@ -112,6 +118,18 @@
                     @endforeach
                 </flux:select>
                 @error('parroquia_id')
+                    <span class="text-sm text-red-500 font-medium">{{ $message }}</span>
+                @enderror
+
+                {{-- Comuna --}}
+                <flux:select wire:model="comuna_id" label="Comuna *"
+                    placeholder="{{ $parroquia_id ? 'Selecciona una comuna' : 'Primero selecciona una parroquia' }}"
+                    :disabled="!$parroquia_id" required wire:key="select-comuna-{{ $parroquia_id ?? 'none' }}">
+                    @foreach($comunasFiltradas as $comuna)
+                        <flux:select.option value="{{ $comuna->id }}" wire:key="com-{{ $comuna->id }}">{{ $comuna->nombre }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                @error('comuna_id')
                     <span class="text-sm text-red-500 font-medium">{{ $message }}</span>
                 @enderror
 
@@ -148,6 +166,10 @@
                 <div>
                     <span class="block text-sm font-medium text-zinc-500 font-semibold uppercase tracking-wide">Parroquia</span>
                     <span class="block text-base font-medium text-zinc-800 dark:text-zinc-100">{{ $view_parroquia }}</span>
+                </div>
+                <div>
+                    <span class="block text-sm font-medium text-zinc-500 font-semibold uppercase tracking-wide">Comuna</span>
+                    <span class="block text-base font-medium text-zinc-800 dark:text-zinc-100">{{ $view_comuna }}</span>
                 </div>
                 <div>
                     <span class="block text-sm font-medium text-zinc-500 font-semibold uppercase tracking-wide">Sector</span>

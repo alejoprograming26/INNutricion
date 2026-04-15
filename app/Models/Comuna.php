@@ -12,30 +12,38 @@ class Comuna extends Model
     protected $table = 'comunas';
 
     protected $fillable = [
-        'sector_id',
+        'parroquia_id',
         'nombre',
     ];
 
     /**
-     * Una comuna pertenece a un sector.
-     */
-    public function sector()
-    {
-        return $this->belongsTo(Sector::class, 'sector_id');
-    }
-
-    /**
-     * Una comuna pertenece a una parroquia (a través de sector).
+     * Una comuna pertenece a una parroquia.
      */
     public function parroquia()
     {
+        return $this->belongsTo(Parroquia::class, 'parroquia_id');
+    }
+
+    /**
+     * Una comuna tiene muchos sectores.
+     */
+    public function sectores()
+    {
+        return $this->hasMany(Sector::class, 'comuna_id');
+    }
+
+    /**
+     * Una comuna pertenece a un municipio (a través de parroquia).
+     */
+    public function municipio()
+    {
         return $this->hasOneThrough(
+            Municipio::class,
             Parroquia::class,
-            Sector::class,
-            'id', // FK en sectores (id del sector)
             'id', // FK en parroquias (id de la parroquia)
-            'sector_id', // Local Key en comunas (sector_id)
-            'parroquia_id' // Local Key en sectores (parroquia_id)
+            'id', // FK en municipios (id del municipio)
+            'parroquia_id', // Local Key en comunas (parroquia_id)
+            'municipio_id' // Local Key en parroquias (municipio_id)
         );
     }
 }

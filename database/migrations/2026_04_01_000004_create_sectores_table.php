@@ -8,10 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('comunas', function (Blueprint $table) {
+        Schema::create('sectores', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sector_id')->constrained('sectores')->onDelete('cascade');
-            $table->index('sector_id');
+            $table->foreignId('comuna_id')->constrained('comunas')->onDelete('cascade');
+            $table->index('comuna_id');
             $table->string('nombre');
             $table->timestamps();
         });
@@ -19,6 +19,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('comunas');
+        Schema::dropIfExists('sectores');
     }
 };
