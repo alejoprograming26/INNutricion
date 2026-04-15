@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Comuna;
 use App\Models\Municipio;
 use App\Models\Parroquia;
 use App\Models\Sector;

@@ -17,7 +17,6 @@ class TranscripcionController extends Component
 {
     use WithPagination;
 
-    // ── Tipo activo (filtro de la tabla) ──────────────────────────────────────
     public string $tipoActivo = 'VULNERABILIDAD';
 
     // ── Búsqueda ──────────────────────────────────────────────────────────────
@@ -25,7 +24,7 @@ class TranscripcionController extends Component
 
     // ── Campos del formulario ─────────────────────────────────────────────────
     public ?int    $transcripcion_id = null;
-    public string  $nombre           = '';
+    public ?string $observacion      = null;
     public string  $responsable      = '';
     public string  $fecha            = '';
     public string  $tipo             = '';
@@ -47,7 +46,7 @@ class TranscripcionController extends Component
     public bool $isViewModalOpen = false;
 
     // ── Datos del modal "Ver" ─────────────────────────────────────────────────
-    public string  $view_nombre      = '';
+    public ?string  $view_observacion = null;
     public string  $view_responsable = '';
     public string  $view_fecha       = '';
     public string  $view_tipo        = '';
@@ -65,8 +64,12 @@ class TranscripcionController extends Component
         'CPLV'             => 'CPLV',
         'LACTANCIA MATERNA' => 'Lactancia Materna',
         'ENCUESTA DIETARIA' => 'Encuesta Dietaria',
-        'AJUSTES DE PRECIO' => 'Ajuste de Precio',
-        'SUGIMA'           => 'Sujima',
+        'MONITOREO DE PRECIO' => 'Monitoreo de Precio',
+        'SUGIMA'           => 'SUGIMA',
+        'PERINATAL'        => 'Perinatal',
+        'PRIMER NIVEL DE ATENCION' => 'Primer Nivel de Atención',
+        'DESNUTRICION GRAVE' => 'Desnutrición Grave',
+        'CONSULTA'         => 'Consulta',
     ];
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -138,7 +141,7 @@ class TranscripcionController extends Component
         $esSugima = ($this->tipo === Transcripcion::TIPO_CON_INGRESOS_EGRESOS);
 
         $rules = [
-            'nombre'       => 'required|string|max:255',
+            'observacion'  => 'nullable|string|max:255',
             'responsable'  => 'required|string|max:255',
             'fecha'        => 'required|date',
             'tipo'         => 'required|in:' . implode(',', Transcripcion::TIPOS),
@@ -155,7 +158,6 @@ class TranscripcionController extends Component
         }
 
         $this->validate($rules, [
-            'nombre.required'       => 'El nombre es obligatorio.',
             'responsable.required'  => 'El responsable es obligatorio.',
             'fecha.required'        => 'La fecha es obligatoria.',
             'tipo.required'         => 'El tipo es obligatorio.',
@@ -169,7 +171,7 @@ class TranscripcionController extends Component
         ]);
 
         $data = [
-            'nombre'       => mb_strtoupper(trim($this->nombre), 'UTF-8'),
+            'observacion'  => $this->observacion ? mb_strtoupper(trim($this->observacion), 'UTF-8') : null,
             'responsable'  => mb_strtoupper(trim($this->responsable), 'UTF-8'),
             'fecha'        => $this->fecha,
             'tipo'         => $this->tipo,
@@ -201,7 +203,7 @@ class TranscripcionController extends Component
         $t = Transcripcion::with(['municipio','parroquia','sector','comuna'])->findOrFail($id);
 
         $this->transcripcion_id = $t->id;
-        $this->nombre           = $t->nombre;
+        $this->observacion      = $t->observacion;
         $this->responsable      = $t->responsable;
         $this->fecha            = $t->fecha->format('Y-m-d');
         $this->tipo             = $t->tipo;
@@ -225,7 +227,7 @@ class TranscripcionController extends Component
     {
         $t = Transcripcion::with(['municipio','parroquia','sector','comuna'])->findOrFail($id);
 
-        $this->view_nombre      = $t->nombre;
+        $this->view_observacion = $t->observacion;
         $this->view_responsable = $t->responsable;
         $this->view_fecha       = $t->fecha->format('d/m/Y');
         $this->view_tipo        = $t->tipo;
@@ -257,7 +259,7 @@ class TranscripcionController extends Component
     private function resetInputFields(): void
     {
         $this->transcripcion_id    = null;
-        $this->nombre              = '';
+        $this->observacion         = null;
         $this->responsable         = '';
         $this->fecha               = '';
         $this->tipo                = $this->tipoActivo;
@@ -272,7 +274,7 @@ class TranscripcionController extends Component
         $this->sectoresFiltrados   = [];
         $this->comunasFiltradas    = [];
         // Vista
-        $this->view_nombre         = '';
+        $this->view_observacion    = null;
         $this->view_responsable    = '';
         $this->view_fecha          = '';
         $this->view_tipo           = '';
@@ -337,7 +339,7 @@ class TranscripcionController extends Component
         $transcripciones = (clone $queryBase)
             ->with(['municipio','parroquia','sector','comuna'])
             ->where(function ($q) {
-                $q->where('nombre', 'like', '%' . $this->search . '%')
+                $q->where('observacion', 'like', '%' . $this->search . '%')
                   ->orWhere('responsable', 'like', '%' . $this->search . '%')
                   ->orWhereHas('municipio', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
                   ->orWhereHas('parroquia', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))

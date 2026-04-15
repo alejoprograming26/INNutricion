@@ -24,13 +24,29 @@
                             'tab' => 'border-amber-500 text-amber-600 dark:text-amber-400',
                             'badge' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
                         ],
-                        'AJUSTES DE PRECIO' => [
+                        'MONITOREO DE PRECIO' => [
                             'tab' => 'border-violet-500 text-violet-600 dark:text-violet-400',
                             'badge' => 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
                         ],
                         'SUGIMA' => [
                             'tab' => 'border-lime-500 text-lime-600 dark:text-lime-400',
                             'badge' => 'bg-lime-100 text-lime-700 dark:bg-lime-900/40 dark:text-lime-300',
+                        ],
+                        'PERINATAL' => [
+                            'tab' => 'border-indigo-500 text-indigo-600 dark:text-indigo-400',
+                            'badge' => 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300',
+                        ],
+                        'PRIMER NIVEL DE ATENCION' => [
+                            'tab' => 'border-cyan-500 text-cyan-600 dark:text-cyan-400',
+                            'badge' => 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
+                        ],
+                        'DESNUTRICION GRAVE' => [
+                            'tab' => 'border-red-600 text-red-700 dark:text-red-500',
+                            'badge' => 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+                        ],
+                        'CONSULTA' => [
+                            'tab' => 'border-emerald-500 text-emerald-600 dark:text-emerald-400',
+                            'badge' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
                         ],
                         default => ['tab' => 'border-zinc-500 text-zinc-600', 'badge' => 'bg-zinc-100 text-zinc-700'],
                     };
@@ -57,8 +73,12 @@
                     'CPLV' => 'text-blue-600 dark:text-blue-400',
                     'LACTANCIA MATERNA' => 'text-pink-600 dark:text-pink-400',
                     'ENCUESTA DIETARIA' => 'text-amber-600 dark:text-amber-400',
-                    'AJUSTES DE PRECIO' => 'text-violet-600 dark:text-violet-400',
+                    'MONITOREO DE PRECIO' => 'text-violet-600 dark:text-violet-400',
                     'SUGIMA' => 'text-lime-600 dark:text-lime-400',
+                    'PERINATAL' => 'text-indigo-600 dark:text-indigo-400',
+                    'PRIMER NIVEL DE ATENCION' => 'text-cyan-600 dark:text-cyan-400',
+                    'DESNUTRICION GRAVE' => 'text-red-600 dark:text-red-400',
+                    'CONSULTA' => 'text-emerald-600 dark:text-emerald-400',
                     default => 'text-zinc-700',
                 };
             @endphp
@@ -194,7 +214,7 @@
                     class="bg-zinc-50 dark:bg-zinc-800/50 text-xs uppercase font-semibold text-zinc-700 dark:text-zinc-300 border-b border-zinc-200 dark:border-zinc-700">
                     <tr class="text-center">
                         <th class="px-3 py-3 w-10">#</th>
-                        <th class="px-3 py-3 text-left">Nombre</th>
+                        <th class="px-3 py-3 text-left">Observación</th>
                         <th class="px-3 py-3">Responsable</th>
                         <th class="px-3 py-3">Fecha</th>
                         <th class="px-3 py-3">Municipio</th>
@@ -215,8 +235,8 @@
                             <td class="px-3 py-3 font-medium text-zinc-500">
                                 {{ ($transcripciones->currentPage() - 1) * $transcripciones->perPage() + $loop->iteration }}
                             </td>
-                            <td class="px-3 py-3 text-left font-medium text-zinc-800 dark:text-zinc-100">
-                                {{ $t->nombre }}
+                            <td class="px-3 py-3 text-left font-medium text-zinc-800 dark:text-zinc-100 line-clamp-1" title="{{ $t->observacion }}">
+                                {{ $t->observacion ?? '—' }}
                             </td>
                             <td class="px-3 py-3 text-zinc-600 dark:text-zinc-300">
                                 {{ $t->responsable }}
@@ -383,8 +403,8 @@
 
                             {{-- Fila 1 --}}
                             <div>
-                                <flux:input wire:model="nombre" label="Nombre *" placeholder="Nombre" required />
-                                @error('nombre')
+                                <flux:input wire:model="observacion" label="Observación" placeholder="Opcional..." />
+                                @error('observacion')
                                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -532,9 +552,9 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <span
-                            class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Nombre</span>
+                            class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Observación</span>
                         <span
-                            class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_nombre }}</span>
+                            class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_observacion ?? '—' }}</span>
                     </div>
                     <div>
                         <span

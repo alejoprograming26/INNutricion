@@ -12,7 +12,7 @@ class Transcripcion extends Model
     protected $table = 'transcripciones';
 
     protected $fillable = [
-        'nombre',
+        'observacion',
         'responsable',
         'fecha',
         'tipo',
@@ -35,8 +35,12 @@ class Transcripcion extends Model
         'CPLV',
         'LACTANCIA MATERNA',
         'ENCUESTA DIETARIA',
-        'AJUSTES DE PRECIO',
+        'MONITOREO DE PRECIO',
         'SUGIMA',
+        'PERINATAL',
+        'PRIMER NIVEL DE ATENCION',
+        'DESNUTRICION GRAVE',
+        'CONSULTA',
     ];
 
     // Solo SUGIMA tiene ingreso/egreso

@@ -69,13 +69,29 @@
                     :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'ENCUESTA DIETARIA'">
                     Encuesta Dietaria
                 </flux:sidebar.item>
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'AJUSTES DE PRECIO']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'AJUSTES DE PRECIO'">
-                    Ajuste de Precio
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'MONITOREO DE PRECIO']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'MONITOREO DE PRECIO'">
+                    Monitoreo de Precio
                 </flux:sidebar.item>
                 <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'SUGIMA']) }}"
                     :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'SUGIMA'">
-                    Sujima
+                    SUGIMA
+                </flux:sidebar.item>
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'PERINATAL']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'PERINATAL'">
+                    Perinatal
+                </flux:sidebar.item>
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'PRIMER NIVEL DE ATENCION']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'PRIMER NIVEL DE ATENCION'">
+                    Primer Nivel de Atención
+                </flux:sidebar.item>
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'DESNUTRICION GRAVE']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'DESNUTRICION GRAVE'">
+                    Desnutrición Grave
+                </flux:sidebar.item>
+                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'CONSULTA']) }}"
+                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'CONSULTA'">
+                    Consulta
                 </flux:sidebar.item>
             </flux:sidebar.group>
             <flux:navlist.item icon="cog-6-tooth" href="{{ route('admin.ajustes.index') }}"

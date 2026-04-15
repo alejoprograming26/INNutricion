@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('transcripciones', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('observacion')->nullable();
             $table->string('responsable');
             $table->date('fecha');
             $table->enum('tipo', [
@@ -18,8 +18,12 @@ return new class extends Migration
                 'CPLV',
                 'LACTANCIA MATERNA',
                 'ENCUESTA DIETARIA',
-                'AJUSTES DE PRECIO',
+                'MONITOREO DE PRECIO',
                 'SUGIMA',
+                'PERINATAL',
+                'PRIMER NIVEL DE ATENCION',
+                'DESNUTRICION GRAVE',
+                'CONSULTA',
             ]);
             $table->foreignId('municipio_id')->constrained('municipios')->onDelete('cascade');
             $table->foreignId('parroquia_id')->constrained('parroquias')->onDelete('cascade');
