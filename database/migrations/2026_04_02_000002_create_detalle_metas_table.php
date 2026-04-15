@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('meta_id')->constrained('metas')->onDelete('cascade');
             $table->foreignId('municipio_id')->constrained('municipios')->onDelete('cascade');
+            $table->index('meta_id');
+            $table->index('municipio_id');
             $table->integer('meta_anual')->default(0);
             $table->integer('meta_mensual')->default(0); // meta_anual / 12
             $table->timestamps();

@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('parroquias', function (Blueprint $table) {
             $table->id();
             $table->foreignId('municipio_id')->constrained('municipios')->onDelete('cascade');
+            $table->index('municipio_id');
             $table->string('nombre');
             $table->timestamps();
         });

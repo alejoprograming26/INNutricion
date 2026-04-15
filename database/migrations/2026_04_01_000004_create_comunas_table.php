@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('comunas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sector_id')->constrained('sectores')->onDelete('cascade');
+            $table->index('sector_id');
             $table->string('nombre');
             $table->timestamps();
         });

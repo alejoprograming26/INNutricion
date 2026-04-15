@@ -157,7 +157,7 @@ class SectorController extends Component
 
     public function render()
     {
-        $sectores = Sector::with('parroquia.municipio')
+        $sectores = Sector::with(['parroquia', 'municipio'])
             ->whereHas('parroquia', function ($q) {
                 $q->where('nombre', 'like', '%' . $this->search . '%')
                   ->orWhereHas('municipio', function ($q2) {

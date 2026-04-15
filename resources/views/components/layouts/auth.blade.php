@@ -30,8 +30,8 @@
     <div class="flex min-h-screen w-full">
         <!-- Form Container -->
         <div
-            class="w-full md:w-1/2 flex flex-col justify-between items-center p-8 sm:p-12 md:p-16 lg:p-24 bg-zinc-50 dark:bg-zinc-950 z-10 w-full">
-            <div class="w-full max-md my-auto">
+            class="w-full md:w-1/2 flex flex-col justify-center items-center p-8 sm:p-12 md:p-16 lg:p-24 bg-zinc-50 dark:bg-zinc-950 z-10">
+            <div class="w-full max-w-md my-auto">
                 <div class="flex flex-col justify-center items-center mb-10 text-center space-y-4">
                     <img src="{{ asset('assets/logo.png') }}" alt="Logo"
                         class="h-20 w-auto object-contain transition-transform hover:scale-105 duration-500 filter drop-shadow-md">

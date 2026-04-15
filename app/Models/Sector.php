@@ -25,6 +25,21 @@ class Sector extends Model
     }
 
     /**
+     * Un sector pertenece a un municipio (a través de parroquia).
+     */
+    public function municipio()
+    {
+        return $this->hasOneThrough(
+            Municipio::class,
+            Parroquia::class,
+            'id', // FK en parroquias (id de la parroquia)
+            'id', // FK en municipios (id del municipio)
+            'parroquia_id', // Local Key en sectores (parroquia_id)
+            'municipio_id' // Local Key en parroquias (municipio_id)
+        );
+    }
+
+    /**
      * Un sector tiene muchas comunas.
      */
     public function comunas()

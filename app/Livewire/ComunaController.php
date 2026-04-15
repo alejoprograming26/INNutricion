@@ -187,7 +187,7 @@ class ComunaController extends Component
 
     public function render()
     {
-        $comunas = Comuna::with('sector.parroquia.municipio')
+        $comunas = Comuna::with(['sector', 'parroquia.municipio'])
             ->whereHas('sector', function ($q) {
                 $q->where('nombre', 'like', '%' . $this->search . '%')
                   ->orWhereHas('parroquia', function ($q2) {

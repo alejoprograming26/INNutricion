@@ -50,12 +50,12 @@
                             </td>
                             <td class="px-4 py-3">
                                 <flux:badge size="sm" color="blue">
-                                    {{ $comuna->sector->parroquia->nombre }}
+                                    {{ $comuna->parroquia->nombre }}
                                 </flux:badge>
                             </td>
                             <td class="px-4 py-3">
                                 <flux:badge size="sm" color="zinc">
-                                    {{ $comuna->sector->parroquia->municipio->nombre }}
+                                    {{ $comuna->parroquia->municipio->nombre }}
                                 </flux:badge>
                             </td>
                             <td class="px-4 py-3">
