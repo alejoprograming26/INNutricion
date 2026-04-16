@@ -77,7 +77,7 @@ class TranscripcionController extends Component
     public function mount(): void
     {
         // Leer el tipo desde el query string de la request actual
-        $tipo  = request()->get('tipo', 'VULNERABILIDAD');
+        $tipo  = request()->input('tipo', 'VULNERABILIDAD');
         $tipos = Transcripcion::TIPOS;
 
         $this->tipoActivo = in_array($tipo, $tipos) ? $tipo : $tipos[0];
@@ -205,7 +205,7 @@ class TranscripcionController extends Component
         $this->transcripcion_id = $t->id;
         $this->observacion      = $t->observacion;
         $this->responsable      = $t->responsable;
-        $this->fecha            = $t->fecha->format('Y-m-d');
+        $this->fecha            = \Illuminate\Support\Carbon::parse($t->fecha)->format('Y-m-d');
         $this->tipo             = $t->tipo;
         $this->municipio_id     = (string) $t->municipio_id;
         $this->parroquia_id     = (string) $t->parroquia_id;
@@ -229,7 +229,7 @@ class TranscripcionController extends Component
 
         $this->view_observacion = $t->observacion;
         $this->view_responsable = $t->responsable;
-        $this->view_fecha       = $t->fecha->format('d/m/Y');
+        $this->view_fecha       = \Illuminate\Support\Carbon::parse($t->fecha)->format('d/m/Y');
         $this->view_tipo        = $t->tipo;
         $this->view_municipio   = $t->municipio->nombre;
         $this->view_parroquia   = $t->parroquia->nombre;

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Ajuste;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +18,16 @@ class DatabaseSeeder extends Seeder
          // User::factory(10)->create();
         $this->call(RoleSeeder::class);
         $this->call(EstadoLaraSeeder::class);
+
+       Ajuste::create([
+        "nombre"=> "INNutricion",
+        "descripcion" => "Instituto Nacional de Nutrición",
+        "sucursal" => "Barquisimeto Lara",
+        "direccion" => "Calle 22 entre carrera 28 y 29, Barquisimeto, Estado Lara",
+        "telefonos" => "0251-2312345",
+        "email" => "inn.gob.ve@gmail.com",
+        "pagina_web" => "www.inn.gob.ve",
+       ]);
 
        User::create([
         'name'=>'Alejandro Alvarez',

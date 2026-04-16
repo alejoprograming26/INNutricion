@@ -108,3 +108,17 @@
     flex-shrink: 0 !important;
     /* Evita que flexbox lo aplaste */
 }
+
+/* Ocultar cualquier barra de carga horizontal (Livewire, NProgress, Flux, etc.) */
+.livewire-progress-bar,
+[wire-progress-bar],
+[wire\:progress-bar],
+.nprogress-bar,
+#nprogress,
+[wire\:navigate-progress] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
+}

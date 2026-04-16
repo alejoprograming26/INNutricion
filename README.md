@@ -1,59 +1,132 @@
-# INNutricion - Plataforma de Nutrición
+<div align="center">
+  <img src="public/assets/logo.png" alt="INNutricion Logo" width="200" height="auto" />
+  <h1>INNutricion - Sistema de Gestión y Análisis Nutricional</h1>
+  
+  <p>
+    Plataforma integral desarrollada para el Instituto Nacional de Nutrición (Estado Lara). Diseñada para el seguimiento, transcripción y análisis estadístico de la vulnerabilidad nutricional y otros indicadores clave de salud estructurados jerárquicamente.
+  </p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+  <p>
+    <a href="#características-principales">Características</a> •
+    <a href="#arquitectura-y-tecnologías">Tecnologías</a> •
+    <a href="#estructura-de-datos">Estructura</a> •
+    <a href="#instalación-y-despliegue">Instalación</a>
+  </p>
+</div>
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Características Principales
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Gestión Jerárquica Avanzada**: Administración de datos estructurados multinivel (`Municipio` ➔ `Parroquia` ➔ `Comuna` ➔ `Sector`), permitiendo análisis granulado.
+- **Módulo de Transcripciones**: Registro ágil de más de 10 indicadores, incluyendo Vulnerabilidad, SUGIMA, CPLV, Lactancia Materna, entre otros.
+- **Navegación SPA (Single Page Application)**: Interfaz de usuario fluida sin recargas de página mediante integraciones avanzadas de Livewire (`wire:navigate`).
+- **Sistema de Metas**: Planeación anual de metas nutricionales, desglosadas mensual y municipalmente.
+- **Roles y Permisos**: Control de acceso robusto basado en roles y permisos específicos para diferentes niveles operativos.
+- **Optimización de Rendimiento**: Uso crítico de un sistema de caché en memoria (`Cache::rememberForever`) para mitigar la latencia de peticiones hacia la base de datos remota.
+- **Interfaz Moderna y Responsiva**: Diseño estético, temas claro/oscuro integrados y una experiencia UX de alto nivel impulsada por Flux UI.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠️ Arquitectura y Tecnologías
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+El sistema está construido bajo la arquitectura **TALL Stack** más moderna:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Backend
+- **Framework**: [Laravel 12](https://laravel.com/)
+- **Lenguaje**: PHP 8.2+
+- **Base de Datos**: PostgreSQL alojado remotamente en [Supabase](https://supabase.com/)
+- **Gestor de Permisos**: [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission)
 
-## Laravel Sponsors
+### Frontend (TALL)
+- **Componentes Dinámicos**: [Livewire 4](https://livewire.laravel.com/)
+- **UI Kit**: [Flux UI](https://fluxui.dev/) - Sistema de diseño oficial del ecosistema Livewire
+- **Estilos**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Interactividad local**: [Alpine.js](https://alpinejs.dev/)
+- **Alertas y Feedbacks**: [SweetAlert2](https://sweetalert2.github.io/)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🏗️ Estructura de Datos (Core)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Para garantizar la inmediatez en los reportes estadísticos a gran escala, la base de datos utiliza una desnormalización controlada en su tabla transaccional central:
 
-## Contributing
+- **Transcripciones**: Cada registro almacena directamente las llaves foráneas completas de su ubicación (`municipio_id`, `parroquia_id`, `comuna_id`, `sector_id`). Esto evita múltiples uniones complejas en SQL, proporcionando resultados estadísticos instantáneos.
+- **Cascade Rules**: Todas las dependencias estructurales aseguran integridad referencial absoluta (`ON DELETE CASCADE`).
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+*(Para más detalles técnicos sobre base de datos, referirse a `DATABASE_GUIDELINES.md` en la raíz del proyecto).*
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 💻 Instalación y Despliegue
 
-## Security Vulnerabilities
+Sigue estos pasos para levantar el entorno de desarrollo en tu máquina local:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Requisitos Previos
+- PHP >= 8.2
+- Composer
+- Node.js & NPM
+- Conexión PostgreSQL (Credenciales de Supabase)
 
-## License
+### Pasos
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. **Clonar el repositorio**
+   ```bash
+   git clone <URL_DEL_REPOSITORIO>
+   cd INNutricion
+   ```
+
+2. **Instalar dependencias de PHP**
+   ```bash
+   composer install
+   ```
+
+3. **Instalar dependencias de Frontend**
+   ```bash
+   npm install
+   ```
+
+4. **Configurar el entorno**
+   Copia el archivo de prueba `.env.example` y renómbralo a `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   **Importante**: Configura las variables de conexión a base de datos (`DB_CONNECTION=pgsql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`) proporcionadas por Supabase.
+
+5. **Generar la llave de la aplicación**
+   ```bash
+   php artisan key:generate
+   ```
+
+6. **Estructurar la base de datos (Migraciones)**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+   *(Nota: El seeder base `DatabaseSeeder` inyectará configuraciones por defecto, superadministradores y la estructura territorial base de Lara).*
+
+7. **Compilar y Ejecutar**
+   Levanta ambos servidores (Backend y Frontend) simultáneamente:
+   ```bash
+   npm run dev
+   php artisan serve
+   ```
+   *(También puedes utilizar `npm run build` si deseas compilar de manera definitiva los assets).*
+
+---
+
+## 🔐 Convenciones y Calidad de Código
+
+- **Livewire**: Todos los componentes siguen directrices de tipado fuerte y validación directa (`php artisan make:livewire ...`).
+- **Navegación**: Los enlaces del sistema requieren la directiva `wire:navigate` para mantener la experiencia SPA.
+- **Barra de Carga**: Se ha suprimido intencionalmente la barra de progreso (NProgress / Livewire bar) vía inyección CSS para maximizar la percepción visual premium interactiva.
+
+---
+
+## 📞 Soporte & Contacto
+**Instituto Nacional de Nutrición - Sede Lara**
+- **Dirección**: Calle 22 entre carrera 28 y 29, Barquisimeto, Estado Lara.
+- **Teléfono**: 0251-2312345
+- **Email Institucional**: inn.gob.ve@gmail.com
+
+---
+*Desarrollado con ❤️ para fortalecer la seguridad y soberanía alimentaria.*
