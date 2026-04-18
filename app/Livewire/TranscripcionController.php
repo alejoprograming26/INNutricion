@@ -44,6 +44,11 @@ class TranscripcionController extends Component
     // ── Control de modales ────────────────────────────────────────────────────
     public bool $isModalOpen     = false;
     public bool $isViewModalOpen = false;
+    public bool $isReportModalOpen = false;
+    public ?string $reportMonth = null;
+    public ?string $reportYear = null;
+    public ?int $reportMunicipioId = null;
+    public ?string $reportMunicipioNombre = null;
 
     // ── Datos del modal "Ver" ─────────────────────────────────────────────────
     public ?string  $view_observacion = null;
@@ -254,6 +259,27 @@ class TranscripcionController extends Component
         $this->isModalOpen     = false;
         $this->isViewModalOpen = false;
         $this->resetInputFields();
+    }
+
+    public function openReportModal(?int $municipioId = null): void
+    {
+        if ($municipioId) {
+            $mun = Municipio::find($municipioId);
+            $this->reportMunicipioId = $municipioId;
+            $this->reportMunicipioNombre = $mun ? $mun->nombre : '';
+        } else {
+            $this->reportMunicipioId = null;
+            $this->reportMunicipioNombre = null;
+        }
+
+        $this->reportMonth = (string) now()->month;
+        $this->reportYear  = (string) now()->year;
+        $this->isReportModalOpen = true;
+    }
+
+    public function closeReportModal(): void
+    {
+        $this->isReportModalOpen = false;
     }
 
     private function resetInputFields(): void

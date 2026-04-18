@@ -329,6 +329,7 @@
                         <th class="px-3 py-3">Total Mes</th>
                         <th class="px-3 py-3">Última Semana</th>
                         <th class="px-3 py-3">Trancripciones (Mes)</th>
+                        <th class="px-3 py-3 text-center">Reporte</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
@@ -361,10 +362,15 @@
                                     {{ number_format($m->transcripciones_mes_count ?? 0) }}
                                 </span>
                             </td>
+                            <td class="px-3 py-3">
+                                <flux:button wire:click="openReportModal({{ $m->id }})" size="sm" icon="document-text" class="!bg-red-600 !text-white border-none hover:!bg-red-700 font-semibold" title="Descargar PDF para {{ $m->nombre }}">
+                                    PDF
+                                </flux:button>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-8 text-center text-zinc-500">No hay municipios
+                            <td colspan="6" class="px-4 py-8 text-center text-zinc-500">No hay municipios
                                 registrados en el sistema.</td>
                         </tr>
                     @endforelse
@@ -618,6 +624,61 @@
 
                 <div class="flex justify-end pt-4 border-t border-zinc-200 dark:border-zinc-800">
                     <flux:button wire:click="closeModal" variant="ghost">Cerrar</flux:button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- ═══════════════════════════════════════════════════
+         Modal Descargar Reporte PDF
+    ═══════════════════════════════════════════════════ --}}
+    @if ($isReportModalOpen)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div class="bg-white dark:bg-zinc-900 w-full max-w-sm rounded-xl shadow-xl flex flex-col">
+                {{-- Header --}}
+                <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
+                    <h2 class="text-lg font-bold text-zinc-800 dark:text-zinc-100">
+                        Generar Reporte PDF
+                    </h2>
+                    <flux:button wire:click="closeReportModal" variant="ghost" icon="x-mark" />
+                </div>
+
+                {{-- Body --}}
+                <div class="p-6">
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                        Selecciona el mes y el año para descargar el reporte de <span class="font-bold">{{ $tipoLabels[$tipoActivo] ?? $tipoActivo }}</span> para el municipio <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ $reportMunicipioNombre ?? 'Seleccionado' }}</span>.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <flux:select wire:model="reportMonth" label="Mes del Reporte">
+                            <flux:select.option value="1">Enero</flux:select.option>
+                            <flux:select.option value="2">Febrero</flux:select.option>
+                            <flux:select.option value="3">Marzo</flux:select.option>
+                            <flux:select.option value="4">Abril</flux:select.option>
+                            <flux:select.option value="5">Mayo</flux:select.option>
+                            <flux:select.option value="6">Junio</flux:select.option>
+                            <flux:select.option value="7">Julio</flux:select.option>
+                            <flux:select.option value="8">Agosto</flux:select.option>
+                            <flux:select.option value="9">Septiembre</flux:select.option>
+                            <flux:select.option value="10">Octubre</flux:select.option>
+                            <flux:select.option value="11">Noviembre</flux:select.option>
+                            <flux:select.option value="12">Diciembre</flux:select.option>
+                        </flux:select>
+
+                        <flux:input wire:model="reportYear" type="number" step="1" min="2000" max="2100" label="Año" required />
+                    </div>
+                </div>
+
+                {{-- Footer --}}
+                <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 flex justify-end gap-3 rounded-b-xl">
+                    <flux:button wire:click="closeReportModal" variant="ghost">Cancelar</flux:button>
+                    <a href="{{ route('admin.transcripciones.pdf', ['mes' => $reportMonth, 'año' => $reportYear, 'tipo' => $tipoActivo, 'municipio_id' => $reportMunicipioId]) }}" 
+                       target="_blank" 
+                       @click="$wire.closeReportModal()"
+                       class="inline-flex items-center gap-2 px-4 py-2 font-bold text-white bg-lime-500 rounded-lg shadow-sm hover:focus:bg-lime-600 hover:bg-lime-600 transition-colors">
+                        <flux:icon.arrow-down-tray class="w-4 h-4" />
+                        Descargar
+                    </a>
                 </div>
             </div>
         </div>
