@@ -650,7 +650,7 @@
                     </p>
                     
                     <div class="space-y-4">
-                        <flux:select wire:model="reportMonth" label="Mes del Reporte">
+                        <flux:select wire:model.live="reportMonth" label="Mes del Reporte">
                             <flux:select.option value="1">Enero</flux:select.option>
                             <flux:select.option value="2">Febrero</flux:select.option>
                             <flux:select.option value="3">Marzo</flux:select.option>
@@ -665,7 +665,7 @@
                             <flux:select.option value="12">Diciembre</flux:select.option>
                         </flux:select>
 
-                        <flux:input wire:model="reportYear" type="number" step="1" min="2000" max="2100" label="Año" required />
+                        <flux:input wire:model.live="reportYear" type="number" step="1" min="2000" max="2100" label="Año" required />
                     </div>
                 </div>
 
