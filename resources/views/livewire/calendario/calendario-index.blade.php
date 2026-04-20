@@ -9,61 +9,69 @@
     </flux:card>
 
     {{-- Panel de Indicadores Mensuales --}}
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        {{-- Card Gran Total --}}
-        <flux:card
-            class="lg:col-span-1 p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-xl shadow-sm">
-            <div class="flex flex-col items-center justify-center h-full text-center gap-2">
-                <span class="text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Resumen
-                    de</span>
-                <span
-                    class="text-lg font-bold text-zinc-700 dark:text-zinc-200 capitalize">{{ $nombreMesVisible }}</span>
-                <div class="mt-3 flex flex-col items-center">
-                    <span class="text-4xl font-extrabold" style="color: #84cc16 !important;">{{ number_format($granTotal) }}</span>
-                    <span class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Cantidad Total Procesada</span>
-                </div>
-                <div
-                    class="mt-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs font-semibold text-zinc-600 dark:text-zinc-300">
-                    {{ number_format($totalRegistros) }} registros
+    <div class="mb-4 space-y-4">
+        {{-- Cabecera: Mes + Total --}}
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-xl shadow-sm">
+            <div class="space-y-1.5">
+                <h3 class="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Resumen Mensual</h3>
+                <div class="flex items-center gap-3">
+                    <span class="text-xl font-bold text-zinc-800 dark:text-zinc-100 capitalize">{{ $nombreMesVisible }}</span>
+                    <span class="text-xs px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-semibold border border-zinc-200 dark:border-zinc-700">
+                        {{ number_format($totalRegistros) }} registros
+                    </span>
                 </div>
             </div>
-        </flux:card>
-
-        {{-- Cards por Tipo --}}
-        <div class="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
-            @forelse($totalesMes as $item)
-                @php
-                    $borde = $bordeIndicador[$item->tipo] ?? 'border-l-zinc-400';
-                    $colorBg = $coloresTailwind[$item->tipo] ?? 'bg-zinc-100 text-zinc-700';
-                    $etiqueta = $etiquetasCortas[$item->tipo] ?? $item->tipo;
-                    $hexColor = $coloresHex[$item->tipo] ?? '#6b7280';
-                    $porcentaje = $granTotal > 0 ? round(($item->total / $granTotal) * 100, 1) : 0;
-                @endphp
-                <div
-                    class="relative overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 border-l-4 {{ $borde }} shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-start justify-between mb-2">
-                        <span
-                            class="text-[11px] font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 leading-tight">{{ $etiqueta }}</span>
-                        <span
-                            class="text-[10px] font-semibold px-1.5 py-0.5 rounded {{ $colorBg }}">{{ $item->registros }}</span>
-                    </div>
-                    <div class="text-2xl font-extrabold text-zinc-800 dark:text-zinc-100">
-                        {{ number_format($item->total) }}</div>
-                    {{-- Barra de progreso --}}
-                    <div class="mt-2 w-full h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full transition-all duration-500"
-                            style="width: {{ $porcentaje }}%; background-color: {{ $hexColor }};"></div>
-                    </div>
-                    <span class="text-[10px] text-zinc-400 dark:text-zinc-500 mt-1 block">{{ $porcentaje }}% del
-                        total</span>
-                </div>
-            @empty
-                <div class="lg:col-span-5 text-center py-8 text-zinc-400 dark:text-zinc-600">
-                    <flux:icon.chart-bar class="w-8 h-8 mx-auto mb-2 opacity-40" />
-                    <p class="text-sm">Sin registros en este mes</p>
-                </div>
-            @endforelse
+            <div class="flex flex-col sm:items-end">
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">Total Procesado</span>
+                <span class="text-4xl font-black text-zinc-900 dark:text-white leading-none tracking-tight">{{ number_format($granTotal) }}</span>
+            </div>
         </div>
+
+        {{-- Cards individuales por Tipo --}}
+        @if(count($totalesMes) > 0)
+            <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+                @foreach($totalesMes as $item)
+                    @php
+                        $etiqueta = $etiquetasCortas[$item->tipo] ?? $item->tipo;
+                        $hexColor = $coloresHex[$item->tipo] ?? '#6b7280';
+                        $porcentaje = $granTotal > 0 ? round(($item->total / $granTotal) * 100, 1) : 0;
+                    @endphp
+                    <flux:card class="relative flex flex-col p-4 overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 group">
+                        {{-- Top --}}
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center gap-2 max-w-[70%]">
+                                <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style="background-color: {{ $hexColor }};"></span>
+                                <span class="text-[11px] font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider truncate" title="{{ $etiqueta }}">{{ $etiqueta }}</span>
+                            </div>
+                            <span class="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/80 px-1.5 py-0.5 rounded-md flex-shrink-0 tabular-nums border border-zinc-100 dark:border-zinc-800">
+                                {{ $item->registros }} reg
+                            </span>
+                        </div>
+                        
+                        {{-- Main Value --}}
+                        <div class="flex flex-col mb-3">
+                            <span class="text-2xl font-black text-zinc-800 dark:text-zinc-100 tabular-nums leading-none tracking-tight group-hover:scale-[1.03] transition-transform origin-left">{{ number_format($item->total) }}</span>
+                        </div>
+                        
+                        {{-- Bottom Bar & Percentage --}}
+                        <div class="mt-auto space-y-1.5">
+                            <div class="flex justify-between items-center text-[9px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wide">
+                                <span>Progreso</span>
+                                <span>{{ $porcentaje }}%</span>
+                            </div>
+                            <div class="w-full h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-700 ease-out" style="width: {{ $porcentaje }}%; background-color: {{ $hexColor }};"></div>
+                            </div>
+                        </div>
+                    </flux:card>
+                @endforeach
+            </div>
+        @else
+            <flux:card class="flex flex-col items-center justify-center py-12 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-xl shadow-sm">
+                <flux:icon.chart-bar class="w-12 h-12 mb-4 text-zinc-300 dark:text-zinc-700" />
+                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400 text-center">No hay registros procesados<br/>en este mes.</p>
+            </flux:card>
+        @endif
     </div>
 
     {{-- MODAL DE DETALLES --}}
@@ -167,22 +175,25 @@
         }
 
         .fc .fc-button-primary {
-            background-color: #84cc16 !important;
-            border-color: #84cc16 !important;
+            background-color: #e4e4e7 !important;
+            border-color: #d4d4d8 !important;
             text-transform: capitalize;
             box-shadow: none !important;
             font-weight: 600;
+            color: #3f3f46 !important;
         }
 
         .fc .fc-button-primary:hover {
-            background-color: #65a30d !important;
-            border-color: #65a30d !important;
+            background-color: #d4d4d8 !important;
+            border-color: #a1a1aa !important;
+            color: #27272a !important;
         }
 
         .fc .fc-button-primary:not(:disabled):active,
         .fc .fc-button-primary:not(:disabled).fc-button-active {
-            background-color: #4d7c0f !important;
-            border-color: #4d7c0f !important;
+            background-color: #a1a1aa !important;
+            border-color: #a1a1aa !important;
+            color: #18181b !important;
         }
 
         /* Encabezado de días (Lun, Mar, Mié...) */
@@ -355,6 +366,22 @@
 
         .dark .fc .fc-daygrid-more-link {
             color: #a1a1aa !important;
+        }
+
+        .dark .fc .fc-button-primary {
+            background-color: #52525b !important;
+            border-color: #52525b !important;
+        }
+
+        .dark .fc .fc-button-primary:hover {
+            background-color: #71717a !important;
+            border-color: #71717a !important;
+        }
+
+        .dark .fc .fc-button-primary:not(:disabled):active,
+        .dark .fc .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: #3f3f46 !important;
+            border-color: #3f3f46 !important;
         }
 
         .dark .fc .fc-toolbar .fc-button {

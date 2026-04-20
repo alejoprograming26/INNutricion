@@ -33,6 +33,8 @@ return new class extends Migration
             $table->index('parroquia_id');
             $table->index('sector_id');
             $table->index('comuna_id');
+            $table->index('tipo');
+            $table->index('fecha');
             $table->integer('cantidad')->default(0);
             $table->integer('ingreso')->nullable();
             $table->integer('egreso')->nullable();
