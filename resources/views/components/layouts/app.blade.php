@@ -16,12 +16,15 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <script>
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia(
-                '(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
-        } else {
-            document.documentElement.classList.remove('dark')
+        function applyTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
         }
+        applyTheme();
+        document.addEventListener('livewire:navigated', applyTheme);
     </script>
 </head>
 
@@ -130,22 +133,7 @@
                     toggle() {
                         this.theme = this.theme === 'dark' ? 'light' : 'dark';
                         localStorage.theme = this.theme;
-                        if (this.theme === 'dark') {
-                            document.documentElement.classList.add('dark');
-                        } else {
-                            document.documentElement.classList.remove('dark');
-                        }
-                    },
-                    init() {
-                        if (this.theme === 'dark') {
-                            document.documentElement.classList.add('dark');
-                        } else {
-                            document.documentElement.classList.remove('dark');
-                        }
-                        $watch('theme', val => {
-                            if (val === 'dark') document.documentElement.classList.add('dark');
-                            else document.documentElement.classList.remove('dark');
-                        });
+                        applyTheme();
                     }
                 }" @click="toggle()"
                     class="mr-4 p-2 rounded-full text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-300 dark:hover:bg-zinc-800 transition-colors"
