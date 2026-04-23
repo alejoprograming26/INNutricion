@@ -386,9 +386,14 @@
                                 </span>
                             </td>
                             <td class="px-3 py-3">
-                                <flux:button wire:click="openReportModal({{ $m->id }})" size="sm" icon="document-text" class="!bg-red-600 !text-white border-none hover:!bg-red-700 font-semibold" title="Descargar PDF para {{ $m->nombre }}">
-                                    PDF
-                                </flux:button>
+                                <div class="flex items-center justify-center gap-2">
+                                    <flux:button wire:click="openReportModal({{ $m->id }}, 'grafico')" size="sm" icon="chart-bar" class="!bg-violet-600 !text-white border-none hover:!bg-violet-700 font-bold" title="Ver Gráficas para {{ $m->nombre }}">
+                                        Gráficas
+                                    </flux:button>
+                                    <flux:button wire:click="openReportModal({{ $m->id }}, 'pdf')" size="sm" icon="document-text" class="!bg-red-600 !text-white border-none hover:!bg-red-700 font-semibold" title="Descargar PDF para {{ $m->nombre }}">
+                                        PDF
+                                    </flux:button>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -661,7 +666,7 @@
                 {{-- Header --}}
                 <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
                     <h2 class="text-lg font-bold text-zinc-800 dark:text-zinc-100">
-                        Generar Reporte PDF
+                        {{ $reportType === 'pdf' ? 'Generar Reporte PDF' : 'Ver Gráficas Estadísticas' }}
                     </h2>
                     <flux:button wire:click="closeReportModal" variant="ghost" icon="x-mark" />
                 </div>
@@ -695,13 +700,16 @@
                 {{-- Footer --}}
                 <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 flex justify-end gap-3 rounded-b-xl">
                     <flux:button wire:click="closeReportModal" variant="ghost">Cancelar</flux:button>
-                    <a href="{{ route('admin.transcripciones.pdf', ['mes' => $reportMonth, 'año' => $reportYear, 'tipo' => $tipoActivo, 'municipio_id' => $reportMunicipioId]) }}" 
-                       target="_blank" 
-                       @click="$wire.closeReportModal()"
-                       class="inline-flex items-center gap-2 px-4 py-2 font-bold text-white bg-lime-500 rounded-lg shadow-sm hover:focus:bg-lime-600 hover:bg-lime-600 transition-colors">
-                        <flux:icon.arrow-down-tray class="w-4 h-4" />
-                        Descargar
-                    </a>
+                    
+                    @if($reportType === 'pdf')
+                        <flux:button wire:click="viewPdf" icon="arrow-down-tray" variant="primary" class="!bg-red-600 hover:!bg-red-700">
+                            Descargar PDF
+                        </flux:button>
+                    @else
+                        <flux:button wire:click="viewDashboard" icon="chart-pie" variant="primary" class="!bg-violet-600 !text-white hover:!bg-violet-700 font-bold">
+                            Ver Gráficas
+                        </flux:button>
+                    @endif
                 </div>
             </div>
         </div>

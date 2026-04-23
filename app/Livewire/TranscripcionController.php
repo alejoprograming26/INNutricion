@@ -48,6 +48,7 @@ class TranscripcionController extends Component
     public bool $isModalOpen     = false;
     public bool $isViewModalOpen = false;
     public bool $isReportModalOpen = false;
+    public ?string $reportType = 'pdf';
     public ?string $reportMonth = null;
     public ?string $reportYear = null;
     public ?int $reportMunicipioId = null;
@@ -286,8 +287,10 @@ class TranscripcionController extends Component
         $this->resetInputFields();
     }
 
-    public function openReportModal(?int $municipioId = null): void
+    public function openReportModal(?int $municipioId = null, string $type = 'pdf'): void
     {
+        $this->reportType = $type;
+        
         if ($municipioId) {
             $mun = Municipio::find($municipioId);
             $this->reportMunicipioId = $municipioId;
@@ -305,6 +308,26 @@ class TranscripcionController extends Component
     public function closeReportModal(): void
     {
         $this->isReportModalOpen = false;
+    }
+
+    public function viewDashboard()
+    {
+        return $this->redirect(route('admin.transcripciones.graficos', [
+            'mes' => $this->reportMonth,
+            'año' => $this->reportYear,
+            'tipo' => $this->tipoActivo,
+            'municipio_id' => $this->reportMunicipioId
+        ]), navigate: true);
+    }
+
+    public function viewPdf()
+    {
+        return $this->redirect(route('admin.transcripciones.pdf', [
+            'mes' => $this->reportMonth,
+            'año' => $this->reportYear,
+            'tipo' => $this->tipoActivo,
+            'municipio_id' => $this->reportMunicipioId
+        ]));
     }
 
     private function resetInputFields(): void
