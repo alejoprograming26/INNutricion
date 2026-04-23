@@ -202,10 +202,33 @@
          Tabla
     ═══════════════════════════════════════════════════ --}}
     <flux:card class="shadow-sm mb-6">
-        <div class="mb-4">
-            <flux:input wire:model.live="search" icon="magnifying-glass"
-                placeholder="Buscar por nombre, responsable, municipio, parroquia, sector o comuna..."
-                class="w-full md:w-1/2" />
+        <div class="mb-4 flex flex-col lg:flex-row gap-4 items-center justify-between bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700">
+            <div class="w-full lg:w-1/3">
+                <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
+                    placeholder="Buscar registro..." />
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-zinc-500">Desde:</span>
+                    <flux:input type="date" wire:model.live="dateFrom" class="w-36" />
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-zinc-500">Hasta:</span>
+                    <flux:input type="date" wire:model.live="dateTo" class="w-36" />
+                </div>
+                <div class="h-6 w-px bg-zinc-300 dark:bg-zinc-600 hidden sm:block"></div>
+                
+                @if($search !== '' || $dateFrom !== '' || $dateTo !== '')
+                    <flux:button wire:click="clearFilters" size="sm" variant="danger" icon="x-mark">
+                        Limpiar
+                    </flux:button>
+                @endif
+                
+                <flux:button wire:click="toggleSort" size="sm" variant="subtle" icon="{{ $sortDirection === 'desc' ? 'bars-arrow-down' : 'bars-arrow-up' }}">
+                    {{ $sortDirection === 'desc' ? 'Recientes' : 'Antiguos' }}
+                </flux:button>
+            </div>
         </div>
 
         <div class="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700">

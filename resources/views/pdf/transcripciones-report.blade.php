@@ -290,7 +290,7 @@
             <thead>
                 <tr>
                     <th width="40%">Ubicación Geográfica (Mun / Parr / Com / Sector)</th>
-                    <th width="20%" class="text-right">Cantidad de Registros</th>
+                    <th width="20%" class="text-right">Suma de Cantidades (Total)</th>
                     @if($esSugima)
                         <th width="20%" class="text-right col-ingreso">Ingresos</th>
                         <th width="20%" class="text-right col-egreso">Egresos</th>
@@ -360,7 +360,7 @@
                     <th colspan="2" class="text-center" style="background-color: #e5e7eb;">GRAN TOTAL DEL MES</th>
                 </tr>
                 <tr>
-                    <th>Total Registros (Cantidad)</th>
+                    <th>Gran Total (Suma de Cantidades)</th>
                     <td>{{ number_format($totalesGenerales['cantidad'], 0, ',', '.') }}</td>
                 </tr>
                 @if($esSugima)

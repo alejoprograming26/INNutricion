@@ -126,6 +126,10 @@
 /* ── FullCalendar Custom Styles (Dark Mode Support) ── */
 .fc {
     font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+    --fc-page-bg-color: transparent; /* Evita fondo blanco por defecto */
+    --fc-neutral-bg-color: #f4f4f5;
+    --fc-list-event-hover-bg-color: #fafafa;
+    --fc-today-bg-color: #f7fee7;
 }
 
 .fc .fc-toolbar-title {
@@ -317,6 +321,13 @@
 
 /* ===== DARK MODE: Textos restantes ===== */
 .dark .fc {
+    --fc-page-bg-color: transparent;
+    --fc-neutral-bg-color: #18181b;
+    --fc-neutral-text-color: #a1a1aa;
+    --fc-border-color: #27272a;
+    --fc-today-bg-color: rgba(132, 204, 22, 0.08);
+    --fc-list-event-hover-bg-color: #27272a;
+    --fc-highlight-color: rgba(255, 255, 255, 0.05);
     color: #d4d4d8 !important;
 }
 

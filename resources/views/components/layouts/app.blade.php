@@ -25,6 +25,20 @@
         }
         applyTheme();
         document.addEventListener('livewire:navigated', applyTheme);
+
+        // Prevenir que Livewire elimine la clase 'dark' del <html> durante wire:navigate (FOUC en calendario)
+        new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    const isDark = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                    if (isDark && !document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.add('dark');
+                    } else if (!isDark && document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                    }
+                }
+            });
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     </script>
 </head>
 

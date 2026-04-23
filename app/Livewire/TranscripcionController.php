@@ -19,8 +19,11 @@ class TranscripcionController extends Component
 
     public string $tipoActivo = 'VULNERABILIDAD';
 
-    // ── Búsqueda ──────────────────────────────────────────────────────────────
+    // ── Búsqueda y Filtros ────────────────────────────────────────────────────
     public string $search = '';
+    public string $dateFrom = '';
+    public string $dateTo = '';
+    public string $sortDirection = 'desc';
 
     // ── Campos del formulario ─────────────────────────────────────────────────
     public ?int    $transcripcion_id = null;
@@ -91,6 +94,28 @@ class TranscripcionController extends Component
 
     public function updatingSearch(): void
     {
+        $this->resetPage();
+    }
+
+    public function updatedDateFrom(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedDateTo(): void
+    {
+        $this->resetPage();
+    }
+
+    public function toggleSort(): void
+    {
+        $this->sortDirection = $this->sortDirection === 'desc' ? 'asc' : 'desc';
+        $this->resetPage();
+    }
+
+    public function clearFilters(): void
+    {
+        $this->reset(['search', 'dateFrom', 'dateTo']);
         $this->resetPage();
     }
 
@@ -364,15 +389,19 @@ class TranscripcionController extends Component
         // Paginated records
         $transcripciones = (clone $queryBase)
             ->with(['municipio','parroquia','sector','comuna'])
-            ->where(function ($q) {
-                $q->where('observacion', 'like', '%' . $this->search . '%')
-                  ->orWhere('responsable', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('municipio', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
-                  ->orWhereHas('parroquia', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
-                  ->orWhereHas('sector', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
-                  ->orWhereHas('comuna', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'));
+            ->when($this->search, function ($q) {
+                $q->where(function ($q1) {
+                    $q1->where('observacion', 'like', '%' . $this->search . '%')
+                      ->orWhere('responsable', 'like', '%' . $this->search . '%')
+                      ->orWhereHas('municipio', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
+                      ->orWhereHas('parroquia', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
+                      ->orWhereHas('sector', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
+                      ->orWhereHas('comuna', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'));
+                });
             })
-            ->orderByDesc('fecha')
+            ->when($this->dateFrom, fn($q) => $q->whereDate('fecha', '>=', $this->dateFrom))
+            ->when($this->dateTo, fn($q) => $q->whereDate('fecha', '<=', $this->dateTo))
+            ->orderBy('fecha', $this->sortDirection)
             ->paginate(10);
 
         return view('livewire.transcripcion.transcripcion-index', [

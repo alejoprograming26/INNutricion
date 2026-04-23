@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
          // User::factory(10)->create();
         $this->call(RoleSeeder::class);
         $this->call(EstadoLaraSeeder::class);
+        $this->call(ComunasSectoresTestDataSeeder::class);
+        $this->call(TranscripcionesTestDataSeeder::class);
 
        Ajuste::create([
         "nombre"=> "INNutricion",
