@@ -24,7 +24,8 @@
 - **Sistema de Metas**: Planeación anual de metas nutricionales, desglosadas mensual y municipalmente.
 - **Roles y Permisos**: Control de acceso robusto basado en roles y permisos específicos para diferentes niveles operativos.
 - **Optimización de Rendimiento**: Uso crítico de un sistema de caché en memoria (`Cache::rememberForever`) para mitigar la latencia de peticiones hacia la base de datos remota.
-- **Interfaz Moderna y Responsiva**: Diseño estético, temas claro/oscuro integrados y una experiencia UX de alto nivel impulsada por Flux UI.
+- **Dashboard Analítico Interactivo**: Visualización avanzada de datos mediante gráficos dinámicos que se adaptan en tiempo real al filtrar por tipo de reporte, municipio, mes y año, permitiendo una toma de decisiones basada en datos.
+- **Interfaz Moderna y Responsiva**: Diseño estético con **Tematización Dinámica** (colores que cambian según el módulo), temas claro/oscuro integrados y una experiencia UX de alto nivel impulsada por Flux UI.
 
 ---
 
@@ -44,6 +45,7 @@ El sistema está construido bajo la arquitectura **TALL Stack** más moderna:
 - **Estilos**: [Tailwind CSS 4](https://tailwindcss.com/)
 - **Interactividad local**: [Alpine.js](https://alpinejs.dev/)
 - **Alertas y Feedbacks**: [SweetAlert2](https://sweetalert2.github.io/)
+- **Visualización de Datos**: [Chart.js](https://www.chartjs.org/) (Integración SPA via Livewire)
 
 ---
 
@@ -55,6 +57,17 @@ Para garantizar la inmediatez en los reportes estadísticos a gran escala, la ba
 - **Cascade Rules**: Todas las dependencias estructurales aseguran integridad referencial absoluta (`ON DELETE CASCADE`).
 
 *(Para más detalles técnicos sobre base de datos, referirse a `DATABASE_GUIDELINES.md` en la raíz del proyecto).*
+
+---
+
+## 📊 Módulo de Analítica y Gráficos
+
+El sistema cuenta con un motor de reportes gráficos de alto rendimiento diseñado para proporcionar una visión clara de los indicadores nutricionales:
+
+- **Visualización Multi-Nivel**: Desglose automático de cantidades por Parroquias, Comunas y Sectores, además de una línea de tendencia diaria.
+- **Filtrado Inteligente**: Capacidad de cambiar el mes y el año directamente desde el dashboard con actualización instantánea de los gráficos mediante eventos de Livewire.
+- **Motor de Tematización**: El dashboard adapta sus colores (Rose, Blue, Emerald, Amber, etc.) de forma dinámica según el tipo de transcripción consultada para mantener la coherencia visual con el resto del sistema.
+- **Optimización SPA**: Integración técnica mediante `@script` y `wire:navigate` para asegurar que los gráficos se destruyan y reconstruyan correctamente durante la navegación entre módulos, evitando fugas de memoria o errores de renderizado.
 
 ---
 
