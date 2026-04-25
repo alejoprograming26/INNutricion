@@ -47,7 +47,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         
         {{-- Total Cantidad --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] relative overflow-hidden group">
             <div class="absolute -right-6 -top-6 w-24 h-24 bg-{{ $colorThemaTw }}-500/10 rounded-full blur-2xl group-hover:bg-{{ $colorThemaTw }}-500/20 transition-all duration-500"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
@@ -64,7 +64,7 @@
         </div>
 
         {{-- Total Registros --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] relative overflow-hidden group">
             <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all duration-500"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
@@ -79,7 +79,7 @@
         </div>
 
         {{-- Promedio Diario --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] relative overflow-hidden group">
             <div class="absolute -right-6 -top-6 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all duration-500"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
@@ -94,7 +94,7 @@
         </div>
 
         {{-- Sugima (Ingresos/Egresos) o Placeholder --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] relative overflow-hidden group">
             <div class="absolute -right-6 -top-6 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition-all duration-500"></div>
             <div class="flex justify-between items-start relative z-10">
                 @if($esSugima)
@@ -130,7 +130,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         
         {{-- Gráfico de Dona: Parroquias --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm col-span-1 flex flex-col">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] col-span-1 flex flex-col">
             <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider mb-4 flex items-center gap-2">
                 <flux:icon.map class="w-4 h-4 text-{{ $colorThemaTw }}-500" />
                 Distribución por Parroquia
@@ -141,7 +141,7 @@
         </div>
 
         {{-- Gráfico de Líneas: Tendencia por Días --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm col-span-1 lg:col-span-2 flex flex-col">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] col-span-1 lg:col-span-2 flex flex-col">
             <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider mb-4 flex items-center gap-2">
                 <flux:icon.chart-bar-square class="w-4 h-4 text-{{ $colorThemaTw }}-500" />
                 Actividad por Día ({{ $nombreMes }})
@@ -157,7 +157,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         
         {{-- Gráfico de Barras: Comunas --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex flex-col">
             <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider mb-4 flex items-center gap-2">
                 <flux:icon.building-office class="w-4 h-4 text-{{ $colorThemaTw }}-500" />
                 Comunas Activas
@@ -168,7 +168,7 @@
         </div>
 
         {{-- Gráfico de Barras Horizontales: Sectores --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex flex-col">
             <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider mb-4 flex items-center gap-2">
                 <flux:icon.map-pin class="w-4 h-4 text-{{ $colorThemaTw }}-500" />
                 Sectores Activos
@@ -203,27 +203,159 @@
 
             // Determinar colores según el modo actual
             const isDarkMode = document.documentElement.classList.contains('dark');
-            const textColor = isDarkMode ? '#a1a1aa' : '#52525b';
-            const gridColor = isDarkMode ? '#27272a' : '#e4e4e7';
-            const tooltipBg = isDarkMode ? 'rgba(24, 24, 27, 0.9)' : 'rgba(255, 255, 255, 0.9)';
-            const tooltipText = isDarkMode ? '#fff' : '#18181b';
-            const tooltipBorder = isDarkMode ? '#3f3f46' : '#e4e4e7';
+            const textColor = isDarkMode ? '#a1a1aa' : '#71717a';
+            const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)';
             const cardBg = isDarkMode ? '#18181b' : '#ffffff';
 
             Chart.defaults.color = textColor;
-            Chart.defaults.borderColor = gridColor;
-            Chart.defaults.font.family = 'Inter, ui-sans-serif, system-ui, sans-serif';
+            Chart.defaults.font.family = '"Inter", "Geist", ui-sans-serif, system-ui, sans-serif';
             
-            const tooltipOptions = {
-                backgroundColor: tooltipBg,
-                titleColor: tooltipText,
-                bodyColor: tooltipText,
-                borderColor: tooltipBorder,
-                borderWidth: 1,
-                padding: 12,
-                cornerRadius: 8,
-                displayColors: true,
-                boxPadding: 4,
+            // Animaciones fluidas
+            Chart.defaults.animation = {
+                duration: 1000,
+                easing: 'easeInOutQuart'
+            };
+            
+            // Tooltip Custom HTML
+            const getOrCreateTooltip = (chart) => {
+                let tooltipEl = chart.canvas.parentNode.querySelector('div.custom-tooltip');
+                if (!tooltipEl) {
+                    tooltipEl = document.createElement('div');
+                    tooltipEl.classList.add('custom-tooltip');
+                    tooltipEl.style.background = isDarkMode ? 'rgba(24, 24, 27, 0.95)' : 'rgba(255, 255, 255, 0.95)';
+                    tooltipEl.style.backdropFilter = 'blur(8px)';
+                    tooltipEl.style.borderRadius = '12px';
+                    tooltipEl.style.color = isDarkMode ? '#fff' : '#18181b';
+                    tooltipEl.style.opacity = 1;
+                    tooltipEl.style.pointerEvents = 'none';
+                    tooltipEl.style.position = 'absolute';
+                    tooltipEl.style.transform = 'translate(-50%, -110%)';
+                    tooltipEl.style.transition = 'opacity 0.15s ease';
+                    tooltipEl.style.boxShadow = isDarkMode ? '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3)' : '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)';
+                    tooltipEl.style.border = isDarkMode ? '1px solid #3f3f46' : '1px solid #e4e4e7';
+                    tooltipEl.style.zIndex = 50;
+
+                    const table = document.createElement('table');
+                    table.style.margin = '0px';
+                    tooltipEl.appendChild(table);
+                    chart.canvas.parentNode.appendChild(tooltipEl);
+                }
+                return tooltipEl;
+            };
+
+            const externalTooltipHandler = (context) => {
+                const {chart, tooltip} = context;
+                const tooltipEl = getOrCreateTooltip(chart);
+
+                if (tooltip.opacity === 0) {
+                    tooltipEl.style.opacity = 0;
+                    return;
+                }
+
+                if (tooltip.body) {
+                    const titleLines = tooltip.title || [];
+                    const bodyLines = tooltip.body.map(b => b.lines);
+
+                    const tableRoot = tooltipEl.querySelector('table');
+                    while (tableRoot.firstChild) {
+                        tableRoot.firstChild.remove();
+                    }
+
+                    const tableHead = document.createElement('thead');
+                    titleLines.forEach(title => {
+                        const tr = document.createElement('tr');
+                        tr.style.borderWidth = 0;
+                        const th = document.createElement('th');
+                        th.style.borderWidth = 0;
+                        th.style.padding = '12px 16px 8px 16px';
+                        th.style.textAlign = 'left';
+                        th.style.fontWeight = '600';
+                        th.style.fontSize = '12px';
+                        th.style.textTransform = 'uppercase';
+                        th.style.letterSpacing = '0.05em';
+                        th.style.color = isDarkMode ? '#a1a1aa' : '#71717a';
+                        th.appendChild(document.createTextNode(title));
+                        tr.appendChild(th);
+                        tableHead.appendChild(tr);
+                    });
+
+                    const tableBody = document.createElement('tbody');
+                    bodyLines.forEach((body, i) => {
+                        const colors = tooltip.labelColors[i];
+
+                        const span = document.createElement('span');
+                        span.style.background = colors.backgroundColor;
+                        span.style.borderColor = colors.borderColor;
+                        span.style.borderWidth = '2px';
+                        span.style.marginRight = '10px';
+                        span.style.height = '12px';
+                        span.style.width = '12px';
+                        span.style.borderRadius = '50%';
+                        span.style.display = 'inline-block';
+                        span.style.boxShadow = '0 0 0 1px rgba(255,255,255,0.1) inset';
+
+                        const tr = document.createElement('tr');
+                        tr.style.backgroundColor = 'inherit';
+                        tr.style.borderWidth = 0;
+
+                        const td = document.createElement('td');
+                        td.style.borderWidth = 0;
+                        td.style.padding = titleLines.length ? '0px 16px 12px 16px' : '12px 16px 12px 16px';
+                        td.style.display = 'flex';
+                        td.style.alignItems = 'center';
+                        td.style.fontSize = '14px';
+                        td.style.fontWeight = '600';
+
+                        td.appendChild(span);
+                        td.appendChild(document.createTextNode(body));
+                        tr.appendChild(td);
+                        tableBody.appendChild(tr);
+                    });
+
+                    if (titleLines.length) tableRoot.appendChild(tableHead);
+                    tableRoot.appendChild(tableBody);
+                }
+
+                const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
+                tooltipEl.style.opacity = 1;
+                tooltipEl.style.left = positionX + tooltip.caretX + 'px';
+                tooltipEl.style.top = positionY + tooltip.caretY + 'px';
+            };
+
+            const baseOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                            font: {
+                                family: 'Inter, sans-serif',
+                                weight: '500',
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        enabled: false,
+                        position: 'nearest',
+                        external: externalTooltipHandler
+                    }
+                }
+            };
+
+            const gridOptions = {
+                color: gridColor,
+                drawBorder: false,
+                drawTicks: false,
             };
 
             const palette = [
@@ -242,19 +374,32 @@
                         datasets: [{
                             data: datosParroquias.map(d => d.total),
                             backgroundColor: palette,
-                            borderWidth: 2,
-                            borderColor: cardBg,
+                            borderWidth: 0,
                             hoverOffset: 4
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        ...baseOptions,
                         plugins: {
-                            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
-                            tooltip: tooltipOptions
+                            ...baseOptions.plugins,
+                            legend: {
+                                position: 'right',
+                                align: 'center',
+                                labels: {
+                                    usePointStyle: true,
+                                    pointStyle: 'circle',
+                                    padding: 20,
+                                    font: { family: 'Inter, sans-serif', weight: '500', size: 12 }
+                                }
+                            }
                         },
-                        cutout: '75%'
+                        cutout: '75%',
+                        elements: {
+                            arc: {
+                                borderRadius: 4,
+                                borderJoinStyle: 'round'
+                            }
+                        }
                     }
                 });
             }
@@ -273,7 +418,7 @@
 
                 const ctx = ctxDias.getContext('2d');
                 const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.5)`);
+                gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.4)`);
                 gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
 
                 charts.dias = new Chart(ctx, {
@@ -281,27 +426,33 @@
                     data: {
                         labels: labelsDias,
                         datasets: [{
-                            label: 'Cantidades',
+                            label: 'Procesado',
                             data: dataDiasCompletos,
                             borderColor: themeHex,
                             backgroundColor: gradient,
                             borderWidth: 3,
                             fill: true,
-                            tension: 0.4,
+                            tension: 0.4, // Curvas suaves
                             pointBackgroundColor: cardBg,
                             pointBorderColor: themeHex,
                             pointBorderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
+                            pointRadius: 0, // Ocultar por defecto
+                            pointHoverRadius: 6, // Mostrar en hover
+                            hitRadius: 10
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false }, tooltip: tooltipOptions },
+                        ...baseOptions,
                         scales: {
-                            y: { beginAtZero: true },
-                            x: { grid: { display: false } }
+                            y: { 
+                                beginAtZero: true,
+                                grid: gridOptions,
+                                border: { display: false }
+                            },
+                            x: { 
+                                grid: { display: false },
+                                border: { display: false }
+                            }
                         }
                     }
                 });
@@ -310,26 +461,44 @@
             // 3. Gráfico de Barras (Comunas)
             const ctxComunas = document.getElementById('comunasChart');
             if(ctxComunas && datosComunas.length > 0) {
+                
+                const ctx = ctxComunas.getContext('2d');
+                let hex = themeHex.replace('#', '');
+                let r = parseInt(hex.substring(0,2), 16);
+                let g = parseInt(hex.substring(2,4), 16);
+                let b = parseInt(hex.substring(4,6), 16);
+                
+                const barGradient = ctx.createLinearGradient(400, 0, 0, 0);
+                barGradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 1)`);
+                barGradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.6)`);
+
                 charts.comunas = new Chart(ctxComunas, {
                     type: 'bar',
                     data: {
                         labels: datosComunas.map(d => d.nombre.length > 15 ? d.nombre.substring(0,15)+'...' : d.nombre),
                         datasets: [{
-                            label: 'Cantidades',
+                            label: 'Procesado',
                             data: datosComunas.map(d => d.total),
-                            backgroundColor: themeHex,
+                            backgroundColor: barGradient,
                             borderRadius: 6,
-                            barPercentage: 0.6
+                            borderSkipped: false,
+                            barPercentage: 0.5
                         }]
                     },
                     options: {
+                        ...baseOptions,
+                        interaction: { mode: 'nearest', axis: 'y', intersect: false },
                         indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false }, tooltip: tooltipOptions },
                         scales: {
-                            x: { beginAtZero: true },
-                            y: { grid: { display: false } }
+                            x: { 
+                                beginAtZero: true,
+                                grid: gridOptions,
+                                border: { display: false }
+                            },
+                            y: { 
+                                grid: { display: false },
+                                border: { display: false }
+                            }
                         }
                     }
                 });
@@ -338,26 +507,39 @@
             // 4. Gráfico Horizontal (Sectores)
             const ctxSectores = document.getElementById('sectoresChart');
             if(ctxSectores && datosSectores.length > 0) {
+                
+                const ctx = ctxSectores.getContext('2d');
+                const barGradientAlt = ctx.createLinearGradient(400, 0, 0, 0);
+                barGradientAlt.addColorStop(0, '#3b82f6');
+                barGradientAlt.addColorStop(1, 'rgba(59, 130, 246, 0.6)');
+
                 charts.sectores = new Chart(ctxSectores, {
                     type: 'bar',
                     data: {
                         labels: datosSectores.map(d => d.nombre.length > 20 ? d.nombre.substring(0,20)+'...' : d.nombre),
                         datasets: [{
-                            label: 'Cantidades',
+                            label: 'Procesado',
                             data: datosSectores.map(d => d.total),
-                            backgroundColor: '#3b82f6', // blue-500 para contraste
+                            backgroundColor: barGradientAlt,
                             borderRadius: 6,
-                            barPercentage: 0.7
+                            borderSkipped: false,
+                            barPercentage: 0.6
                         }]
                     },
                     options: {
+                        ...baseOptions,
+                        interaction: { mode: 'nearest', axis: 'y', intersect: false },
                         indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false }, tooltip: tooltipOptions },
                         scales: {
-                            x: { beginAtZero: true },
-                            y: { grid: { display: false } }
+                            x: { 
+                                beginAtZero: true,
+                                grid: gridOptions,
+                                border: { display: false }
+                            },
+                            y: { 
+                                grid: { display: false },
+                                border: { display: false }
+                            }
                         }
                     }
                 });

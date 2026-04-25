@@ -714,4 +714,16 @@
             </div>
         </div>
     @endif
+
+    @script
+    <script>
+        $wire.on('open-url-in-new-tab', (event) => {
+            if (event.url) {
+                window.open(event.url, '_blank');
+            } else if (event[0] && event[0].url) {
+                window.open(event[0].url, '_blank');
+            }
+        });
+    </script>
+    @endscript
 </div>

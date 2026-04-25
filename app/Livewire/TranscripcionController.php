@@ -322,12 +322,15 @@ class TranscripcionController extends Component
 
     public function viewPdf()
     {
-        return $this->redirect(route('admin.transcripciones.pdf', [
+        $url = route('admin.transcripciones.pdf', [
             'mes' => $this->reportMonth,
             'año' => $this->reportYear,
             'tipo' => $this->tipoActivo,
             'municipio_id' => $this->reportMunicipioId
-        ]));
+        ]);
+
+        $this->dispatch('open-url-in-new-tab', url: $url);
+        $this->closeReportModal();
     }
 
     private function resetInputFields(): void
