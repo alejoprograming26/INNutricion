@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\TranscripcionObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,14 @@ class Transcripcion extends Model
     use HasFactory;
 
     protected $table = 'transcripciones';
+
+    /**
+     * Registrar el observer para invalidación automática de caché.
+     */
+    protected static function booted(): void
+    {
+        static::observe(TranscripcionObserver::class);
+    }
 
     protected $fillable = [
         'observacion',
@@ -26,7 +35,10 @@ class Transcripcion extends Model
     ];
 
     protected $casts = [
-        'fecha' => 'date',
+        'fecha'    => 'date',
+        'cantidad' => 'integer',
+        'ingreso'  => 'integer',
+        'egreso'   => 'integer',
     ];
 
     // Tipos disponibles

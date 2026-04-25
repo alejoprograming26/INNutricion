@@ -101,113 +101,75 @@
     {{-- ═══════════════════════════════════════════════════
          Cards de Resumen
     ═══════════════════════════════════════════════════ --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-
-        {{-- TOTAL ANUAL --}}
-        <flux:card class="overflow-hidden min-w-[12rem] flex flex-col justify-between p-0 sm:p-0">
-            <div class="px-6 pt-6 flex justify-between items-start">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {{-- Total Anual --}}
+        <div class="bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 rounded-2xl p-6 shadow-lg shadow-indigo-500/20 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
+            <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <flux:text class="uppercase text-xs font-bold tracking-wider text-zinc-500">TOTAL ANUAL</flux:text>
-                    <flux:heading size="xl" class="mt-1 tabular-nums pb-2">{{ number_format($totalAnual) }}
-                    </flux:heading>
+                    <p class="text-xs font-bold text-sky-50 uppercase tracking-widest mb-1 opacity-90">Total Anual</p>
+                    <h3 class="text-3xl font-black text-white tabular-nums drop-shadow-sm">{{ number_format($totalAnual) }}</h3>
                 </div>
-                <div class="p-2 bg-sky-100 dark:bg-sky-900/40 rounded-lg">
-                    <flux:icon.chart-pie class="w-5 h-5 text-sky-600 dark:text-sky-400" />
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
+                    <flux:icon.calendar-days class="w-5 h-5 text-white drop-shadow-sm" />
                 </div>
             </div>
-            <div class="-mx-0 -mb-0 h-[3rem]">
-                <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-                    <polygon fill="currentColor" class="text-sky-100 dark:text-sky-400/30"
-                        points="0,100 0,60 15,50 30,70 45,30 60,40 75,20 90,30 100,10 100,100" />
-                    <polyline fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"
-                        class="text-sky-300 dark:text-sky-400"
-                        points="0,60 15,50 30,70 45,30 60,40 75,20 90,30 100,10" />
-                </svg>
-            </div>
-        </flux:card>
+        </div>
 
-        {{-- TOTAL MES --}}
-        <flux:card class="overflow-hidden min-w-[12rem] flex flex-col justify-between p-0 sm:p-0">
-            <div class="px-6 pt-6 flex justify-between items-start">
+        {{-- Total Mes --}}
+        <div class="bg-gradient-to-br from-teal-400 via-emerald-500 to-emerald-600 rounded-2xl p-6 shadow-lg shadow-emerald-500/20 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
+            <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <flux:text class="uppercase text-xs font-bold tracking-wider text-zinc-500">TOTAL MES</flux:text>
-                    <flux:heading size="xl" class="mt-1 tabular-nums pb-2">{{ number_format($totalMes) }}
-                    </flux:heading>
+                    <p class="text-xs font-bold text-emerald-50 uppercase tracking-widest mb-1 opacity-90">Total Mes</p>
+                    <h3 class="text-3xl font-black text-white tabular-nums drop-shadow-sm">{{ number_format($totalMes) }}</h3>
                 </div>
-                <div class="p-2 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg">
-                    <flux:icon.chart-bar class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
+                    <flux:icon.chart-pie class="w-5 h-5 text-white drop-shadow-sm" />
                 </div>
             </div>
-            <div class="-mx-0 -mb-0 h-[3rem]">
-                <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-                    <polygon fill="currentColor" class="text-emerald-100 dark:text-emerald-400/30"
-                        points="0,100 0,80 15,60 30,65 45,40 60,50 75,30 90,10 100,20 100,100" />
-                    <polyline fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"
-                        class="text-emerald-300 dark:text-emerald-400"
-                        points="0,80 15,60 30,65 45,40 60,50 75,30 90,10 100,20" />
-                </svg>
-            </div>
-        </flux:card>
+        </div>
 
-        {{-- TOTAL SEMANA --}}
-        <flux:card class="overflow-hidden min-w-[12rem] flex flex-col justify-between p-0 sm:p-0">
-            <div class="px-6 pt-6 flex justify-between items-start">
+        {{-- Total Semana --}}
+        <div class="bg-gradient-to-br from-violet-400 via-purple-500 to-fuchsia-600 rounded-2xl p-6 shadow-lg shadow-fuchsia-500/20 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
+            <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <flux:text class="uppercase text-xs font-bold tracking-wider text-zinc-500">TOTAL SEMANA</flux:text>
-                    <flux:heading size="xl" class="mt-1 tabular-nums pb-2">{{ number_format($totalSemana) }}
-                    </flux:heading>
+                    <p class="text-xs font-bold text-fuchsia-50 uppercase tracking-widest mb-1 opacity-90">Total Semana</p>
+                    <h3 class="text-3xl font-black text-white tabular-nums drop-shadow-sm">{{ number_format($totalSemana) }}</h3>
                 </div>
-                <div class="p-2 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
-                    <flux:icon.arrow-trending-up class="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
+                    <flux:icon.bolt class="w-5 h-5 text-white drop-shadow-sm" />
                 </div>
             </div>
-            <div class="-mx-0 -mb-0 h-[3rem]">
-                <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-                    <polygon fill="currentColor" class="text-violet-100 dark:text-violet-400/30"
-                        points="0,100 0,50 15,60 30,30 45,45 60,20 75,30 90,10 100,20 100,100" />
-                    <polyline fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"
-                        class="text-violet-300 dark:text-violet-400"
-                        points="0,50 15,60 30,30 45,45 60,20 75,30 90,10 100,20" />
-                </svg>
-            </div>
-        </flux:card>
+        </div>
 
-        {{-- CANTIDAD TRANSC. MES --}}
-        <flux:card class="overflow-hidden min-w-[12rem] flex flex-col justify-between p-0 sm:p-0">
-            <div class="px-6 pt-6 flex justify-between items-start">
+        {{-- Registros Mes --}}
+        <div class="bg-gradient-to-br from-rose-400 via-pink-500 to-red-600 rounded-2xl p-6 shadow-lg shadow-red-500/20 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
+            <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <flux:text class="uppercase text-xs font-bold tracking-wider text-zinc-500 line-clamp-1">TRANSC.
-                        (MES)</flux:text>
-                    <flux:heading size="xl" class="mt-1 tabular-nums pb-2">{{ number_format($transcripcionesMes) }}
-                    </flux:heading>
+                    <p class="text-xs font-bold text-rose-50 uppercase tracking-widest mb-1 opacity-90">Registros (Mes)</p>
+                    <h3 class="text-3xl font-black text-white tabular-nums drop-shadow-sm">{{ number_format($transcripcionesMes) }}</h3>
                 </div>
-                <div class="p-2 bg-rose-100 dark:bg-rose-900/40 rounded-lg">
-                    <flux:icon.document-text class="w-5 h-5 text-rose-600 dark:text-rose-400" />
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
+                    <flux:icon.document-check class="w-5 h-5 text-white drop-shadow-sm" />
                 </div>
             </div>
-            <div class="-mx-0 -mb-0 h-[3rem]">
-                <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-                    <polygon fill="currentColor" class="text-rose-100 dark:text-rose-400/30"
-                        points="0,100 0,70 15,80 30,40 45,60 60,20 75,40 90,5 100,10 100,100" />
-                    <polyline fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"
-                        class="text-rose-300 dark:text-rose-400"
-                        points="0,70 15,80 30,40 45,60 60,20 75,40 90,5 100,10" />
-                </svg>
-            </div>
-        </flux:card>
-
+        </div>
     </div>
 
     {{-- ═══════════════════════════════════════════════════
          Tabla
     ═══════════════════════════════════════════════════ --}}
     <flux:card class="shadow-sm mb-6">
-        <div class="mb-4 flex flex-col lg:flex-row gap-4 items-center justify-between bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700">
+        <div
+            class="mb-4 flex flex-col lg:flex-row gap-4 items-center justify-between bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700">
             <div class="w-full lg:w-1/3">
                 <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
                     placeholder="Buscar registro..." />
             </div>
-            
+
             <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                 <div class="flex items-center gap-2">
                     <span class="text-sm font-medium text-zinc-500">Desde:</span>
@@ -218,107 +180,106 @@
                     <flux:input type="date" wire:model.live="dateTo" class="w-36" />
                 </div>
                 <div class="h-6 w-px bg-zinc-300 dark:bg-zinc-600 hidden sm:block"></div>
-                
-                @if($search !== '' || $dateFrom !== '' || $dateTo !== '')
+
+                @if ($search !== '' || $dateFrom !== '' || $dateTo !== '')
                     <flux:button wire:click="clearFilters" size="sm" variant="danger" icon="x-mark">
                         Limpiar
                     </flux:button>
                 @endif
-                
-                <flux:button wire:click="toggleSort" size="sm" variant="subtle" icon="{{ $sortDirection === 'desc' ? 'bars-arrow-down' : 'bars-arrow-up' }}">
+
+                <flux:button wire:click="toggleSort" size="sm" variant="subtle"
+                    icon="{{ $sortDirection === 'desc' ? 'bars-arrow-down' : 'bars-arrow-up' }}">
                     {{ $sortDirection === 'desc' ? 'Recientes' : 'Antiguos' }}
                 </flux:button>
             </div>
         </div>
 
-        <div class="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700">
+        <div class="overflow-x-auto">
             <table class="w-full text-sm text-left text-zinc-600 dark:text-zinc-400">
-                <thead
-                    class="bg-zinc-50 dark:bg-zinc-800/50 text-xs uppercase font-semibold text-zinc-700 dark:text-zinc-300 border-b border-zinc-200 dark:border-zinc-700">
-                    <tr class="text-center">
-                        <th class="px-3 py-3 w-10">#</th>
-                        <th class="px-3 py-3 text-left">Observación</th>
-                        <th class="px-3 py-3">Responsable</th>
-                        <th class="px-3 py-3">Fecha</th>
-                        <th class="px-3 py-3">Municipio</th>
-                        <th class="px-3 py-3">Parroquia</th>
-                        <th class="px-3 py-3">Comuna</th>
-                        <th class="px-3 py-3">Sector</th>
-                        <th class="px-3 py-3">Cantidad</th>
-                        @if ($esSugima)
-                            <th class="px-3 py-3">Ingreso</th>
-                            <th class="px-3 py-3">Egreso</th>
-                        @endif
-                        <th class="px-3 py-3">Acciones</th>
+                <thead class="bg-white dark:bg-zinc-900 text-xs uppercase font-semibold text-zinc-500 border-b border-zinc-200 dark:border-zinc-800">
+                    <tr>
+                        <th class="px-6 py-4 w-12 text-center">#</th>
+                        <th class="px-6 py-4">Información del Registro</th>
+                        <th class="px-6 py-4">Ubicación Geográfica</th>
+                        <th class="px-6 py-4 text-center">Cantidades</th>
+                        <th class="px-6 py-4 text-right">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/50 bg-white dark:bg-zinc-900">
                     @forelse($transcripciones as $t)
-                        <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors text-center">
-                            <td class="px-3 py-3 font-medium text-zinc-500">
+                        <tr class="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50 transition-colors group">
+                            <td class="px-6 py-4 text-center font-medium text-zinc-400">
                                 {{ ($transcripciones->currentPage() - 1) * $transcripciones->perPage() + $loop->iteration }}
                             </td>
-                            <td class="px-3 py-3 text-left font-medium text-zinc-800 dark:text-zinc-100 line-clamp-1" title="{{ $t->observacion }}">
-                                {{ $t->observacion ?? '—' }}
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-500/20 text-blue-600 dark:text-blue-400">
+                                        <flux:icon.document-text class="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-zinc-800 dark:text-zinc-100 line-clamp-1" title="{{ $t->observacion }}">
+                                            {{ $t->observacion ?? 'Registro de Transcripción' }}
+                                        </p>
+                                        <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
+                                            Por <span class="text-zinc-700 dark:text-zinc-300">{{ $t->responsable }}</span> &bull; {{ \Carbon\Carbon::parse($t->fecha)->format('d \d\e F, Y') }}
+                                        </p>
+                                    </div>
+                                </div>
                             </td>
-                            <td class="px-3 py-3 text-zinc-600 dark:text-zinc-300">
-                                {{ $t->responsable }}
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col gap-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                        <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $t->municipio->nombre }}</span>
+                                        <span class="text-zinc-400 text-xs">&bull;</span>
+                                        <span class="text-zinc-600 dark:text-zinc-400 text-xs">{{ $t->parroquia->nombre }}</span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                                        <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-500/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                                            <flux:icon.building-office-2 class="w-3.5 h-3.5" />
+                                            <span>{{ $t->comuna->nombre }}</span>
+                                        </div>
+                                        <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-200/60 dark:border-sky-500/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                                            <flux:icon.map-pin class="w-3.5 h-3.5" />
+                                            <span>{{ $t->sector->nombre }}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
-                            <td class="px-3 py-3 whitespace-nowrap">
-                                <flux:badge size="sm" color="zinc">
-                                    {{ $t->fecha->format('d/m/Y') }}
-                                </flux:badge>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col items-center justify-center gap-1.5">
+                                    @if ($esSugima)
+                                        <div class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-black border border-emerald-100 dark:border-emerald-500/20 text-xs w-full max-w-[110px]" title="Ingreso">
+                                            <flux:icon.arrow-down-right class="w-3 h-3 mr-1" /> {{ $t->ingreso !== null ? number_format($t->ingreso) : '—' }}
+                                        </div>
+                                        <div class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-300 font-black border border-rose-100 dark:border-rose-500/20 text-xs w-full max-w-[110px]" title="Egreso">
+                                            <flux:icon.arrow-up-right class="w-3 h-3 mr-1" /> {{ $t->egreso !== null ? number_format($t->egreso) : '—' }}
+                                        </div>
+                                    @else
+                                        <div class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-lime-50 dark:bg-lime-500/10 text-lime-700 dark:text-lime-300 font-black border border-lime-100 dark:border-lime-500/20">
+                                            {{ number_format($t->cantidad) }}
+                                        </div>
+                                    @endif
+                                </div>
                             </td>
-                            <td class="px-3 py-3">
-                                <flux:badge size="sm" color="zinc">
-                                    {{ $t->municipio->nombre }}
-                                </flux:badge>
-                            </td>
-                            <td class="px-3 py-3">
-                                <flux:badge size="sm" color="blue">
-                                    {{ $t->parroquia->nombre }}
-                                </flux:badge>
-                            </td>
-                            <td class="px-3 py-3">
-                                <flux:badge size="sm" color="green">
-                                    {{ $t->comuna->nombre }}
-                                </flux:badge>
-                            </td>
-                            <td class="px-3 py-3">
-                                <flux:badge size="sm" color="amber">
-                                    {{ $t->sector->nombre }}
-                                </flux:badge>
-                            </td>
-                            <td class="px-3 py-3 font-semibold text-zinc-800 dark:text-zinc-100">
-                                {{ number_format($t->cantidad) }}
-                            </td>
-                            @if ($esSugima)
-                                <td class="px-3 py-3 text-green-600 dark:text-green-400 font-semibold">
-                                    {{ $t->ingreso !== null ? number_format($t->ingreso) : '—' }}
-                                </td>
-                                <td class="px-3 py-3 text-red-600 dark:text-red-400 font-semibold">
-                                    {{ $t->egreso !== null ? number_format($t->egreso) : '—' }}
-                                </td>
-                            @endif
-                            <td class="px-3 py-3">
-                                <div class="flex items-center justify-center gap-2">
-                                    <flux:button wire:click="show({{ $t->id }})" size="sm"
-                                        variant="ghost" icon="eye" class="text-zinc-500 hover:text-blue-500" />
-                                    <flux:button wire:click="edit({{ $t->id }})" size="sm"
-                                        variant="ghost" icon="pencil-square"
-                                        class="text-zinc-500 hover:text-amber-500" />
-                                    <flux:button
-                                        @click="confirmAction($wire, {{ $t->id }}, 'delete', '¿Eliminar transcripción?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')"
-                                        size="sm" variant="ghost" icon="trash"
-                                        class="text-zinc-500 hover:text-red-500" />
+                            <td class="px-6 py-4">
+                                <div class="flex items-center justify-end gap-1">
+                                    <flux:button wire:click="show({{ $t->id }})" size="sm" variant="ghost" icon="eye" class="text-zinc-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10" />
+                                    <flux:button wire:click="edit({{ $t->id }})" size="sm" variant="ghost" icon="pencil-square" class="text-zinc-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10" />
+                                    <flux:button @click="confirmAction($wire, {{ $t->id }}, 'delete', '¿Eliminar transcripción?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')" size="sm" variant="ghost" icon="trash" class="text-zinc-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10" />
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $esSugima ? 12 : 10 }}" class="px-4 py-10 text-center text-zinc-500">
-                                No se encontraron transcripciones de tipo
-                                <strong>{{ $tipoLabels[$tipoActivo] ?? $tipoActivo }}</strong>.
+                            <td colspan="5" class="px-6 py-12">
+                                <div class="flex flex-col items-center justify-center text-center">
+                                    <div class="w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-4">
+                                        <flux:icon.inbox class="w-8 h-8 text-zinc-400" />
+                                    </div>
+                                    <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200">No hay transcripciones registradas</h3>
+                                    <p class="text-xs text-zinc-500 mt-1 max-w-sm">No se encontraron transcripciones de tipo <strong>{{ $tipoLabels[$tipoActivo] ?? $tipoActivo }}</strong>.</p>
+                                </div>
                             </td>
                         </tr>
                     @endforelse
@@ -387,10 +348,16 @@
                             </td>
                             <td class="px-3 py-3">
                                 <div class="flex items-center justify-center gap-2">
-                                    <flux:button wire:click="openReportModal({{ $m->id }}, 'grafico')" size="sm" icon="chart-bar" class="!bg-violet-600 !text-white border-none hover:!bg-violet-700 font-bold" title="Ver Gráficas para {{ $m->nombre }}">
+                                    <flux:button wire:click="openReportModal({{ $m->id }}, 'grafico')"
+                                        size="sm" icon="chart-bar"
+                                        class="!bg-violet-600 !text-white border-none hover:!bg-violet-700 font-bold"
+                                        title="Ver Gráficas para {{ $m->nombre }}">
                                         Gráficas
                                     </flux:button>
-                                    <flux:button wire:click="openReportModal({{ $m->id }}, 'pdf')" size="sm" icon="document-text" class="!bg-red-600 !text-white border-none hover:!bg-red-700 font-semibold" title="Descargar PDF para {{ $m->nombre }}">
+                                    <flux:button wire:click="openReportModal({{ $m->id }}, 'pdf')"
+                                        size="sm" icon="document-text"
+                                        class="!bg-red-600 !text-white border-none hover:!bg-red-700 font-semibold"
+                                        title="Descargar PDF para {{ $m->nombre }}">
                                         PDF
                                     </flux:button>
                                 </div>
@@ -674,9 +641,12 @@
                 {{-- Body --}}
                 <div class="p-6">
                     <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-                        Selecciona el mes y el año para descargar el reporte de <span class="font-bold">{{ $tipoLabels[$tipoActivo] ?? $tipoActivo }}</span> para el municipio <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ $reportMunicipioNombre ?? 'Seleccionado' }}</span>.
+                        Selecciona el mes y el año para descargar el reporte de <span
+                            class="font-bold">{{ $tipoLabels[$tipoActivo] ?? $tipoActivo }}</span> para el municipio
+                        <span
+                            class="font-bold text-emerald-600 dark:text-emerald-400">{{ $reportMunicipioNombre ?? 'Seleccionado' }}</span>.
                     </p>
-                    
+
                     <div class="space-y-4">
                         <flux:select wire:model.live="reportMonth" label="Mes del Reporte">
                             <flux:select.option value="1">Enero</flux:select.option>
@@ -693,20 +663,24 @@
                             <flux:select.option value="12">Diciembre</flux:select.option>
                         </flux:select>
 
-                        <flux:input wire:model.live="reportYear" type="number" step="1" min="2000" max="2100" label="Año" required />
+                        <flux:input wire:model.live="reportYear" type="number" step="1" min="2000"
+                            max="2100" label="Año" required />
                     </div>
                 </div>
 
                 {{-- Footer --}}
-                <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 flex justify-end gap-3 rounded-b-xl">
+                <div
+                    class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 flex justify-end gap-3 rounded-b-xl">
                     <flux:button wire:click="closeReportModal" variant="ghost">Cancelar</flux:button>
-                    
-                    @if($reportType === 'pdf')
-                        <flux:button wire:click="viewPdf" icon="arrow-down-tray" variant="primary" class="!bg-red-600 hover:!bg-red-700">
+
+                    @if ($reportType === 'pdf')
+                        <flux:button wire:click="viewPdf" icon="arrow-down-tray" variant="primary"
+                            class="!bg-red-600 hover:!bg-red-700">
                             Descargar PDF
                         </flux:button>
                     @else
-                        <flux:button wire:click="viewDashboard" icon="chart-pie" variant="primary" class="!bg-violet-600 !text-white hover:!bg-violet-700 font-bold">
+                        <flux:button wire:click="viewDashboard" icon="chart-pie" variant="primary"
+                            class="!bg-violet-600 !text-white hover:!bg-violet-700 font-bold">
                             Ver Gráficas
                         </flux:button>
                     @endif
@@ -716,14 +690,14 @@
     @endif
 
     @script
-    <script>
-        $wire.on('open-url-in-new-tab', (event) => {
-            if (event.url) {
-                window.open(event.url, '_blank');
-            } else if (event[0] && event[0].url) {
-                window.open(event[0].url, '_blank');
-            }
-        });
-    </script>
+        <script>
+            $wire.on('open-url-in-new-tab', (event) => {
+                if (event.url) {
+                    window.open(event.url, '_blank');
+                } else if (event[0] && event[0].url) {
+                    window.open(event[0].url, '_blank');
+                }
+            });
+        </script>
     @endscript
 </div>

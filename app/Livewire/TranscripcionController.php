@@ -223,8 +223,7 @@ class TranscripcionController extends Component
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Transcripción creada exitosamente.']);
         }
 
-        Cache::forget('transcripcion_metrics_' . $this->tipoActivo);
-
+        // El Observer de Transcripcion invalida el caché automáticamente.
         $this->closeModal();
     }
 
@@ -276,7 +275,7 @@ class TranscripcionController extends Component
     public function delete(int $id): void
     {
         Transcripcion::findOrFail($id)->delete();
-        Cache::forget('transcripcion_metrics_' . $this->tipoActivo);
+        // El Observer de Transcripcion invalida el caché automáticamente.
         $this->dispatch('swal', ['icon' => 'success', 'title' => 'Transcripción eliminada correctamente.']);
     }
 
@@ -409,25 +408,31 @@ class TranscripcionController extends Component
             ];
         });
 
-        // Base query for the paginated table (this remains dynamic for search)
-        $queryBase = Transcripcion::where('tipo', $this->tipoActivo);
-
-        // Paginated records
-        $transcripciones = (clone $queryBase)
-            ->with(['municipio','parroquia','sector','comuna'])
+        // Base query para la tabla paginada (dinámica para búsqueda y filtros).
+        // Usamos LEFT JOINs para fusionar las tablas relacionadas en una sola consulta plana,
+        // evitando subconsultas EXISTS (whereHas) que son lentas con volumen alto de datos.
+        $transcripciones = Transcripcion::query()
+            ->select('transcripciones.*')
+            ->leftJoin('municipios',  'transcripciones.municipio_id', '=', 'municipios.id')
+            ->leftJoin('parroquias',  'transcripciones.parroquia_id', '=', 'parroquias.id')
+            ->leftJoin('comunas',     'transcripciones.comuna_id',    '=', 'comunas.id')
+            ->leftJoin('sectores',    'transcripciones.sector_id',    '=', 'sectores.id')
+            ->where('transcripciones.tipo', $this->tipoActivo)
             ->when($this->search, function ($q) {
-                $q->where(function ($q1) {
-                    $q1->where('observacion', 'like', '%' . $this->search . '%')
-                      ->orWhere('responsable', 'like', '%' . $this->search . '%')
-                      ->orWhereHas('municipio', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
-                      ->orWhereHas('parroquia', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
-                      ->orWhereHas('sector', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'))
-                      ->orWhereHas('comuna', fn($q2) => $q2->where('nombre', 'like', '%' . $this->search . '%'));
+                $term = '%' . $this->search . '%';
+                $q->where(function ($q1) use ($term) {
+                    $q1->where('transcripciones.observacion', 'like', $term)
+                       ->orWhere('transcripciones.responsable', 'like', $term)
+                       ->orWhere('municipios.nombre',  'like', $term)
+                       ->orWhere('parroquias.nombre',  'like', $term)
+                       ->orWhere('comunas.nombre',     'like', $term)
+                       ->orWhere('sectores.nombre',    'like', $term);
                 });
             })
-            ->when($this->dateFrom, fn($q) => $q->whereDate('fecha', '>=', $this->dateFrom))
-            ->when($this->dateTo, fn($q) => $q->whereDate('fecha', '<=', $this->dateTo))
-            ->orderBy('fecha', $this->sortDirection)
+            ->when($this->dateFrom, fn($q) => $q->whereDate('transcripciones.fecha', '>=', $this->dateFrom))
+            ->when($this->dateTo,   fn($q) => $q->whereDate('transcripciones.fecha', '<=', $this->dateTo))
+            ->with(['municipio', 'parroquia', 'sector', 'comuna'])
+            ->orderBy('transcripciones.fecha', $this->sortDirection)
             ->paginate(10);
 
         return view('livewire.transcripcion.transcripcion-index', [

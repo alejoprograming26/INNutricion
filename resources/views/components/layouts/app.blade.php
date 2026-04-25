@@ -17,7 +17,8 @@
     @livewireStyles
     <script>
         function applyTheme() {
-            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia(
+                    '(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark')
             } else {
                 document.documentElement.classList.remove('dark')
@@ -30,7 +31,8 @@
         new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'class') {
-                    const isDark = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                    const isDark = localStorage.theme === 'dark' || (!('theme' in localStorage) && window
+                        .matchMedia('(prefers-color-scheme: dark)').matches);
                     if (isDark && !document.documentElement.classList.contains('dark')) {
                         document.documentElement.classList.add('dark');
                     } else if (!isDark && document.documentElement.classList.contains('dark')) {
@@ -38,7 +40,10 @@
                     }
                 }
             });
-        }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        }).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
     </script>
 </head>
 
@@ -124,8 +129,17 @@
                 </flux:sidebar.item>
 
             </flux:sidebar.group>
-            <flux:navlist.item icon="calendar" href="{{ route('admin.calendario.index') }}" :current="request()->routeIs('admin.calendario.index')"
-                wire:navigate>Calendario
+            <flux:sidebar.group expandable :expanded="request()->routeIs('admin.actividades.*')" heading="Actividades"
+                class="grid" icon="clipboard-document-list">
+                <flux:navlist.item href="{{ route('admin.actividades.abordajes.index') }}" :current="request()->routeIs('admin.actividades.abordajes.index')"
+                    wire:navigate>Abordajes
+                </flux:navlist.item>
+
+            </flux:sidebar.group>
+
+
+            <flux:navlist.item icon="calendar" href="{{ route('admin.calendario.index') }}"
+                :current="request()->routeIs('admin.calendario.index')" wire:navigate>Calendario
             </flux:navlist.item>
 
             <flux:navlist.item icon="cog-6-tooth" href="{{ route('admin.ajustes.index') }}"
