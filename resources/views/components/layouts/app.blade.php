@@ -131,9 +131,21 @@
             </flux:sidebar.group>
             <flux:sidebar.group expandable :expanded="request()->routeIs('admin.actividades.*')" heading="Actividades"
                 class="grid" icon="clipboard-document-list">
-                <flux:navlist.item href="{{ route('admin.actividades.abordajes.index') }}" :current="request()->routeIs('admin.actividades.abordajes.index')"
-                    wire:navigate>Abordajes
+                <flux:navlist.item href="{{ route('admin.actividades.abordajes.index') }}"
+                    :current="request()->routeIs('admin.actividades.abordajes.index')" wire:navigate>Abordajes
                 </flux:navlist.item>
+                <flux:navlist.item href="{{ route('admin.actividades.escuela4s.index') }}"
+                    :current="request()->routeIs('admin.actividades.escuela4s.index')" wire:navigate>C.Escuela 4S
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('admin.actividades.liderazgo.index') }}"
+                    :current="request()->routeIs('admin.actividades.liderazgo.index')" wire:navigate>F.Liderazgo
+                    Territorial
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('admin.actividades.diversidad.index') }}"
+                    :current="request()->routeIs('admin.actividades.diversidad.index')" wire:navigate>E.Diversidad
+                    Dietaria
+                </flux:navlist.item>
+
 
             </flux:sidebar.group>
 

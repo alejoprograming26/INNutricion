@@ -26,6 +26,9 @@ Route::middleware(['auth', 'check.status'])->group(function () {
         Route::get('/transcripciones/pdf', [\App\Livewire\ReporteTranscripcionController::class, 'descargar'])->name('admin.transcripciones.pdf');
         Route::get('/transcripciones/graficos', \App\Livewire\GraficosTranscripcionController::class)->name('admin.transcripciones.graficos');
         Route::get('/actividades/abordajes', \App\Livewire\Actividades\AbordajeController::class)->name('admin.actividades.abordajes.index');
+        Route::get('/actividades/escuela4s', \App\Livewire\Actividades\Escuela4sController::class)->name('admin.actividades.escuela4s.index');
+        Route::get('/actividades/liderazgo-territorial', \App\Livewire\Actividades\LiderazgoTerritorialController::class)->name('admin.actividades.liderazgo.index');
+        Route::get('/actividades/diversidad-dietaria', \App\Livewire\Actividades\DiversidadDietariaController::class)->name('admin.actividades.diversidad.index');
         Route::get('/calendario', \App\Livewire\CalendarioController::class)->name('admin.calendario.index');
         
         Route::get('/logout', function () {

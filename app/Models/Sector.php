@@ -56,4 +56,19 @@ class Sector extends Model
     {
         return $this->hasMany(Abordaje::class, 'sector_id');
     }
+
+    public function escuelas4s()
+{
+    return $this->hasMany(Escuela4S::class, 'sector_id');
+}
+
+public function liderazgoTerritorial()
+{
+    return $this->hasMany(LiderazgoTerritorial::class, 'sector_id');
+}
+
+public function diversidadDietaria()
+{
+    return $this->hasMany(DiversidadDietaria::class, 'sector_id');
+}
 }
