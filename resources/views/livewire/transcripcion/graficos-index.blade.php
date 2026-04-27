@@ -188,11 +188,12 @@
         let charts = {};
 
         const renderCharts = () => {
-            // Destruir gráficos anteriores para evitar superposiciones o memory leaks
-            if (charts.parroquias) charts.parroquias.destroy();
-            if (charts.dias) charts.dias.destroy();
-            if (charts.comunas) charts.comunas.destroy();
-            if (charts.sectores) charts.sectores.destroy();
+            // Destruir gráficos anteriores buscando instancias existentes en los canvas
+            // Esto es necesario porque al usar wire:ignore los canvas persisten entre refrescos de Livewire
+            ['parroquiasChart', 'diasChart', 'comunasChart', 'sectoresChart'].forEach(id => {
+                const existingChart = Chart.getChart(id);
+                if (existingChart) existingChart.destroy();
+            });
 
             // Obtener datos directamente del componente Livewire
             const themeHex = $wire.colorThemaHex;
@@ -207,14 +208,24 @@
             const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)';
             const cardBg = isDarkMode ? '#18181b' : '#ffffff';
 
+            // Configurar defaults globales de forma segura sin sobrescribir el objeto completo
             Chart.defaults.color = textColor;
-            Chart.defaults.font.family = '"Inter", "Geist", ui-sans-serif, system-ui, sans-serif';
+            if (Chart.defaults.font) {
+                Chart.defaults.font.family = '"Inter", "Geist", ui-sans-serif, system-ui, sans-serif';
+            }
             
-            // Animaciones fluidas
-            Chart.defaults.animation = {
-                duration: 1000,
-                easing: 'easeInOutQuart'
-            };
+            // Animaciones fluidas - Usar Object.assign para no romper hooks internos de Chart.js
+            if (Chart.defaults.animation) {
+                Object.assign(Chart.defaults.animation, {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                });
+            } else {
+                Chart.defaults.animation = {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                };
+            }
             
             // Tooltip Custom HTML
             const getOrCreateTooltip = (chart) => {
