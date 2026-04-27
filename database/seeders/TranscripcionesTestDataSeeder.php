@@ -29,10 +29,7 @@ class TranscripcionesTestDataSeeder extends Seeder
             ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
             ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
             ->select(
-                'sectores.id as sector_id',
-                'comunas.id as comuna_id',
-                'parroquias.id as parroquia_id',
-                'parroquias.municipio_id'
+                'sectores.id as sector_id'
             )
             ->get()
             ->toArray();
@@ -72,9 +69,6 @@ class TranscripcionesTestDataSeeder extends Seeder
                     'responsable' => $responsables[array_rand($responsables)],
                     'fecha' => $fecha,
                     'tipo' => $tipo,
-                    'municipio_id' => $sector->municipio_id,
-                    'parroquia_id' => $sector->parroquia_id,
-                    'comuna_id' => $sector->comuna_id,
                     'sector_id' => $sector->sector_id,
                     'cantidad' => mt_rand(1, 50),
                     'ingreso' => mt_rand(0, 5),

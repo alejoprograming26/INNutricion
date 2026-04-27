@@ -8,6 +8,7 @@ use App\Models\Parroquia;
 use App\Models\Sector;
 use App\Models\Transcripcion;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -176,10 +177,7 @@ class TranscripcionController extends Component
             'responsable'  => 'required|string|max:255',
             'fecha'        => 'required|date',
             'tipo'         => 'required|in:' . implode(',', Transcripcion::TIPOS),
-            'municipio_id' => 'required|exists:municipios,id',
-            'parroquia_id' => 'required|exists:parroquias,id',
             'sector_id'    => 'required|exists:sectores,id',
-            'comuna_id'    => 'required|exists:comunas,id',
             'cantidad'     => 'required|integer|min:0',
         ];
 
@@ -192,10 +190,7 @@ class TranscripcionController extends Component
             'responsable.required'  => 'El responsable es obligatorio.',
             'fecha.required'        => 'La fecha es obligatoria.',
             'tipo.required'         => 'El tipo es obligatorio.',
-            'municipio_id.required' => 'Selecciona un municipio.',
-            'parroquia_id.required' => 'Selecciona una parroquia.',
             'sector_id.required'    => 'Selecciona un sector.',
-            'comuna_id.required'    => 'Selecciona una comuna.',
             'cantidad.required'     => 'La cantidad es obligatoria.',
             'ingreso.required'      => 'El ingreso es obligatorio para SUGIMA.',
             'egreso.required'       => 'El egreso es obligatorio para SUGIMA.',
@@ -206,10 +201,7 @@ class TranscripcionController extends Component
             'responsable'  => mb_strtoupper(trim($this->responsable), 'UTF-8'),
             'fecha'        => $this->fecha,
             'tipo'         => $this->tipo,
-            'municipio_id' => $this->municipio_id,
-            'parroquia_id' => $this->parroquia_id,
             'sector_id'    => $this->sector_id,
-            'comuna_id'    => $this->comuna_id,
             'cantidad'     => (int) $this->cantidad,
             'ingreso'      => $esSugima ? (int) $this->ingreso : null,
             'egreso'       => $esSugima ? (int) $this->egreso  : null,
@@ -230,17 +222,19 @@ class TranscripcionController extends Component
     public function edit(int $id): void
     {
         $this->resetInputFields();
-        $t = Transcripcion::with(['municipio','parroquia','sector','comuna'])->findOrFail($id);
+        $t = Transcripcion::with(['sector.comuna.parroquia.municipio'])->findOrFail($id);
 
         $this->transcripcion_id = $t->id;
         $this->observacion      = $t->observacion;
         $this->responsable      = $t->responsable;
         $this->fecha            = \Illuminate\Support\Carbon::parse($t->fecha)->format('Y-m-d');
         $this->tipo             = $t->tipo;
-        $this->municipio_id     = (string) $t->municipio_id;
-        $this->parroquia_id     = (string) $t->parroquia_id;
-        $this->sector_id        = (string) $t->sector_id;
-        $this->comuna_id        = (string) $t->comuna_id;
+        
+        $this->sector_id    = (string) $t->sector_id;
+        $this->comuna_id    = (string) $t->sector->comuna_id;
+        $this->parroquia_id = (string) $t->sector->comuna->parroquia_id;
+        $this->municipio_id = (string) $t->sector->comuna->parroquia->municipio_id;
+
         $this->cantidad         = (string) $t->cantidad;
         $this->ingreso          = $t->ingreso !== null ? (string) $t->ingreso : null;
         $this->egreso           = $t->egreso  !== null ? (string) $t->egreso  : null;
@@ -255,16 +249,16 @@ class TranscripcionController extends Component
 
     public function show(int $id): void
     {
-        $t = Transcripcion::with(['municipio','parroquia','sector','comuna'])->findOrFail($id);
+        $t = Transcripcion::with(['sector.comuna.parroquia.municipio'])->findOrFail($id);
 
         $this->view_observacion = $t->observacion;
         $this->view_responsable = $t->responsable;
         $this->view_fecha       = \Illuminate\Support\Carbon::parse($t->fecha)->format('d/m/Y');
         $this->view_tipo        = $t->tipo;
-        $this->view_municipio   = $t->municipio->nombre;
-        $this->view_parroquia   = $t->parroquia->nombre;
+        $this->view_municipio   = $t->sector->comuna->parroquia->municipio->nombre;
+        $this->view_parroquia   = $t->sector->comuna->parroquia->nombre;
         $this->view_sector      = $t->sector->nombre;
-        $this->view_comuna      = $t->comuna->nombre;
+        $this->view_comuna      = $t->sector->comuna->nombre;
         $this->view_cantidad    = (string) $t->cantidad;
         $this->view_ingreso     = $t->ingreso !== null ? (string) $t->ingreso : null;
         $this->view_egreso      = $t->egreso  !== null ? (string) $t->egreso  : null;
@@ -384,18 +378,46 @@ class TranscripcionController extends Component
             $transcripcionesMes = (clone $queryBase)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->count();
 
             $municipiosConTotales = Municipio::query()
-                ->withSum(['transcripciones as total_anual' => function ($q) use ($now) {
-                    $q->where('tipo', $this->tipoActivo)->whereYear('fecha', $now->year);
-                }], 'cantidad')
-                ->withSum(['transcripciones as total_mes' => function ($q) use ($now) {
-                    $q->where('tipo', $this->tipoActivo)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month);
-                }], 'cantidad')
-                ->withSum(['transcripciones as total_semana' => function ($q) use ($startOfWeek, $endOfWeek) {
-                    $q->where('tipo', $this->tipoActivo)->whereBetween('fecha', [$startOfWeek, $endOfWeek]);
-                }], 'cantidad')
-                ->withCount(['transcripciones as transcripciones_mes_count' => function ($q) use ($now) {
-                    $q->where('tipo', $this->tipoActivo)->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month);
-                }])
+                ->select('municipios.*')
+                ->addSelect([
+                    'total_anual' => DB::table('transcripciones')
+                        ->join('sectores', 'transcripciones.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->where('transcripciones.tipo', $this->tipoActivo)
+                        ->whereYear('transcripciones.fecha', $now->year)
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+                    
+                    'total_mes' => DB::table('transcripciones')
+                        ->join('sectores', 'transcripciones.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->where('transcripciones.tipo', $this->tipoActivo)
+                        ->whereYear('transcripciones.fecha', $now->year)
+                        ->whereMonth('transcripciones.fecha', $now->month)
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+                        
+                    'total_semana' => DB::table('transcripciones')
+                        ->join('sectores', 'transcripciones.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->where('transcripciones.tipo', $this->tipoActivo)
+                        ->whereBetween('transcripciones.fecha', [$startOfWeek, $endOfWeek])
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+
+                    'transcripciones_mes_count' => DB::table('transcripciones')
+                        ->join('sectores', 'transcripciones.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->where('transcripciones.tipo', $this->tipoActivo)
+                        ->whereYear('transcripciones.fecha', $now->year)
+                        ->whereMonth('transcripciones.fecha', $now->month)
+                        ->selectRaw('COUNT(*)')
+                ])
                 ->orderBy('nombre')
                 ->get();
 
@@ -413,10 +435,10 @@ class TranscripcionController extends Component
         // evitando subconsultas EXISTS (whereHas) que son lentas con volumen alto de datos.
         $transcripciones = Transcripcion::query()
             ->select('transcripciones.*')
-            ->leftJoin('municipios',  'transcripciones.municipio_id', '=', 'municipios.id')
-            ->leftJoin('parroquias',  'transcripciones.parroquia_id', '=', 'parroquias.id')
-            ->leftJoin('comunas',     'transcripciones.comuna_id',    '=', 'comunas.id')
-            ->leftJoin('sectores',    'transcripciones.sector_id',    '=', 'sectores.id')
+            ->join('sectores',   'transcripciones.sector_id', '=', 'sectores.id')
+            ->join('comunas',     'sectores.comuna_id',       '=', 'comunas.id')
+            ->join('parroquias',  'comunas.parroquia_id',     '=', 'parroquias.id')
+            ->join('municipios',  'parroquias.municipio_id',   '=', 'municipios.id')
             ->where('transcripciones.tipo', $this->tipoActivo)
             ->when($this->search, function ($q) {
                 $term = '%' . $this->search . '%';
@@ -431,7 +453,7 @@ class TranscripcionController extends Component
             })
             ->when($this->dateFrom, fn($q) => $q->whereDate('transcripciones.fecha', '>=', $this->dateFrom))
             ->when($this->dateTo,   fn($q) => $q->whereDate('transcripciones.fecha', '<=', $this->dateTo))
-            ->with(['municipio', 'parroquia', 'sector', 'comuna'])
+            ->with(['sector.comuna.parroquia.municipio'])
             ->orderBy('transcripciones.fecha', $this->sortDirection)
             ->paginate(10);
 

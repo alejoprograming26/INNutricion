@@ -131,16 +131,10 @@ class AbordajeController extends Component
         $this->validate([
             'observacion'  => 'nullable|string|max:255',
             'fecha'        => 'required|date',
-            'municipio_id' => 'required|exists:municipios,id',
-            'parroquia_id' => 'required|exists:parroquias,id',
-            'comuna_id'    => 'required|exists:comunas,id',
             'sector_id'    => 'required|exists:sectores,id',
             'cantidad'     => 'required|integer|min:0',
         ], [
             'fecha.required'        => 'La fecha es obligatoria.',
-            'municipio_id.required' => 'Selecciona un municipio.',
-            'parroquia_id.required' => 'Selecciona una parroquia.',
-            'comuna_id.required'    => 'Selecciona una comuna.',
             'sector_id.required'    => 'Selecciona un sector.',
             'cantidad.required'     => 'La cantidad es obligatoria.',
         ]);
@@ -148,9 +142,6 @@ class AbordajeController extends Component
         $data = [
             'observacion'  => $this->observacion ? mb_strtoupper(trim($this->observacion), 'UTF-8') : null,
             'fecha'        => $this->fecha,
-            'municipio_id' => $this->municipio_id,
-            'parroquia_id' => $this->parroquia_id,
-            'comuna_id'    => $this->comuna_id,
             'sector_id'    => $this->sector_id,
             'cantidad'     => (int) $this->cantidad,
         ];
@@ -170,15 +161,17 @@ class AbordajeController extends Component
     public function edit(int $id): void
     {
         $this->resetInputFields();
-        $a = Abordaje::with(['municipio', 'parroquia', 'comuna', 'sector'])->findOrFail($id);
+        $a = Abordaje::with(['sector.comuna.parroquia.municipio'])->findOrFail($id);
 
         $this->abordaje_id  = $a->id;
         $this->observacion  = $a->observacion;
         $this->fecha        = Carbon::parse($a->fecha)->format('Y-m-d');
-        $this->municipio_id = (string) $a->municipio_id;
-        $this->parroquia_id = (string) $a->parroquia_id;
-        $this->comuna_id    = (string) $a->comuna_id;
+        
         $this->sector_id    = (string) $a->sector_id;
+        $this->comuna_id    = (string) $a->sector->comuna_id;
+        $this->parroquia_id = (string) $a->sector->comuna->parroquia_id;
+        $this->municipio_id = (string) $a->sector->comuna->parroquia->municipio_id;
+        
         $this->cantidad     = (string) $a->cantidad;
 
         // Cargar combos en cascada
@@ -191,13 +184,13 @@ class AbordajeController extends Component
 
     public function show(int $id): void
     {
-        $a = Abordaje::with(['municipio', 'parroquia', 'comuna', 'sector'])->findOrFail($id);
+        $a = Abordaje::with(['sector.comuna.parroquia.municipio'])->findOrFail($id);
 
         $this->view_observacion = $a->observacion;
         $this->view_fecha       = Carbon::parse($a->fecha)->format('d/m/Y');
-        $this->view_municipio   = $a->municipio->nombre;
-        $this->view_parroquia   = $a->parroquia->nombre;
-        $this->view_comuna      = $a->comuna->nombre;
+        $this->view_municipio   = $a->sector->comuna->parroquia->municipio->nombre;
+        $this->view_parroquia   = $a->sector->comuna->parroquia->nombre;
+        $this->view_comuna      = $a->sector->comuna->nombre;
         $this->view_sector      = $a->sector->nombre;
         $this->view_cantidad    = (string) $a->cantidad;
 
@@ -259,20 +252,44 @@ class AbordajeController extends Component
 
             $registrosMes = Abordaje::whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->count();
 
-            // Distribución por municipio
+            // Distribución por municipio usando subconsultas o joins manuales para evitar dependencia de relaciones directas eliminadas
             $municipiosConTotales = Municipio::query()
-                ->withSum(['abordajes as total_anual' => function ($q) use ($now) {
-                    $q->whereYear('fecha', $now->year);
-                }], 'cantidad')
-                ->withSum(['abordajes as total_mes' => function ($q) use ($now) {
-                    $q->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month);
-                }], 'cantidad')
-                ->withSum(['abordajes as total_semana' => function ($q) use ($startOfWeek, $endOfWeek) {
-                    $q->whereBetween('fecha', [$startOfWeek, $endOfWeek]);
-                }], 'cantidad')
-                ->withCount(['abordajes as abordajes_mes_count' => function ($q) use ($now) {
-                    $q->whereYear('fecha', $now->year)->whereMonth('fecha', $now->month);
-                }])
+                ->select('municipios.*')
+                ->addSelect([
+                    'total_anual' => DB::table('abordajes')
+                        ->join('sectores', 'abordajes.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('abordajes.fecha', $now->year)
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+                    
+                    'total_mes' => DB::table('abordajes')
+                        ->join('sectores', 'abordajes.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('abordajes.fecha', $now->year)
+                        ->whereMonth('abordajes.fecha', $now->month)
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+                        
+                    'total_semana' => DB::table('abordajes')
+                        ->join('sectores', 'abordajes.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereBetween('abordajes.fecha', [$startOfWeek, $endOfWeek])
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+
+                    'abordajes_mes_count' => DB::table('abordajes')
+                        ->join('sectores', 'abordajes.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('abordajes.fecha', $now->year)
+                        ->whereMonth('abordajes.fecha', $now->month)
+                        ->selectRaw('COUNT(*)')
+                ])
                 ->orderBy('nombre')
                 ->get();
 
@@ -290,10 +307,10 @@ class AbordajeController extends Component
         // subconsultas EXISTS (whereHas) que son lentas con volumen alto de registros.
         $abordajes = Abordaje::query()
             ->select('abordajes.*')
-            ->leftJoin('municipios', 'abordajes.municipio_id', '=', 'municipios.id')
-            ->leftJoin('parroquias', 'abordajes.parroquia_id', '=', 'parroquias.id')
-            ->leftJoin('comunas',   'abordajes.comuna_id',    '=', 'comunas.id')
-            ->leftJoin('sectores',  'abordajes.sector_id',    '=', 'sectores.id')
+            ->join('sectores',   'abordajes.sector_id',    '=', 'sectores.id')
+            ->join('comunas',     'sectores.comuna_id',     '=', 'comunas.id')
+            ->join('parroquias',  'comunas.parroquia_id',   '=', 'parroquias.id')
+            ->join('municipios',  'parroquias.municipio_id', '=', 'municipios.id')
             ->when($this->search, function ($q) {
                 $term = '%' . $this->search . '%';
                 $q->where(function ($q1) use ($term) {
@@ -306,7 +323,7 @@ class AbordajeController extends Component
             })
             ->when($this->dateFrom, fn($q) => $q->whereDate('abordajes.fecha', '>=', $this->dateFrom))
             ->when($this->dateTo,   fn($q) => $q->whereDate('abordajes.fecha', '<=', $this->dateTo))
-            ->with(['municipio', 'parroquia', 'comuna', 'sector'])
+            ->with(['sector.comuna.parroquia.municipio'])
             ->orderBy('abordajes.fecha', $this->sortDirection)
             ->paginate(10);
 

@@ -21,8 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Schema::defaultStringLength(191);
-
+        \Illuminate\Support\Facades\Vite::usePreloadTagAttributes(false);
         Schema::defaultStringLength(191);
 
         // Compartir $ajuste con los layouts principales (Cacheado)

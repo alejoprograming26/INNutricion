@@ -12,16 +12,10 @@ return new class extends Migration
             $table->id();
             $table->string('observacion')->nullable();
             $table->date('fecha');
-            $table->foreignId('municipio_id')->constrained('municipios')->onDelete('cascade');
-            $table->foreignId('parroquia_id')->constrained('parroquias')->onDelete('cascade');
-            $table->foreignId('comuna_id')->constrained('comunas')->onDelete('cascade');
             $table->foreignId('sector_id')->constrained('sectores')->onDelete('cascade');
             $table->integer('cantidad')->default(0);
 
             // Índices de rendimiento
-            $table->index('municipio_id');
-            $table->index('parroquia_id');
-            $table->index('comuna_id');
             $table->index('sector_id');
             $table->index('fecha');
 

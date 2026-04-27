@@ -65,19 +65,23 @@ class GraficosTranscripcionController extends Component
 
     public function cargarDatos()
     {
-        $queryBase = Transcripcion::where('transcripciones.tipo', $this->tipo)
+        $queryBase = Transcripcion::query()
+            ->join('sectores',   'transcripciones.sector_id', '=', 'sectores.id')
+            ->join('comunas',     'sectores.comuna_id',       '=', 'comunas.id')
+            ->join('parroquias',  'comunas.parroquia_id',     '=', 'parroquias.id')
+            ->where('transcripciones.tipo', $this->tipo)
             ->whereYear('transcripciones.fecha', $this->año)
             ->whereMonth('transcripciones.fecha', $this->mes)
             ->when($this->municipioId, function ($q) {
-                $q->where('transcripciones.municipio_id', $this->municipioId);
+                $q->where('parroquias.municipio_id', $this->municipioId);
             });
 
         // 1. KPIs
         $totales = (clone $queryBase)->selectRaw('
-            COALESCE(SUM(cantidad), 0) as total_cantidad, 
-            COUNT(*) as total_registros,
-            COALESCE(SUM(ingreso), 0) as total_ingreso,
-            COALESCE(SUM(egreso), 0) as total_egreso
+            COALESCE(SUM(transcripciones.cantidad), 0) as total_cantidad, 
+            COUNT(transcripciones.id) as total_registros,
+            COALESCE(SUM(transcripciones.ingreso), 0) as total_ingreso,
+            COALESCE(SUM(transcripciones.egreso), 0) as total_egreso
         ')->first();
 
         // Evitamos división por cero para el promedio diario
@@ -94,8 +98,7 @@ class GraficosTranscripcionController extends Component
 
         // 2. Parroquias (Doughnut Chart)
         $this->datosParroquias = (clone $queryBase)
-            ->join('parroquias', 'transcripciones.parroquia_id', '=', 'parroquias.id')
-            ->select('parroquias.nombre', DB::raw('SUM(cantidad) as total'))
+            ->select('parroquias.nombre', DB::raw('SUM(transcripciones.cantidad) as total'))
             ->groupBy('parroquias.id', 'parroquias.nombre')
             ->orderByDesc('total')
             ->get()
@@ -103,8 +106,7 @@ class GraficosTranscripcionController extends Component
 
         // 3. Comunas (Bar Chart)
         $this->datosComunas = (clone $queryBase)
-            ->join('comunas', 'transcripciones.comuna_id', '=', 'comunas.id')
-            ->select('comunas.nombre', DB::raw('SUM(cantidad) as total'))
+            ->select('comunas.nombre', DB::raw('SUM(transcripciones.cantidad) as total'))
             ->groupBy('comunas.id', 'comunas.nombre')
             ->orderByDesc('total')
             ->get()
@@ -112,8 +114,7 @@ class GraficosTranscripcionController extends Component
 
         // 4. Sectores (Horizontal Bar Chart)
         $this->datosSectores = (clone $queryBase)
-            ->join('sectores', 'transcripciones.sector_id', '=', 'sectores.id')
-            ->select('sectores.nombre', DB::raw('SUM(cantidad) as total'))
+            ->select('sectores.nombre', DB::raw('SUM(transcripciones.cantidad) as total'))
             ->groupBy('sectores.id', 'sectores.nombre')
             ->orderByDesc('total')
             ->get()
@@ -121,8 +122,8 @@ class GraficosTranscripcionController extends Component
 
         // 5. Evolución por Día (Line Chart)
         $this->datosDias = (clone $queryBase)
-            ->select(DB::raw('DAY(fecha) as dia'), DB::raw('SUM(cantidad) as total'))
-            ->groupBy(DB::raw('DAY(fecha)'))
+            ->select(DB::raw('DAY(transcripciones.fecha) as dia'), DB::raw('SUM(transcripciones.cantidad) as total'))
+            ->groupBy(DB::raw('DAY(transcripciones.fecha)'))
             ->orderBy('dia')
             ->get()
             ->toArray();

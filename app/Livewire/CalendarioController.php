@@ -93,7 +93,7 @@ class CalendarioController extends Component
     {
         $this->fechaSeleccionada = Carbon::parse($fechaStr)->format('Y-m-d');
         
-        $this->transcripcionesDia = Transcripcion::with(['municipio', 'parroquia', 'sector', 'comuna'])
+        $this->transcripcionesDia = Transcripcion::with(['sector.comuna.parroquia.municipio'])
             ->whereDate('fecha', $this->fechaSeleccionada)
             ->orderBy('tipo')
             ->get();

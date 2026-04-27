@@ -23,9 +23,6 @@ class Abordaje extends Model
     protected $fillable = [
         'observacion',
         'fecha',
-        'municipio_id',
-        'parroquia_id',
-        'comuna_id',
         'sector_id',
         'cantidad',
     ];
@@ -35,23 +32,26 @@ class Abordaje extends Model
         'cantidad' => 'integer',
     ];
 
-    public function municipio()
-    {
-        return $this->belongsTo(Municipio::class, 'municipio_id');
-    }
-
-    public function parroquia()
-    {
-        return $this->belongsTo(Parroquia::class, 'parroquia_id');
-    }
-
-    public function comuna()
-    {
-        return $this->belongsTo(Comuna::class, 'comuna_id');
-    }
-
     public function sector()
     {
         return $this->belongsTo(Sector::class, 'sector_id');
     }
+
+    // Relaciones indirectas para conveniencia
+    public function comuna()
+    {
+        return $this->sector->comuna();
+    }
+
+    public function parroquia()
+    {
+        return $this->sector->comuna->parroquia();
+    }
+
+    public function municipio()
+    {
+        return $this->sector->comuna->parroquia->municipio();
+    }
+
+
 }

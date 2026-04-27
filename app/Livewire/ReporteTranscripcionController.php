@@ -28,13 +28,17 @@ class ReporteTranscripcionController extends Controller
         $nombreMes = $meses[(int)$mes] ?? 'Desconocido';
         $municipioId = $request->input('municipio_id');
 
-        $transcripciones = Transcripcion::with(['municipio', 'parroquia', 'comuna', 'sector'])
+        $transcripciones = Transcripcion::with(['sector.comuna.parroquia.municipio'])
+            ->join('sectores',   'transcripciones.sector_id', '=', 'sectores.id')
+            ->join('comunas',     'sectores.comuna_id',       '=', 'comunas.id')
+            ->join('parroquias',  'comunas.parroquia_id',     '=', 'parroquias.id')
             ->where('tipo', $tipo)
             ->whereYear('fecha', $año)
             ->whereMonth('fecha', $mes)
             ->when($municipioId, function ($query, $municipioId) {
-                return $query->where('municipio_id', $municipioId);
+                return $query->where('parroquias.municipio_id', $municipioId);
             })
+            ->select('transcripciones.*') // Evitar colisión de IDs con los joins
             ->get();
 
         $resultadoAgrupado = $this->agruparDatos($transcripciones, $esSugima);
@@ -70,9 +74,9 @@ class ReporteTranscripcionController extends Controller
         $totalesGenerales = ['cantidad' => 0, 'ingreso' => 0, 'egreso' => 0];
 
         foreach ($transcripciones as $t) {
-            $mun = $t->municipio->nombre ?? 'Desconocido';
-            $par = $t->parroquia->nombre ?? 'Desconocida';
-            $com = $t->comuna->nombre ?? 'Desconocida';
+            $mun = $t->sector->comuna->parroquia->municipio->nombre ?? 'Desconocido';
+            $par = $t->sector->comuna->parroquia->nombre ?? 'Desconocida';
+            $com = $t->sector->comuna->nombre ?? 'Desconocida';
             $sec = $t->sector->nombre ?? 'Desconocido';
 
             if (!isset($datosAgrupados[$mun])) {

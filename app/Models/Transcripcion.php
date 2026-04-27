@@ -25,10 +25,7 @@ class Transcripcion extends Model
         'responsable',
         'fecha',
         'tipo',
-        'municipio_id',
-        'parroquia_id',
         'sector_id',
-        'comuna_id',
         'cantidad',
         'ingreso',
         'egreso',
@@ -58,23 +55,24 @@ class Transcripcion extends Model
     // Solo SUGIMA tiene ingreso/egreso
     public const TIPO_CON_INGRESOS_EGRESOS = 'SUGIMA';
 
-    public function municipio()
-    {
-        return $this->belongsTo(Municipio::class, 'municipio_id');
-    }
-
-    public function parroquia()
-    {
-        return $this->belongsTo(Parroquia::class, 'parroquia_id');
-    }
-
     public function sector()
     {
         return $this->belongsTo(Sector::class, 'sector_id');
     }
 
+    // Relaciones indirectas para conveniencia
     public function comuna()
     {
-        return $this->belongsTo(Comuna::class, 'comuna_id');
+        return $this->sector->comuna();
+    }
+
+    public function parroquia()
+    {
+        return $this->sector->comuna->parroquia();
+    }
+
+    public function municipio()
+    {
+        return $this->sector->comuna->parroquia->municipio();
     }
 }
