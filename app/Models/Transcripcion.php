@@ -60,19 +60,5 @@ class Transcripcion extends Model
         return $this->belongsTo(Sector::class, 'sector_id');
     }
 
-    // Relaciones indirectas para conveniencia
-    public function comuna()
-    {
-        return $this->sector->comuna();
-    }
 
-    public function parroquia()
-    {
-        return $this->sector->comuna->parroquia();
-    }
-
-    public function municipio()
-    {
-        return $this->sector->comuna->parroquia->municipio();
-    }
 }

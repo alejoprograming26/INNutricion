@@ -230,14 +230,14 @@
                                 <div class="flex flex-col gap-1.5">
                                     <div class="flex items-center gap-2">
                                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $t->municipio->nombre }}</span>
+                                        <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $t->sector->comuna->parroquia->municipio->nombre }}</span>
                                         <span class="text-zinc-400 text-xs">&bull;</span>
-                                        <span class="text-zinc-600 dark:text-zinc-400 text-xs">{{ $t->parroquia->nombre }}</span>
+                                        <span class="text-zinc-600 dark:text-zinc-400 text-xs">{{ $t->sector->comuna->parroquia->nombre }}</span>
                                     </div>
                                     <div class="flex flex-wrap items-center gap-2 mt-1.5">
                                         <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-500/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
                                             <flux:icon.building-office-2 class="w-3.5 h-3.5" />
-                                            <span>{{ $t->comuna->nombre }}</span>
+                                            <span>{{ $t->sector->comuna->nombre }}</span>
                                         </div>
                                         <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-200/60 dark:border-sky-500/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
                                             <flux:icon.map-pin class="w-3.5 h-3.5" />

@@ -142,7 +142,7 @@
                                                 {{ $t->responsable }}
                                             </td>
                                             <td class="px-3 py-3 text-zinc-600 dark:text-zinc-300">
-                                                <flux:badge size="sm" color="zinc">{{ $t->municipio->nombre }}
+                                                <flux:badge size="sm" color="zinc">{{ $t->sector->comuna->parroquia->municipio->nombre }}
                                                 </flux:badge>
                                             </td>
                                             <td class="px-3 py-3 text-zinc-600 dark:text-zinc-300">

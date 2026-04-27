@@ -153,14 +153,14 @@
                                 <div class="flex flex-col gap-1.5">
                                     <div class="flex items-center gap-2">
                                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $a->municipio->nombre }}</span>
+                                        <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $a->sector->comuna->parroquia->municipio->nombre }}</span>
                                         <span class="text-zinc-400 text-xs">&bull;</span>
-                                        <span class="text-zinc-600 dark:text-zinc-400 text-xs">{{ $a->parroquia->nombre }}</span>
+                                        <span class="text-zinc-600 dark:text-zinc-400 text-xs">{{ $a->sector->comuna->parroquia->nombre }}</span>
                                     </div>
                                     <div class="flex flex-wrap items-center gap-2 mt-1.5">
                                         <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-500/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
                                             <flux:icon.building-office-2 class="w-3.5 h-3.5" />
-                                            <span>{{ $a->comuna->nombre }}</span>
+                                            <span>{{ $a->sector->comuna->nombre }}</span>
                                         </div>
                                         <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-200/60 dark:border-sky-500/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
                                             <flux:icon.map-pin class="w-3.5 h-3.5" />
@@ -321,6 +321,9 @@
                                 <div>
                                     <flux:input wire:model="fecha" type="date" label="Fecha *" required />
                                 </div>
+                                <div class="md:col-span-2">
+                                    <flux:input wire:model="responsable" label="Responsable" placeholder="Nombre del responsable (opcional)" />
+                                </div>
                             </div>
                         </div>
 
@@ -366,8 +369,19 @@
                             <h3 class="text-xs font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 mb-4 flex items-center gap-2">
                                 <flux:icon.calculator class="w-4 h-4" /> Resultados
                             </h3>
-                            <div class="w-full md:w-1/2">
-                                <flux:input wire:model="cantidad" type="number" min="0" label="Cantidad Alcanzada *" placeholder="0" required class="text-lg font-bold" />
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                                <div>
+                                    <flux:input wire:model="cantidad" type="number" min="0" label="Cantidad Total *" placeholder="0" required class="text-lg font-bold" />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="total_a" type="number" min="0" label="Total A *" placeholder="0" required />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="total_b" type="number" min="0" label="Total B *" placeholder="0" required />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="total_a_plus" type="number" min="0" label="Total A+ *" placeholder="0" required />
+                                </div>
                             </div>
                         </div>
 
@@ -408,6 +422,11 @@
                             <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-200">{{ $view_observacion ?? 'Sin observaciones' }}</span>
                         </div>
 
+                        <div class="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-xl border border-zinc-100 dark:border-zinc-700/50">
+                            <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">Responsable</span>
+                            <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-200">{{ $view_responsable ?? 'No especificado' }}</span>
+                        </div>
+
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">Municipio</span>
@@ -424,6 +443,21 @@
                             <div>
                                 <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">Sector</span>
                                 <span class="block text-sm font-semibold text-zinc-800 dark:text-zinc-200">{{ $view_sector }}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="p-3 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 text-center">
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400 mb-1">Total A</span>
+                                <span class="text-lg font-black text-sky-700 dark:text-sky-300">{{ number_format((int) $view_total_a) }}</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 text-center">
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 mb-1">Total B</span>
+                                <span class="text-lg font-black text-amber-700 dark:text-amber-300">{{ number_format((int) $view_total_b) }}</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-purple-50 dark:bg-purple-500/10 border border-purple-100 dark:border-purple-500/20 text-center">
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 mb-1">Total A+</span>
+                                <span class="text-lg font-black text-purple-700 dark:text-purple-300">{{ number_format((int) $view_total_a_plus) }}</span>
                             </div>
                         </div>
 

@@ -22,14 +22,21 @@ class Abordaje extends Model
 
     protected $fillable = [
         'observacion',
+        'responsable',
         'fecha',
         'sector_id',
         'cantidad',
+        'total_a',
+        'total_b',
+        'total_a_plus',
     ];
 
     protected $casts = [
-        'fecha'    => 'date',
-        'cantidad' => 'integer',
+        'fecha'        => 'date',
+        'cantidad'     => 'integer',
+        'total_a'      => 'integer',
+        'total_b'      => 'integer',
+        'total_a_plus' => 'integer',
     ];
 
     public function sector()
@@ -37,21 +44,7 @@ class Abordaje extends Model
         return $this->belongsTo(Sector::class, 'sector_id');
     }
 
-    // Relaciones indirectas para conveniencia
-    public function comuna()
-    {
-        return $this->sector->comuna();
-    }
 
-    public function parroquia()
-    {
-        return $this->sector->comuna->parroquia();
-    }
-
-    public function municipio()
-    {
-        return $this->sector->comuna->parroquia->municipio();
-    }
 
 
 }

@@ -34,6 +34,10 @@ class AbordajeController extends Component
     public string  $comuna_id    = '';
     public string  $sector_id    = '';
     public string  $cantidad     = '';
+    public ?string $responsable  = null;
+    public string  $total_a      = '0';
+    public string  $total_b      = '0';
+    public string  $total_a_plus = '0';
 
     // ── Filtros en cascada ────────────────────────────────────────────────────
     public $parroquiasFiltradas = [];
@@ -52,6 +56,10 @@ class AbordajeController extends Component
     public string  $view_comuna      = '';
     public string  $view_sector      = '';
     public string  $view_cantidad    = '';
+    public ?string $view_responsable  = null;
+    public string  $view_total_a      = '0';
+    public string  $view_total_b      = '0';
+    public string  $view_total_a_plus = '0';
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -130,20 +138,38 @@ class AbordajeController extends Component
     {
         $this->validate([
             'observacion'  => 'nullable|string|max:255',
+            'responsable'  => 'nullable|string|max:255',
             'fecha'        => 'required|date',
             'sector_id'    => 'required|exists:sectores,id',
             'cantidad'     => 'required|integer|min:0',
+            'total_a'      => 'required|integer|min:0',
+            'total_b'      => 'required|integer|min:0',
+            'total_a_plus' => 'required|integer|min:0',
         ], [
             'fecha.required'        => 'La fecha es obligatoria.',
             'sector_id.required'    => 'Selecciona un sector.',
             'cantidad.required'     => 'La cantidad es obligatoria.',
+            'total_a.required'      => 'El Total A es obligatorio.',
+            'total_b.required'      => 'El Total B es obligatorio.',
+            'total_a_plus.required' => 'El Total A+ es obligatorio.',
         ]);
+
+        // Validación personalizada: la suma de totales no puede ser mayor a la cantidad
+        $sumaTotales = (int)$this->total_a + (int)$this->total_b + (int)$this->total_a_plus;
+        if ($sumaTotales > (int)$this->cantidad) {
+            $this->addError('cantidad', 'La suma de los totales (A, B, A+) no puede ser mayor a la cantidad total.');
+            return;
+        }
 
         $data = [
             'observacion'  => $this->observacion ? mb_strtoupper(trim($this->observacion), 'UTF-8') : null,
+            'responsable'  => $this->responsable ? mb_strtoupper(trim($this->responsable), 'UTF-8') : null,
             'fecha'        => $this->fecha,
             'sector_id'    => $this->sector_id,
             'cantidad'     => (int) $this->cantidad,
+            'total_a'      => (int) $this->total_a,
+            'total_b'      => (int) $this->total_b,
+            'total_a_plus' => (int) $this->total_a_plus,
         ];
 
         if ($this->abordaje_id) {
@@ -173,6 +199,10 @@ class AbordajeController extends Component
         $this->municipio_id = (string) $a->sector->comuna->parroquia->municipio_id;
         
         $this->cantidad     = (string) $a->cantidad;
+        $this->responsable  = $a->responsable;
+        $this->total_a      = (string) $a->total_a;
+        $this->total_b      = (string) $a->total_b;
+        $this->total_a_plus = (string) $a->total_a_plus;
 
         // Cargar combos en cascada
         $this->parroquiasFiltradas = Parroquia::where('municipio_id', $this->municipio_id)->orderBy('nombre')->get();
@@ -193,6 +223,10 @@ class AbordajeController extends Component
         $this->view_comuna      = $a->sector->comuna->nombre;
         $this->view_sector      = $a->sector->nombre;
         $this->view_cantidad    = (string) $a->cantidad;
+        $this->view_responsable  = $a->responsable;
+        $this->view_total_a      = (string) $a->total_a;
+        $this->view_total_b      = (string) $a->total_b;
+        $this->view_total_a_plus = (string) $a->total_a_plus;
 
         $this->isViewModalOpen = true;
     }
@@ -232,6 +266,14 @@ class AbordajeController extends Component
         $this->view_comuna        = '';
         $this->view_sector        = '';
         $this->view_cantidad      = '';
+        $this->view_responsable   = null;
+        $this->view_total_a       = '0';
+        $this->view_total_b       = '0';
+        $this->view_total_a_plus  = '0';
+        $this->responsable        = null;
+        $this->total_a            = '0';
+        $this->total_b            = '0';
+        $this->total_a_plus       = '0';
         $this->resetValidation();
     }
 

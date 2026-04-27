@@ -39,14 +39,21 @@ class Sector extends Model
         );
     }
 
+
+
     /**
-     * Un sector pertenece a un municipio (a través de comuna).
+     * Un sector tiene muchas transcripciones.
      */
-    public function municipio()
+    public function transcripciones()
     {
-        // Pasamos por Comuna y luego Parroquia es un poco complejo para hasOneThrough estándar de 2 niveles.
-        // Pero podemos intentar llegar al municipio si la jerarquía es clara.
-        // O simplemente usar:
-        return $this->comuna->parroquia->municipio();
+        return $this->hasMany(Transcripcion::class, 'sector_id');
+    }
+
+    /**
+     * Un sector tiene muchos abordajes.
+     */
+    public function abordajes()
+    {
+        return $this->hasMany(Abordaje::class, 'sector_id');
     }
 }
