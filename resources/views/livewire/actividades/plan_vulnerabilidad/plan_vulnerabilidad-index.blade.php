@@ -3,23 +3,23 @@
          Header & Acciones Principales
     ═══════════════════════════════════════════════════ --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden">
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
         
         <div class="flex items-center gap-4 relative z-10">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/30">
-                <flux:icon.users class="w-8 h-8 text-white" />
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/30">
+                <flux:icon.shield-check class="w-8 h-8 text-white" />
             </div>
             <div>
-                <h1 class="text-3xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight">Liderazgo Territorial</h1>
+                <h1 class="text-3xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight">Plan de Vulnerabilidad</h1>
                 <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1 font-medium">
-                    Formación y capacitación de líderes en el territorio.
+                    Atención a población vulnerable con entregas nutricionales.
                 </p>
             </div>
         </div>
         <div class="relative z-10">
             <flux:button wire:click="create" icon="plus" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-white border-none font-bold shadow-md shadow-lime-500/20 transition-all duration-300 transform hover:-translate-y-0.5">
-                Registrar Formación
+                Registrar Entrega
             </flux:button>
         </div>
     </div>
@@ -33,7 +33,7 @@
             <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <p class="text-xs font-bold text-emerald-50 uppercase tracking-widest mb-1 opacity-90">Total Anual (Pers.)</p>
+                    <p class="text-xs font-bold text-emerald-50 uppercase tracking-widest mb-1 opacity-90">Entregas (Anual)</p>
                     <h3 class="text-3xl font-black text-white tabular-nums drop-shadow-sm">{{ number_format($totalAnual) }}</h3>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
@@ -47,7 +47,7 @@
             <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <p class="text-xs font-bold text-blue-50 uppercase tracking-widest mb-1 opacity-90">Total Mes (Pers.)</p>
+                    <p class="text-xs font-bold text-blue-50 uppercase tracking-widest mb-1 opacity-90">Entregas (Mes)</p>
                     <h3 class="text-3xl font-black text-white tabular-nums drop-shadow-sm">{{ number_format($totalMes) }}</h3>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
@@ -61,7 +61,7 @@
             <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <p class="text-xs font-bold text-orange-50 uppercase tracking-widest mb-1 opacity-90">Total Semana (Pers.)</p>
+                    <p class="text-xs font-bold text-orange-50 uppercase tracking-widest mb-1 opacity-90">Entregas (Semana)</p>
                     <h3 class="text-3xl font-black text-white tabular-nums drop-shadow-sm">{{ number_format($totalSemana) }}</h3>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
@@ -93,7 +93,7 @@
         {{-- Toolbar de Filtros --}}
         <div class="bg-zinc-50/80 dark:bg-zinc-800/30 p-4 border-b border-zinc-200 dark:border-zinc-800 flex flex-col lg:flex-row gap-4 items-center justify-between">
             <div class="w-full lg:w-1/3">
-                <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" placeholder="Buscar tema, municipio, sector..." class="bg-white dark:bg-zinc-900 shadow-sm" />
+                <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" placeholder="Buscar responsable, municipio..." class="bg-white dark:bg-zinc-900 shadow-sm" />
             </div>
             
             <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
@@ -121,55 +121,72 @@
                 <thead class="bg-white dark:bg-zinc-900 text-xs uppercase font-semibold text-zinc-500 border-b border-zinc-200 dark:border-zinc-800">
                     <tr>
                         <th class="px-6 py-4 w-12 text-center">#</th>
-                        <th class="px-6 py-4">Tema / Responsable</th>
+                        <th class="px-6 py-4">Responsable / Fecha</th>
                         <th class="px-6 py-4">Ubicación</th>
-                        <th class="px-6 py-4 text-center">Cantidad</th>
+                        <th class="px-6 py-4">Tipos Entregados</th>
+                        <th class="px-6 py-4 text-center">Total</th>
                         <th class="px-6 py-4 text-right">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/50 bg-white dark:bg-zinc-900">
-                    @forelse($registros as $l)
+                    @forelse($registros as $p)
                         <tr class="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50 transition-colors group">
                             <td class="px-6 py-4 text-center font-medium text-zinc-400">
                                 {{ ($registros->currentPage() - 1) * $registros->perPage() + $loop->iteration }}
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-lime-50 dark:bg-lime-500/10 flex items-center justify-center shrink-0 border border-lime-100 dark:border-lime-500/20 text-lime-600 dark:text-lime-400">
-                                        <flux:icon.users class="w-5 h-5" />
+                                    <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center shrink-0 border border-rose-100 dark:border-rose-500/20 text-rose-600 dark:text-rose-400">
+                                        <flux:icon.shield-check class="w-5 h-5" />
                                     </div>
                                     <div>
                                         <p class="font-bold text-zinc-800 dark:text-zinc-100 line-clamp-1">
-                                            {{ $l->tema_tratado }}
+                                            {{ $p->responsable }}
                                         </p>
                                         <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
-                                            {{ $l->responsable }} &bull; {{ \Carbon\Carbon::parse($l->fecha)->format('d/m/Y') }}
+                                            {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}
                                         </p>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex flex-col gap-1">
-                                    <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $l->sector->comuna->parroquia->municipio->nombre }}</span>
-                                    <span class="text-zinc-500 text-xs">{{ $l->sector->nombre }}</span>
+                                    <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $p->sector->comuna->parroquia->municipio->nombre }}</span>
+                                    <span class="text-zinc-500 text-xs">{{ $p->sector->nombre }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    @php $tipos = is_string($p->tipo) ? json_decode($p->tipo, true) : $p->tipo; @endphp
+                                    @if(is_array($tipos))
+                                        @foreach($tipos as $tipo)
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                                                {{ $tipo === 'Suplemento' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : '' }}
+                                                {{ $tipo === 'Proteina' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' : '' }}
+                                                {{ $tipo === 'Fruvet' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : '' }}
+                                            ">
+                                                {{ $tipo }}
+                                            </span>
+                                        @endforeach
+                                    @endif
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-lime-50 dark:bg-lime-500/10 text-lime-700 dark:text-lime-300 font-black border border-lime-100 dark:border-lime-500/20">
-                                    {{ number_format($l->cantidad) }}
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-300 font-black border border-rose-100 dark:border-rose-500/20">
+                                    {{ number_format($p->total_entregas) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-1">
-                                    <flux:button wire:click="show({{ $l->id }})" size="sm" variant="ghost" icon="eye" class="text-zinc-500 hover:text-blue-600" />
-                                    <flux:button wire:click="edit({{ $l->id }})" size="sm" variant="ghost" icon="pencil-square" class="text-zinc-500 hover:text-amber-600" />
-                                    <flux:button @click="confirmAction($wire, {{ $l->id }}, 'delete', '¿Eliminar registro?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')" size="sm" variant="ghost" icon="trash" class="text-zinc-500 hover:text-red-600" />
+                                    <flux:button wire:click="show({{ $p->id }})" size="sm" variant="ghost" icon="eye" class="text-zinc-500 hover:text-blue-600" />
+                                    <flux:button wire:click="edit({{ $p->id }})" size="sm" variant="ghost" icon="pencil-square" class="text-zinc-500 hover:text-amber-600" />
+                                    <flux:button @click="confirmAction($wire, {{ $p->id }}, 'delete', '¿Eliminar registro?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')" size="sm" variant="ghost" icon="trash" class="text-zinc-500 hover:text-red-600" />
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-zinc-500">No se encontraron registros.</td>
+                            <td colspan="6" class="px-6 py-12 text-center text-zinc-500">No se encontraron registros.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -260,22 +277,22 @@
          Modal Crear / Editar
     ═══════════════════════════════════════════════════ --}}
     @if ($isModalOpen)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4" wire:key="modal-{{ $liderazgo_id ?? 'new' }}">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4" wire:key="modal-{{ $plan_id ?? 'new' }}">
             <div class="bg-white dark:bg-zinc-900 w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-zinc-200 dark:border-zinc-800 overflow-hidden transform transition-all">
                 
                 {{-- Header con gradiente suave --}}
                 <div class="relative px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 shrink-0 overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-500/5 dark:to-blue-500/5"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-rose-50 to-red-50 dark:from-rose-500/5 dark:to-red-500/5"></div>
                     <div class="relative flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 flex items-center justify-center shadow-sm border border-zinc-200 dark:border-zinc-700">
-                                <flux:icon.users class="w-5 h-5 text-sky-600 dark:text-sky-400" />
+                                <flux:icon.shield-check class="w-5 h-5 text-rose-600 dark:text-rose-400" />
                             </div>
                             <div>
                                 <h2 class="text-lg font-black text-zinc-800 dark:text-zinc-100">
-                                    {{ $liderazgo_id ? 'Editar Formación' : 'Registrar Nueva Formación' }}
+                                    {{ $plan_id ? 'Editar Registro de Vulnerabilidad' : 'Nuevo Registro de Vulnerabilidad' }}
                                 </h2>
-                                <p class="text-xs text-zinc-500 font-medium">Complete los datos de la formación y ubicación.</p>
+                                <p class="text-xs text-zinc-500 font-medium">Complete los datos de la entrega.</p>
                             </div>
                         </div>
                         <flux:button wire:click="closeModal" variant="ghost" icon="x-mark" class="rounded-full hover:bg-white dark:hover:bg-zinc-800" />
@@ -284,7 +301,7 @@
 
                 {{-- Body --}}
                 <div class="p-6 overflow-y-auto bg-zinc-50/50 dark:bg-zinc-900/50">
-                    <form wire:submit="store" id="liderazgoForm" class="space-y-6">
+                    <form wire:submit="store" id="vulnerabilidadForm" class="space-y-6">
                         
                         {{-- Datos Generales Card --}}
                         <div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
@@ -295,9 +312,6 @@
                                 <div class="md:col-span-2">
                                     <flux:input wire:model="observacion" label="Observación" placeholder="Detalles adicionales (opcional)" />
                                 </div>
-                                <div class="md:col-span-2">
-                                    <flux:input wire:model="tema_tratado" label="Tema Tratado *" placeholder="Título o tema de la formación" required />
-                                </div>
                                 <div>
                                     <flux:input wire:model="fecha" type="date" label="Fecha *" required />
                                 </div>
@@ -305,6 +319,19 @@
                                     <flux:input wire:model="responsable" label="Responsable *" placeholder="Nombre del responsable" required />
                                 </div>
                             </div>
+                        </div>
+
+                        {{-- Tipos de Entrega --}}
+                        <div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-4 flex items-center gap-2">
+                                <flux:icon.squares-2x2 class="w-4 h-4" /> Tipo de Entregas (Seleccione uno o más) *
+                            </h3>
+                            <div class="flex flex-col gap-3">
+                                <flux:checkbox wire:model="tipo" value="Suplemento" label="Suplemento" />
+                                <flux:checkbox wire:model="tipo" value="Proteina" label="Proteína" />
+                                <flux:checkbox wire:model="tipo" value="Fruvet" label="Fruvet" />
+                            </div>
+                            @error('tipo') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
                         </div>
 
                         {{-- Ubicación Card --}}
@@ -345,13 +372,13 @@
                         </div>
 
                         {{-- Resultados Card --}}
-                        <div class="bg-sky-50/50 dark:bg-sky-500/5 p-5 rounded-xl border border-sky-100 dark:border-sky-500/20 shadow-sm">
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-4 flex items-center gap-2">
+                        <div class="bg-rose-50/50 dark:bg-rose-500/5 p-5 rounded-xl border border-rose-100 dark:border-rose-500/20 shadow-sm">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-4 flex items-center gap-2">
                                 <flux:icon.calculator class="w-4 h-4" /> Resultados
                             </h3>
                             <div class="grid grid-cols-1 gap-5">
                                 <div>
-                                    <flux:input wire:model="cantidad" type="number" min="1" label="Cantidad de Personas *" placeholder="0" required class="text-lg font-bold" />
+                                    <flux:input wire:model="total_entregas" type="number" min="1" label="Total de Entregas *" placeholder="0" required class="text-lg font-bold" />
                                 </div>
                             </div>
                         </div>
@@ -362,7 +389,7 @@
                 {{-- Footer --}}
                 <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shrink-0 flex justify-end gap-3 rounded-b-2xl">
                     <flux:button wire:click="closeModal" variant="ghost" class="hover:bg-zinc-100 dark:hover:bg-zinc-800">Cancelar</flux:button>
-                    <flux:button type="submit" form="liderazgoForm" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-white border-none font-bold shadow-md shadow-lime-500/20">
+                    <flux:button type="submit" form="vulnerabilidadForm" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-white border-none font-bold shadow-md shadow-lime-500/20">
                         <span wire:loading.remove wire:target="store">Guardar Registro</span>
                         <span wire:loading wire:target="store">Guardando...</span>
                     </flux:button>
@@ -377,21 +404,21 @@
     @if ($isViewModalOpen)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4">
             <div class="bg-white dark:bg-zinc-900 w-full max-w-md p-0 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                <div class="h-20 bg-gradient-to-r from-sky-500 to-blue-600 relative">
+                <div class="h-20 bg-gradient-to-r from-rose-500 to-red-600 relative">
                     <div class="absolute -bottom-6 left-6 w-12 h-12 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center shadow-md border-[3px] border-white dark:border-zinc-900">
-                        <flux:icon.users class="w-6 h-6 text-sky-600" />
+                        <flux:icon.shield-check class="w-6 h-6 text-rose-600" />
                     </div>
                 </div>
                 
                 <div class="px-6 pt-8 pb-5">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="pr-2">
-                            <h2 class="text-xl font-black text-zinc-800 dark:text-zinc-100 leading-tight line-clamp-2">{{ $view_tema_tratado }}</h2>
+                        <div>
+                            <h2 class="text-xl font-black text-zinc-800 dark:text-zinc-100 leading-tight">Atención de Vulnerabilidad</h2>
                             <p class="text-xs font-medium text-zinc-500 mt-0.5">{{ $view_fecha }}</p>
                         </div>
-                        <div class="text-right shrink-0">
-                            <span class="block text-[9px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-0.5">Formados</span>
-                            <span class="text-xl font-black text-sky-700 dark:text-sky-300 leading-none">{{ number_format((int) $view_cantidad) }}</span>
+                        <div class="text-right">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-0.5">Total Entregas</span>
+                            <span class="text-xl font-black text-rose-700 dark:text-rose-300 leading-none">{{ number_format((int) $view_total_entregas) }}</span>
                         </div>
                     </div>
 
@@ -401,6 +428,25 @@
                             <div class="p-3">
                                 <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Responsable</span>
                                 <span class="block text-xs font-semibold text-zinc-800 dark:text-zinc-200">{{ $view_responsable ?? 'No especificado' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 border-b border-zinc-100 dark:border-zinc-700/50">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Tipos de Entrega</span>
+                            <div class="flex flex-wrap gap-1">
+                                @if(is_array($view_tipo))
+                                    @foreach($view_tipo as $t)
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                                            {{ $t === 'Suplemento' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : '' }}
+                                            {{ $t === 'Proteina' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' : '' }}
+                                            {{ $t === 'Fruvet' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : '' }}
+                                        ">
+                                            {{ $t }}
+                                        </span>
+                                    @endforeach
+                                @else
+                                    <span class="text-xs text-zinc-500">Ninguno</span>
+                                @endif
                             </div>
                         </div>
 

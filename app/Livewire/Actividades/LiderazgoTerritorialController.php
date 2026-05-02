@@ -314,6 +314,7 @@ class LiderazgoTerritorialController extends Component
                 $term = '%' . $this->search . '%';
                 $q->where(function ($q1) use ($term) {
                     $q1->where('liderazgo_territorials.observacion', 'like', $term)
+                       ->orWhere('liderazgo_territorials.responsable', 'like', $term)
                        ->orWhere('liderazgo_territorials.tema_tratado', 'like', $term)
                        ->orWhere('municipios.nombre',   'like', $term)
                        ->orWhere('parroquias.nombre',   'like', $term)

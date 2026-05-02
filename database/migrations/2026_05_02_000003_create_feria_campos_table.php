@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('diversidad_dietarias', function (Blueprint $table) {
+        Schema::create('feria_campos', function (Blueprint $table) {
             $table->id();
             $table->text('observacion')->nullable();
             $table->string('responsable');
             $table->date('fecha');
             $table->foreignId('sector_id')->constrained('sectores')->onDelete('cascade');
-            $table->integer('cantidad');
             // Índices para optimización
             $table->index(['sector_id', 'fecha']);
             $table->index('fecha');
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('diversidad_dietarias');
+        Schema::dropIfExists('feria_campos');
     }
 };

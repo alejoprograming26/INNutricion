@@ -19,6 +19,11 @@ return new class extends Migration
             $table->foreignId('sector_id')->constrained('sectores')->onDelete('cascade');
             $table->integer('cantidad');
             $table->string('tema_tratado');
+            // Índices para optimización
+            $table->index(['sector_id', 'fecha']);
+            $table->index('fecha');
+            $table->index('responsable');
+
             $table->timestamps();
         });
     }

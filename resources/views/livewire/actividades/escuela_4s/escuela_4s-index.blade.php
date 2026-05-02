@@ -265,11 +265,11 @@
                 
                 {{-- Header con gradiente suave --}}
                 <div class="relative px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 shrink-0 overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-lime-50 to-emerald-50 dark:from-lime-500/5 dark:to-emerald-500/5"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-500/5 dark:to-orange-500/5"></div>
                     <div class="relative flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 flex items-center justify-center shadow-sm border border-zinc-200 dark:border-zinc-700">
-                                <flux:icon.academic-cap class="w-5 h-5 text-lime-600 dark:text-lime-400" />
+                                <flux:icon.academic-cap class="w-5 h-5 text-amber-600 dark:text-amber-400" />
                             </div>
                             <div>
                                 <h2 class="text-lg font-black text-zinc-800 dark:text-zinc-100">
@@ -368,7 +368,7 @@
                 {{-- Footer --}}
                 <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shrink-0 flex justify-end gap-3 rounded-b-2xl">
                     <flux:button wire:click="closeModal" variant="ghost" class="hover:bg-zinc-100 dark:hover:bg-zinc-800">Cancelar</flux:button>
-                    <flux:button type="submit" form="escuelaForm" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-zinc-900 border-none font-bold shadow-md shadow-lime-500/20">
+                    <flux:button type="submit" form="escuelaForm" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-white border-none font-bold shadow-md shadow-lime-500/20">
                         <span wire:loading.remove wire:target="store">Guardar Registro</span>
                         <span wire:loading wire:target="store">Guardando...</span>
                     </flux:button>
@@ -383,9 +383,9 @@
     @if ($isViewModalOpen)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4">
             <div class="bg-white dark:bg-zinc-900 w-full max-w-md p-0 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                <div class="h-20 bg-gradient-to-r from-lime-500 to-emerald-600 relative">
+                <div class="h-20 bg-gradient-to-r from-amber-500 to-orange-600 relative">
                     <div class="absolute -bottom-6 left-6 w-12 h-12 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center shadow-md border-[3px] border-white dark:border-zinc-900">
-                        <flux:icon.academic-cap class="w-6 h-6 text-lime-600" />
+                        <flux:icon.academic-cap class="w-6 h-6 text-amber-600" />
                     </div>
                 </div>
                 

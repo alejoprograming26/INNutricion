@@ -145,6 +145,20 @@
                     :current="request()->routeIs('admin.actividades.diversidad.index')" wire:navigate>E.Diversidad
                     Dietaria
                 </flux:navlist.item>
+                <flux:navlist.item href="{{ route('admin.actividades.circulo.index') }}"
+                    :current="request()->routeIs('admin.actividades.circulo.index')" wire:navigate>Círculo
+                    de Lactancia
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('admin.actividades.vulnerabilidad.index') }}"
+                    :current="request()->routeIs('admin.actividades.vulnerabilidad.index')" wire:navigate>P. Atención de
+                    Vulnerabilidad
+                </flux:navlist.item>
+                <flux:navlist.item href="{{ route('admin.actividades.feria.index') }}"
+                    :current="request()->routeIs('admin.actividades.feria.index')" wire:navigate>Feria de Campo
+                </flux:navlist.item>
+
+
+
 
 
             </flux:sidebar.group>

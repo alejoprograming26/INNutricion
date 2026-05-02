@@ -365,8 +365,8 @@
                         </div>
 
                         {{-- Resultados Card --}}
-                        <div class="bg-lime-50/50 dark:bg-lime-500/5 p-5 rounded-xl border border-lime-100 dark:border-lime-500/20 shadow-sm">
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 mb-4 flex items-center gap-2">
+                        <div class="bg-emerald-50/50 dark:bg-emerald-500/5 p-5 rounded-xl border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-2">
                                 <flux:icon.calculator class="w-4 h-4" /> Resultados
                             </h3>
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
@@ -391,7 +391,7 @@
                 {{-- Footer --}}
                 <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shrink-0 flex justify-end gap-3 rounded-b-2xl">
                     <flux:button wire:click="closeModal" variant="ghost" class="hover:bg-zinc-100 dark:hover:bg-zinc-800">Cancelar</flux:button>
-                    <flux:button type="submit" form="abordajeForm" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-zinc-900 border-none font-bold shadow-md shadow-lime-500/20">
+                    <flux:button type="submit" form="abordajeForm" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-white border-none font-bold shadow-md shadow-lime-500/20">
                         <span wire:loading.remove wire:target="store">Guardar Registro</span>
                         <span wire:loading wire:target="store">Guardando...</span>
                     </flux:button>

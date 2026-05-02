@@ -23,6 +23,11 @@ return new class extends Migration
             $table->string('codigo_cnae');
             $table->string('tema_tratado');
             $table->enum('fase', ['FASE 1', 'FASE 2', 'FASE 3']);
+            // Índices para optimización
+            $table->index(['sector_id', 'fecha']);
+            $table->index('fecha');
+            $table->index('responsable');
+
             $table->timestamps();
         });
     }

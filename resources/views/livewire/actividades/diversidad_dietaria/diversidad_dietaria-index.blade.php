@@ -265,11 +265,11 @@
                 
                 {{-- Header con gradiente suave --}}
                 <div class="relative px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 shrink-0 overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-lime-50 to-emerald-50 dark:from-lime-500/5 dark:to-emerald-500/5"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-fuchsia-50 to-purple-50 dark:from-fuchsia-500/5 dark:to-purple-500/5"></div>
                     <div class="relative flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 flex items-center justify-center shadow-sm border border-zinc-200 dark:border-zinc-700">
-                                <flux:icon.chart-bar-square class="w-5 h-5 text-lime-600 dark:text-lime-400" />
+                                <flux:icon.chart-bar-square class="w-5 h-5 text-fuchsia-600 dark:text-fuchsia-400" />
                             </div>
                             <div>
                                 <h2 class="text-lg font-black text-zinc-800 dark:text-zinc-100">
@@ -342,8 +342,8 @@
                         </div>
 
                         {{-- Resultados Card --}}
-                        <div class="bg-lime-50/50 dark:bg-lime-500/5 p-5 rounded-xl border border-lime-100 dark:border-lime-500/20 shadow-sm">
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 mb-4 flex items-center gap-2">
+                        <div class="bg-fuchsia-50/50 dark:bg-fuchsia-500/5 p-5 rounded-xl border border-fuchsia-100 dark:border-fuchsia-500/20 shadow-sm">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-fuchsia-600 dark:text-fuchsia-400 mb-4 flex items-center gap-2">
                                 <flux:icon.calculator class="w-4 h-4" /> Resultados
                             </h3>
                             <div class="grid grid-cols-1 gap-5">
@@ -359,7 +359,7 @@
                 {{-- Footer --}}
                 <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shrink-0 flex justify-end gap-3 rounded-b-2xl">
                     <flux:button wire:click="closeModal" variant="ghost" class="hover:bg-zinc-100 dark:hover:bg-zinc-800">Cancelar</flux:button>
-                    <flux:button type="submit" form="diversidadForm" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-zinc-900 border-none font-bold shadow-md shadow-lime-500/20">
+                    <flux:button type="submit" form="diversidadForm" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-white border-none font-bold shadow-md shadow-lime-500/20">
                         <span wire:loading.remove wire:target="store">Guardar Registro</span>
                         <span wire:loading wire:target="store">Guardando...</span>
                     </flux:button>
@@ -374,9 +374,9 @@
     @if ($isViewModalOpen)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4">
             <div class="bg-white dark:bg-zinc-900 w-full max-w-md p-0 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                <div class="h-20 bg-gradient-to-r from-lime-500 to-emerald-600 relative">
+                <div class="h-20 bg-gradient-to-r from-fuchsia-500 to-purple-600 relative">
                     <div class="absolute -bottom-6 left-6 w-12 h-12 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center shadow-md border-[3px] border-white dark:border-zinc-900">
-                        <flux:icon.chart-bar-square class="w-6 h-6 text-lime-600" />
+                        <flux:icon.chart-bar-square class="w-6 h-6 text-fuchsia-600" />
                     </div>
                 </div>
                 
@@ -387,8 +387,8 @@
                             <p class="text-xs font-medium text-zinc-500 mt-0.5">{{ $view_fecha }}</p>
                         </div>
                         <div class="text-right">
-                            <span class="block text-[9px] font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 mb-0.5">Encuestas</span>
-                            <span class="text-xl font-black text-lime-700 dark:text-lime-300 leading-none">{{ number_format((int) $view_cantidad) }}</span>
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-fuchsia-600 dark:text-fuchsia-400 mb-0.5">Encuestas</span>
+                            <span class="text-xl font-black text-fuchsia-700 dark:text-fuchsia-300 leading-none">{{ number_format((int) $view_cantidad) }}</span>
                         </div>
                     </div>
 

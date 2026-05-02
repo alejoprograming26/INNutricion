@@ -357,6 +357,7 @@ class AbordajeController extends Component
                 $term = '%' . $this->search . '%';
                 $q->where(function ($q1) use ($term) {
                     $q1->where('abordajes.observacion', 'like', $term)
+                       ->orWhere('abordajes.responsable', 'like', $term)
                        ->orWhere('municipios.nombre',   'like', $term)
                        ->orWhere('parroquias.nombre',   'like', $term)
                        ->orWhere('comunas.nombre',      'like', $term)

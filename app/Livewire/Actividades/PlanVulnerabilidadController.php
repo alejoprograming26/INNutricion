@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Actividades;
 
-use App\Models\DiversidadDietaria;
+use App\Models\PlanVulnerabilidad;
 use App\Models\Comuna;
 use App\Models\Municipio;
 use App\Models\Parroquia;
@@ -15,7 +15,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('components.layouts.app')]
-class DiversidadDietariaController extends Component
+class PlanVulnerabilidadController extends Component
 {
     use WithPagination;
 
@@ -26,15 +26,16 @@ class DiversidadDietariaController extends Component
     public string $sortDirection = 'desc';
 
     // ── Campos del formulario ─────────────────────────────────────────────────
-    public ?int    $diversidad_id = null;
-    public ?string $observacion  = null;
-    public ?string $responsable  = null;
-    public string  $fecha        = '';
-    public string  $municipio_id = '';
-    public string  $parroquia_id = '';
-    public string  $comuna_id    = '';
-    public string  $sector_id    = '';
-    public string  $cantidad     = '';
+    public ?int    $plan_id         = null;
+    public ?string $observacion     = null;
+    public ?string $responsable     = null;
+    public string  $fecha           = '';
+    public string  $municipio_id    = '';
+    public string  $parroquia_id    = '';
+    public string  $comuna_id       = '';
+    public string  $sector_id       = '';
+    public string  $total_entregas  = '';
+    public array   $tipo            = [];
 
     // ── Filtros en cascada ────────────────────────────────────────────────────
     public $parroquiasFiltradas = [];
@@ -46,14 +47,15 @@ class DiversidadDietariaController extends Component
     public bool $isViewModalOpen = false;
 
     // ── Datos del modal "Ver" ─────────────────────────────────────────────────
-    public ?string $view_observacion = null;
-    public ?string $view_responsable  = null;
-    public string  $view_fecha       = '';
-    public string  $view_municipio   = '';
-    public string  $view_parroquia   = '';
-    public string  $view_comuna      = '';
-    public string  $view_sector      = '';
-    public string  $view_cantidad    = '';
+    public ?string $view_observacion    = null;
+    public ?string $view_responsable    = null;
+    public string  $view_fecha          = '';
+    public string  $view_municipio      = '';
+    public string  $view_parroquia      = '';
+    public string  $view_comuna         = '';
+    public string  $view_sector         = '';
+    public string  $view_total_entregas = '';
+    public array   $view_tipo           = [];
 
     public function updatingSearch(): void
     {
@@ -129,31 +131,36 @@ class DiversidadDietariaController extends Component
     public function store(): void
     {
         $this->validate([
-            'observacion'  => 'nullable|string|max:255',
-            'responsable'  => 'required|string|max:255',
-            'fecha'        => 'required|date',
-            'sector_id'    => 'required|exists:sectores,id',
-            'cantidad'     => 'required|integer|min:1',
+            'observacion'     => 'nullable|string|max:255',
+            'responsable'     => 'required|string|max:255',
+            'fecha'           => 'required|date',
+            'sector_id'       => 'required|exists:sectores,id',
+            'total_entregas'  => 'required|integer|min:1',
+            'tipo'            => 'required|array|min:1',
+            'tipo.*'          => 'in:Suplemento,Proteina,Fruvet',
         ], [
-            'responsable.required' => 'El responsable es obligatorio.',
-            'fecha.required'        => 'La fecha es obligatoria.',
-            'sector_id.required'    => 'Selecciona un sector.',
-            'cantidad.required'     => 'La cantidad es obligatoria.',
+            'responsable.required'    => 'El responsable es obligatorio.',
+            'fecha.required'          => 'La fecha es obligatoria.',
+            'sector_id.required'      => 'Selecciona un sector.',
+            'total_entregas.required' => 'El total de entregas es obligatorio.',
+            'tipo.required'           => 'Selecciona al menos un tipo.',
+            'tipo.min'                => 'Selecciona al menos un tipo.',
         ]);
 
         $data = [
-            'observacion'  => $this->observacion ? mb_strtoupper(trim($this->observacion), 'UTF-8') : null,
-            'responsable'  => mb_strtoupper(trim($this->responsable), 'UTF-8'),
-            'fecha'        => $this->fecha,
-            'sector_id'    => $this->sector_id,
-            'cantidad'     => (int) $this->cantidad,
+            'observacion'    => $this->observacion ? mb_strtoupper(trim($this->observacion), 'UTF-8') : null,
+            'responsable'    => mb_strtoupper(trim($this->responsable), 'UTF-8'),
+            'fecha'          => $this->fecha,
+            'sector_id'      => $this->sector_id,
+            'total_entregas' => (int) $this->total_entregas,
+            'tipo'           => $this->tipo,
         ];
 
-        if ($this->diversidad_id) {
-            DiversidadDietaria::findOrFail($this->diversidad_id)->update($data);
+        if ($this->plan_id) {
+            PlanVulnerabilidad::findOrFail($this->plan_id)->update($data);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Registro actualizado exitosamente.']);
         } else {
-            DiversidadDietaria::create($data);
+            PlanVulnerabilidad::create($data);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Registro creado exitosamente.']);
         }
 
@@ -163,19 +170,20 @@ class DiversidadDietariaController extends Component
     public function edit(int $id): void
     {
         $this->resetInputFields();
-        $d = DiversidadDietaria::with(['sector.comuna.parroquia.municipio'])->findOrFail($id);
+        $p = PlanVulnerabilidad::with(['sector.comuna.parroquia.municipio'])->findOrFail($id);
 
-        $this->diversidad_id = $d->id;
-        $this->observacion  = $d->observacion;
-        $this->responsable  = $d->responsable;
-        $this->fecha        = Carbon::parse($d->fecha)->format('Y-m-d');
-        
-        $this->sector_id    = (string) $d->sector_id;
-        $this->comuna_id    = (string) $d->sector->comuna_id;
-        $this->parroquia_id = (string) $d->sector->comuna->parroquia_id;
-        $this->municipio_id = (string) $d->sector->comuna->parroquia->municipio_id;
-        
-        $this->cantidad     = (string) $d->cantidad;
+        $this->plan_id         = $p->id;
+        $this->observacion     = $p->observacion;
+        $this->responsable     = $p->responsable;
+        $this->fecha           = Carbon::parse($p->fecha)->format('Y-m-d');
+
+        $this->sector_id       = (string) $p->sector_id;
+        $this->comuna_id       = (string) $p->sector->comuna_id;
+        $this->parroquia_id    = (string) $p->sector->comuna->parroquia_id;
+        $this->municipio_id    = (string) $p->sector->comuna->parroquia->municipio_id;
+
+        $this->total_entregas  = (string) $p->total_entregas;
+        $this->tipo            = $p->tipo ?? [];
 
         // Cargar combos en cascada
         $this->parroquiasFiltradas = Parroquia::where('municipio_id', $this->municipio_id)->orderBy('nombre')->get();
@@ -187,23 +195,24 @@ class DiversidadDietariaController extends Component
 
     public function show(int $id): void
     {
-        $d = DiversidadDietaria::with(['sector.comuna.parroquia.municipio'])->findOrFail($id);
+        $p = PlanVulnerabilidad::with(['sector.comuna.parroquia.municipio'])->findOrFail($id);
 
-        $this->view_observacion = $d->observacion;
-        $this->view_responsable  = $d->responsable;
-        $this->view_fecha       = Carbon::parse($d->fecha)->format('d/m/Y');
-        $this->view_municipio   = $d->sector->comuna->parroquia->municipio->nombre;
-        $this->view_parroquia   = $d->sector->comuna->parroquia->nombre;
-        $this->view_comuna      = $d->sector->comuna->nombre;
-        $this->view_sector      = $d->sector->nombre;
-        $this->view_cantidad    = (string) $d->cantidad;
+        $this->view_observacion    = $p->observacion;
+        $this->view_responsable    = $p->responsable;
+        $this->view_fecha          = Carbon::parse($p->fecha)->format('d/m/Y');
+        $this->view_municipio      = $p->sector->comuna->parroquia->municipio->nombre;
+        $this->view_parroquia      = $p->sector->comuna->parroquia->nombre;
+        $this->view_comuna         = $p->sector->comuna->nombre;
+        $this->view_sector         = $p->sector->nombre;
+        $this->view_total_entregas = (string) $p->total_entregas;
+        $this->view_tipo           = $p->tipo ?? [];
 
         $this->isViewModalOpen = true;
     }
 
     public function delete(int $id): void
     {
-        DiversidadDietaria::findOrFail($id)->delete();
+        PlanVulnerabilidad::findOrFail($id)->delete();
         $this->dispatch('swal', ['icon' => 'success', 'title' => 'Registro eliminado correctamente.']);
     }
 
@@ -216,7 +225,7 @@ class DiversidadDietariaController extends Component
 
     private function resetInputFields(): void
     {
-        $this->diversidad_id      = null;
+        $this->plan_id            = null;
         $this->observacion        = null;
         $this->responsable        = null;
         $this->fecha              = '';
@@ -224,7 +233,8 @@ class DiversidadDietariaController extends Component
         $this->parroquia_id       = '';
         $this->comuna_id          = '';
         $this->sector_id          = '';
-        $this->cantidad           = '';
+        $this->total_entregas     = '';
+        $this->tipo               = [];
         $this->parroquiasFiltradas = [];
         $this->comunasFiltradas    = [];
         $this->sectoresFiltrados   = [];
@@ -237,51 +247,51 @@ class DiversidadDietariaController extends Component
     {
         $now = now();
 
-        $metrics = Cache::rememberForever('diversidad_metrics', function () use ($now) {
-            $totalAnual  = DiversidadDietaria::whereYear('fecha', $now->year)->sum('cantidad');
-            $totalMes    = DiversidadDietaria::whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->sum('cantidad');
+        $metrics = Cache::rememberForever('plan_vulnerabilidad_metrics', function () use ($now) {
+            $totalAnual  = PlanVulnerabilidad::whereYear('fecha', $now->year)->sum('total_entregas');
+            $totalMes    = PlanVulnerabilidad::whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->sum('total_entregas');
 
             $startOfWeek = $now->copy()->startOfWeek();
             $endOfWeek   = $now->copy()->endOfWeek();
-            $totalSemana = DiversidadDietaria::whereBetween('fecha', [$startOfWeek, $endOfWeek])->sum('cantidad');
+            $totalSemana = PlanVulnerabilidad::whereBetween('fecha', [$startOfWeek, $endOfWeek])->sum('total_entregas');
 
-            $registrosMes = DiversidadDietaria::whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->count();
+            $registrosMes = PlanVulnerabilidad::whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->count();
 
             $municipiosConTotales = Municipio::query()
                 ->select('municipios.*')
                 ->addSelect([
-                    'total_anual' => DB::table('diversidad_dietarias')
-                        ->join('sectores', 'diversidad_dietarias.sector_id', '=', 'sectores.id')
+                    'total_anual' => DB::table('plan_vulnerabilidads')
+                        ->join('sectores', 'plan_vulnerabilidads.sector_id', '=', 'sectores.id')
                         ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
                         ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
                         ->whereColumn('parroquias.municipio_id', 'municipios.id')
-                        ->whereYear('diversidad_dietarias.fecha', $now->year)
-                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
-                    
-                    'total_mes' => DB::table('diversidad_dietarias')
-                        ->join('sectores', 'diversidad_dietarias.sector_id', '=', 'sectores.id')
-                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
-                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
-                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
-                        ->whereYear('diversidad_dietarias.fecha', $now->year)
-                        ->whereMonth('diversidad_dietarias.fecha', $now->month)
-                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
-                        
-                    'total_semana' => DB::table('diversidad_dietarias')
-                        ->join('sectores', 'diversidad_dietarias.sector_id', '=', 'sectores.id')
-                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
-                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
-                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
-                        ->whereBetween('diversidad_dietarias.fecha', [$startOfWeek, $endOfWeek])
-                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+                        ->whereYear('plan_vulnerabilidads.fecha', $now->year)
+                        ->selectRaw('COALESCE(SUM(total_entregas), 0)'),
 
-                    'abordajes_mes_count' => DB::table('diversidad_dietarias')
-                        ->join('sectores', 'diversidad_dietarias.sector_id', '=', 'sectores.id')
+                    'total_mes' => DB::table('plan_vulnerabilidads')
+                        ->join('sectores', 'plan_vulnerabilidads.sector_id', '=', 'sectores.id')
                         ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
                         ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
                         ->whereColumn('parroquias.municipio_id', 'municipios.id')
-                        ->whereYear('diversidad_dietarias.fecha', $now->year)
-                        ->whereMonth('diversidad_dietarias.fecha', $now->month)
+                        ->whereYear('plan_vulnerabilidads.fecha', $now->year)
+                        ->whereMonth('plan_vulnerabilidads.fecha', $now->month)
+                        ->selectRaw('COALESCE(SUM(total_entregas), 0)'),
+
+                    'total_semana' => DB::table('plan_vulnerabilidads')
+                        ->join('sectores', 'plan_vulnerabilidads.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereBetween('plan_vulnerabilidads.fecha', [$startOfWeek, $endOfWeek])
+                        ->selectRaw('COALESCE(SUM(total_entregas), 0)'),
+
+                    'abordajes_mes_count' => DB::table('plan_vulnerabilidads')
+                        ->join('sectores', 'plan_vulnerabilidads.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('plan_vulnerabilidads.fecha', $now->year)
+                        ->whereMonth('plan_vulnerabilidads.fecha', $now->month)
                         ->selectRaw('COUNT(*)')
                 ])
                 ->orderBy('nombre')
@@ -296,30 +306,30 @@ class DiversidadDietariaController extends Component
             ];
         });
 
-        $registros = DiversidadDietaria::query()
-            ->select('diversidad_dietarias.*')
-            ->join('sectores',   'diversidad_dietarias.sector_id',    '=', 'sectores.id')
+        $registros = PlanVulnerabilidad::query()
+            ->select('plan_vulnerabilidads.*')
+            ->join('sectores',   'plan_vulnerabilidads.sector_id',    '=', 'sectores.id')
             ->join('comunas',     'sectores.comuna_id',     '=', 'comunas.id')
             ->join('parroquias',  'comunas.parroquia_id',   '=', 'parroquias.id')
             ->join('municipios',  'parroquias.municipio_id', '=', 'municipios.id')
             ->when($this->search, function ($q) {
                 $term = '%' . $this->search . '%';
                 $q->where(function ($q1) use ($term) {
-                    $q1->where('diversidad_dietarias.observacion', 'like', $term)
-                       ->orWhere('diversidad_dietarias.responsable', 'like', $term)
+                    $q1->where('plan_vulnerabilidads.responsable', 'like', $term)
+                       ->orWhere('plan_vulnerabilidads.observacion', 'like', $term)
                        ->orWhere('municipios.nombre',   'like', $term)
                        ->orWhere('parroquias.nombre',   'like', $term)
                        ->orWhere('comunas.nombre',      'like', $term)
                        ->orWhere('sectores.nombre',     'like', $term);
                 });
             })
-            ->when($this->dateFrom, fn($q) => $q->whereDate('diversidad_dietarias.fecha', '>=', $this->dateFrom))
-            ->when($this->dateTo,   fn($q) => $q->whereDate('diversidad_dietarias.fecha', '<=', $this->dateTo))
+            ->when($this->dateFrom, fn($q) => $q->whereDate('plan_vulnerabilidads.fecha', '>=', $this->dateFrom))
+            ->when($this->dateTo,   fn($q) => $q->whereDate('plan_vulnerabilidads.fecha', '<=', $this->dateTo))
             ->with(['sector.comuna.parroquia.municipio'])
-            ->orderBy('diversidad_dietarias.fecha', $this->sortDirection)
+            ->orderBy('plan_vulnerabilidads.fecha', $this->sortDirection)
             ->paginate(10);
 
-        return view('livewire.actividades.diversidad_dietaria.diversidad_dietaria-index', [
+        return view('livewire.actividades.plan_vulnerabilidad.plan_vulnerabilidad-index', [
             'registros'            => $registros,
             'municipios'           => Municipio::orderBy('nombre')->get(),
             'municipiosConTotales' => $metrics['municipiosConTotales'],

@@ -346,6 +346,7 @@ class Escuela4sController extends Component
                 $term = '%' . $this->search . '%';
                 $q->where(function ($q1) use ($term) {
                     $q1->where('escuela4s.observacion', 'like', $term)
+                       ->orWhere('escuela4s.responsable', 'like', $term)
                        ->orWhere('escuela4s.nombre_escuela', 'like', $term)
                        ->orWhere('municipios.nombre',   'like', $term)
                        ->orWhere('parroquias.nombre',   'like', $term)

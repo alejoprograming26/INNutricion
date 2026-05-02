@@ -29,6 +29,9 @@ Route::middleware(['auth', 'check.status'])->group(function () {
         Route::get('/actividades/escuela4s', \App\Livewire\Actividades\Escuela4sController::class)->name('admin.actividades.escuela4s.index');
         Route::get('/actividades/liderazgo-territorial', \App\Livewire\Actividades\LiderazgoTerritorialController::class)->name('admin.actividades.liderazgo.index');
         Route::get('/actividades/diversidad-dietaria', \App\Livewire\Actividades\DiversidadDietariaController::class)->name('admin.actividades.diversidad.index');
+        Route::get('/actividades/circulo-lactancia', \App\Livewire\Actividades\CirculoLactanciaController::class)->name('admin.actividades.circulo.index');
+        Route::get('/actividades/plan-vulnerabilidad', \App\Livewire\Actividades\PlanVulnerabilidadController::class)->name('admin.actividades.vulnerabilidad.index');
+        Route::get('/actividades/feria-campo', \App\Livewire\Actividades\FeriaCampoController::class)->name('admin.actividades.feria.index');
         Route::get('/calendario', \App\Livewire\CalendarioController::class)->name('admin.calendario.index');
         
         Route::get('/logout', function () {

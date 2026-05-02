@@ -19,9 +19,10 @@ return new class extends Migration
             $table->integer('total_b')->default(0);
             $table->integer('total_a_plus')->default(0);
 
-            // Índices de rendimiento
-            $table->index('sector_id');
+            // Índices para optimización
+            $table->index(['sector_id', 'fecha']);
             $table->index('fecha');
+            $table->index('responsable');
 
             $table->timestamps();
         });
