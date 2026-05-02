@@ -287,11 +287,52 @@ class Escuela4sController extends Component
 
             $registrosMes = Escuela4s::whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->count();
 
+            $municipiosConTotales = Municipio::query()
+                ->select('municipios.*')
+                ->addSelect([
+                    'total_anual' => DB::table('escuela4s')
+                        ->join('sectores', 'escuela4s.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('escuela4s.fecha', $now->year)
+                        ->selectRaw('COUNT(*)'),
+                    
+                    'total_mes' => DB::table('escuela4s')
+                        ->join('sectores', 'escuela4s.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('escuela4s.fecha', $now->year)
+                        ->whereMonth('escuela4s.fecha', $now->month)
+                        ->selectRaw('COUNT(*)'),
+                        
+                    'total_semana' => DB::table('escuela4s')
+                        ->join('sectores', 'escuela4s.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereBetween('escuela4s.fecha', [$startOfWeek, $endOfWeek])
+                        ->selectRaw('COUNT(*)'),
+
+                    'abordajes_mes_count' => DB::table('escuela4s')
+                        ->join('sectores', 'escuela4s.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('escuela4s.fecha', $now->year)
+                        ->whereMonth('escuela4s.fecha', $now->month)
+                        ->selectRaw('COUNT(*)')
+                ])
+                ->orderBy('nombre')
+                ->get();
+
             return [
                 'totalAnual'           => $totalAnual,
                 'totalMes'             => $totalMes,
                 'totalSemana'          => $totalSemana,
                 'registrosMes'         => $registrosMes,
+                'municipiosConTotales' => $municipiosConTotales,
             ];
         });
 
@@ -321,10 +362,16 @@ class Escuela4sController extends Component
         return view('livewire.actividades.escuela_4s.escuela_4s-index', [
             'registros'            => $registros,
             'municipios'           => Municipio::orderBy('nombre')->get(),
+            'municipiosConTotales' => $metrics['municipiosConTotales'],
             'totalAnual'           => $metrics['totalAnual'],
             'totalMes'             => $metrics['totalMes'],
             'totalSemana'          => $metrics['totalSemana'],
             'registrosMes'         => $metrics['registrosMes'],
         ]);
+    }
+
+    public function openReportModal($municipioId, $type)
+    {
+        // Placeholder para futura implementación
     }
 }

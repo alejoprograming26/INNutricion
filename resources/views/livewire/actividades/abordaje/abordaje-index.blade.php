@@ -403,73 +403,82 @@
     {{-- ═══════════════════════════════════════════════════
          Modal Ver Detalle
     ═══════════════════════════════════════════════════ --}}
+    {{-- ═══════════════════════════════════════════════════
+         Modal Ver Detalle
+    ═══════════════════════════════════════════════════ --}}
     @if ($isViewModalOpen)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4">
             <div class="bg-white dark:bg-zinc-900 w-full max-w-md p-0 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                <div class="h-24 bg-gradient-to-r from-lime-500 to-emerald-600 relative">
-                    <div class="absolute -bottom-8 left-6 w-16 h-16 rounded-2xl bg-white dark:bg-zinc-900 flex items-center justify-center shadow-lg border-4 border-white dark:border-zinc-900">
-                        <flux:icon.map class="w-8 h-8 text-lime-600" />
+                <div class="h-20 bg-gradient-to-r from-lime-500 to-emerald-600 relative">
+                    <div class="absolute -bottom-6 left-6 w-12 h-12 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center shadow-md border-[3px] border-white dark:border-zinc-900">
+                        <flux:icon.map class="w-6 h-6 text-lime-600" />
                     </div>
                 </div>
                 
-                <div class="px-6 pt-12 pb-6">
-                    <h2 class="text-2xl font-black text-zinc-800 dark:text-zinc-100 mb-1">Detalle del Abordaje</h2>
-                    <p class="text-sm font-medium text-zinc-500 mb-6">{{ $view_fecha }}</p>
-
-                    <div class="space-y-4">
-                        <div class="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-xl border border-zinc-100 dark:border-zinc-700/50">
-                            <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">Observación</span>
-                            <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-200">{{ $view_observacion ?? 'Sin observaciones' }}</span>
+                <div class="px-6 pt-8 pb-5">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-xl font-black text-zinc-800 dark:text-zinc-100 leading-tight">Detalle del Abordaje</h2>
+                            <p class="text-xs font-medium text-zinc-500 mt-0.5">{{ $view_fecha }}</p>
                         </div>
-
-                        <div class="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-xl border border-zinc-100 dark:border-zinc-700/50">
-                            <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">Responsable</span>
-                            <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-200">{{ $view_responsable ?? 'No especificado' }}</span>
+                        <div class="text-right">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 mb-0.5">Cantidad Total</span>
+                            <span class="text-xl font-black text-lime-700 dark:text-lime-300 leading-none">{{ number_format((int) $view_cantidad) }}</span>
                         </div>
+                    </div>
 
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">Municipio</span>
-                                <span class="block text-sm font-semibold text-zinc-800 dark:text-zinc-200">{{ $view_municipio }}</span>
+                    <div class="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-100 dark:border-zinc-700/50 overflow-hidden">
+                        
+                        <div class="grid grid-cols-2 divide-x divide-zinc-100 dark:divide-zinc-700/50 border-b border-zinc-100 dark:border-zinc-700/50">
+                            <div class="p-3">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Responsable</span>
+                                <span class="block text-xs font-semibold text-zinc-800 dark:text-zinc-200">{{ $view_responsable ?? 'No especificado' }}</span>
                             </div>
-                            <div>
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">Parroquia</span>
-                                <span class="block text-sm font-semibold text-zinc-800 dark:text-zinc-200">{{ $view_parroquia }}</span>
-                            </div>
-                            <div>
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">Comuna</span>
-                                <span class="block text-sm font-semibold text-zinc-800 dark:text-zinc-200">{{ $view_comuna }}</span>
-                            </div>
-                            <div>
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">Sector</span>
-                                <span class="block text-sm font-semibold text-zinc-800 dark:text-zinc-200">{{ $view_sector }}</span>
+                            <div class="p-3">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Municipio</span>
+                                <span class="block text-xs font-medium text-zinc-700 dark:text-zinc-300">{{ $view_municipio }}</span>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-3 gap-3">
-                            <div class="p-3 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 text-center">
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400 mb-1">Total A</span>
-                                <span class="text-lg font-black text-sky-700 dark:text-sky-300">{{ number_format((int) $view_total_a) }}</span>
+                        <div class="grid grid-cols-3 divide-x divide-zinc-100 dark:divide-zinc-700/50 border-b border-zinc-100 dark:border-zinc-700/50">
+                            <div class="p-3">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Parroquia</span>
+                                <span class="block text-[11px] font-medium text-zinc-700 dark:text-zinc-300 truncate" title="{{ $view_parroquia }}">{{ $view_parroquia }}</span>
                             </div>
-                            <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 text-center">
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 mb-1">Total B</span>
-                                <span class="text-lg font-black text-amber-700 dark:text-amber-300">{{ number_format((int) $view_total_b) }}</span>
+                            <div class="p-3">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Comuna</span>
+                                <span class="block text-[11px] font-medium text-zinc-700 dark:text-zinc-300 truncate" title="{{ $view_comuna }}">{{ $view_comuna }}</span>
                             </div>
-                            <div class="p-3 rounded-xl bg-purple-50 dark:bg-purple-500/10 border border-purple-100 dark:border-purple-500/20 text-center">
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 mb-1">Total A+</span>
-                                <span class="text-lg font-black text-purple-700 dark:text-purple-300">{{ number_format((int) $view_total_a_plus) }}</span>
+                            <div class="p-3">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Sector</span>
+                                <span class="block text-[11px] font-medium text-zinc-700 dark:text-zinc-300 truncate" title="{{ $view_sector }}">{{ $view_sector }}</span>
                             </div>
                         </div>
 
-                        <div class="mt-4 flex items-center justify-between p-4 rounded-xl bg-lime-50 dark:bg-lime-500/10 border border-lime-100 dark:border-lime-500/20">
-                            <span class="text-sm font-bold uppercase tracking-wider text-lime-700 dark:text-lime-400">Cantidad Total</span>
-                            <span class="text-2xl font-black text-lime-700 dark:text-lime-300">{{ number_format((int) $view_cantidad) }}</span>
+                        <div class="grid grid-cols-3 divide-x divide-zinc-100 dark:divide-zinc-700/50 border-b border-zinc-100 dark:border-zinc-700/50 bg-white dark:bg-zinc-900/50">
+                            <div class="p-3 text-center">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-0.5">Total A</span>
+                                <span class="text-sm font-black text-sky-700 dark:text-sky-300">{{ number_format((int) $view_total_a) }}</span>
+                            </div>
+                            <div class="p-3 text-center">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-0.5">Total B</span>
+                                <span class="text-sm font-black text-amber-700 dark:text-amber-300">{{ number_format((int) $view_total_b) }}</span>
+                            </div>
+                            <div class="p-3 text-center">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 mb-0.5">Total A+</span>
+                                <span class="text-sm font-black text-purple-700 dark:text-purple-300">{{ number_format((int) $view_total_a_plus) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Observación</span>
+                            <p class="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ $view_observacion ?? 'Sin observaciones' }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex justify-end">
-                    <flux:button wire:click="closeModal" variant="ghost">Cerrar Detalle</flux:button>
+                <div class="px-4 py-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex justify-end">
+                    <flux:button wire:click="closeModal" variant="ghost" size="sm">Cerrar Detalle</flux:button>
                 </div>
             </div>
         </div>

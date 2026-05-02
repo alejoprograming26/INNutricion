@@ -3,11 +3,11 @@
          Header & Acciones Principales
     ═══════════════════════════════════════════════════ --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden">
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-lime-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
         
         <div class="flex items-center gap-4 relative z-10">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-lime-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-lime-500/30">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
                 <flux:icon.academic-cap class="w-8 h-8 text-white" />
             </div>
             <div>
@@ -184,72 +184,190 @@
     </flux:card>
 
     {{-- ═══════════════════════════════════════════════════
+         Resumen Estadístico por Municipio
+    ═══════════════════════════════════════════════════ --}}
+    <flux:card class="shadow-sm mb-6 mt-6">
+        <div class="mb-4">
+            <h2 class="text-lg font-bold text-zinc-800 dark:text-zinc-100 uppercase tracking-wide">Relación por Municipio</h2>
+            <p class="text-sm text-zinc-500">Resumen general de actividades registradas en cada municipio.</p>
+        </div>
+        <div class="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700">
+            <table class="w-full text-sm text-left text-zinc-600 dark:text-zinc-400">
+                <thead class="bg-zinc-50 dark:bg-zinc-800/50 text-xs uppercase font-semibold text-zinc-700 dark:text-zinc-300 border-b border-zinc-200 dark:border-zinc-700">
+                    <tr class="text-center">
+                        <th class="px-3 py-3 text-left">Municipio</th>
+                        <th class="px-3 py-3">Total Anual</th>
+                        <th class="px-3 py-3">Total Mes</th>
+                        <th class="px-3 py-3">Última Semana</th>
+                        <th class="px-3 py-3">Registros (Mes)</th>
+                        <th class="px-3 py-3 text-center">Reportes</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    @forelse($municipiosConTotales as $m)
+                        <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors text-center">
+                            <td class="px-3 py-3 text-left font-semibold text-zinc-800 dark:text-zinc-100">
+                                {{ $m->nombre }}
+                            </td>
+                            <td class="px-3 py-3">
+                                <span class="bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300 px-2 py-1 rounded text-xs font-bold">
+                                    {{ number_format($m->total_anual ?? 0) }}
+                                </span>
+                            </td>
+                            <td class="px-3 py-3">
+                                <span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 px-2 py-1 rounded text-xs font-bold">
+                                    {{ number_format($m->total_mes ?? 0) }}
+                                </span>
+                            </td>
+                            <td class="px-3 py-3">
+                                <span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300 px-2 py-1 rounded text-xs font-bold">
+                                    {{ number_format($m->total_semana ?? 0) }}
+                                </span>
+                            </td>
+                            <td class="px-3 py-3">
+                                <span class="bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300 px-2 py-1 rounded text-xs font-bold">
+                                    {{ number_format($m->abordajes_mes_count ?? 0) }}
+                                </span>
+                            </td>
+                            <td class="px-3 py-3">
+                                <div class="flex items-center justify-center gap-2">
+                                    <flux:button wire:click="openReportModal({{ $m->id }}, 'grafico')"
+                                        size="sm" icon="chart-bar"
+                                        class="!bg-violet-600 !text-white border-none hover:!bg-violet-700 font-bold"
+                                        title="Ver Gráficas para {{ $m->nombre }}">
+                                        Gráficas
+                                    </flux:button>
+                                    <flux:button wire:click="openReportModal({{ $m->id }}, 'pdf')"
+                                        size="sm" icon="document-text"
+                                        class="!bg-red-600 !text-white border-none hover:!bg-red-700 font-semibold"
+                                        title="Descargar PDF para {{ $m->nombre }}">
+                                        PDF
+                                    </flux:button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center text-zinc-500">No hay municipios registrados en el sistema.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </flux:card>
+
+    {{-- ═══════════════════════════════════════════════════
          Modal Crear / Editar
     ═══════════════════════════════════════════════════ --}}
     @if ($isModalOpen)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 backdrop-blur-sm p-4">
-            <div class="bg-white dark:bg-zinc-900 w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-                <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-                    <h2 class="text-lg font-black text-zinc-800 dark:text-zinc-100">
-                        {{ $escuela_id ? 'Editar Certificación' : 'Nueva Certificación' }}
-                    </h2>
-                    <flux:button wire:click="closeModal" variant="ghost" icon="x-mark" class="rounded-full" />
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4" wire:key="modal-{{ $escuela_id ?? 'new' }}">
+            <div class="bg-white dark:bg-zinc-900 w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-zinc-200 dark:border-zinc-800 overflow-hidden transform transition-all">
+                
+                {{-- Header con gradiente suave --}}
+                <div class="relative px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 shrink-0 overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-lime-50 to-emerald-50 dark:from-lime-500/5 dark:to-emerald-500/5"></div>
+                    <div class="relative flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 flex items-center justify-center shadow-sm border border-zinc-200 dark:border-zinc-700">
+                                <flux:icon.academic-cap class="w-5 h-5 text-lime-600 dark:text-lime-400" />
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-black text-zinc-800 dark:text-zinc-100">
+                                    {{ $escuela_id ? 'Editar Certificación' : 'Registrar Nueva Certificación' }}
+                                </h2>
+                                <p class="text-xs text-zinc-500 font-medium">Complete los datos de la certificación y ubicación.</p>
+                            </div>
+                        </div>
+                        <flux:button wire:click="closeModal" variant="ghost" icon="x-mark" class="rounded-full hover:bg-white dark:hover:bg-zinc-800" />
+                    </div>
                 </div>
 
+                {{-- Body --}}
                 <div class="p-6 overflow-y-auto bg-zinc-50/50 dark:bg-zinc-900/50">
-                    <form wire:submit="store" id="escuelaForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <flux:input wire:model="fecha" type="date" label="Fecha *" required />
-                        <flux:input wire:model="responsable" label="Responsable *" placeholder="Nombre del responsable" required />
+                    <form wire:submit="store" id="escuelaForm" class="space-y-6">
                         
-                        <div class="md:col-span-2">
-                            <flux:input wire:model="nombre_escuela" label="Nombre de la Escuela *" placeholder="Nombre completo del plantel" required />
+                        {{-- Datos Generales Card --}}
+                        <div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-4 flex items-center gap-2">
+                                <flux:icon.document-text class="w-4 h-4" /> Datos Generales
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="md:col-span-2">
+                                    <flux:input wire:model="observacion" label="Observación" placeholder="Detalles adicionales (opcional)" />
+                                </div>
+                                <div class="md:col-span-2">
+                                    <flux:input wire:model="nombre_escuela" label="Nombre de la Escuela *" placeholder="Nombre completo del plantel" required />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="fecha" type="date" label="Fecha *" required />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="responsable" label="Responsable *" placeholder="Nombre del responsable" required />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="director_a" label="Director(a) *" placeholder="Nombre del director" required />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="codigo_dea" label="Código DEA *" placeholder="Ej: OD000000" required />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="codigo_cnae" label="Código CNAE *" placeholder="Ej: 000000" required />
+                                </div>
+                                <div>
+                                    <flux:select wire:model="fase" label="Fase *" required>
+                                        <flux:select.option value="FASE 1">FASE 1</flux:select.option>
+                                        <flux:select.option value="FASE 2">FASE 2</flux:select.option>
+                                        <flux:select.option value="FASE 3">FASE 3</flux:select.option>
+                                    </flux:select>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <flux:input wire:model="tema_tratado" label="Tema Tratado *" placeholder="Descripción del tema abordado" required />
+                                </div>
+                            </div>
                         </div>
 
-                        <flux:select wire:model.live="municipio_id" label="Municipio *" placeholder="Seleccionar municipio" required>
-                            @foreach ($municipios as $m)
-                                <flux:select.option value="{{ $m->id }}">{{ $m->nombre }}</flux:select.option>
-                            @endforeach
-                        </flux:select>
-
-                        <flux:select wire:model.live="parroquia_id" label="Parroquia *" placeholder="{{ $municipio_id ? 'Selecciona parroquia' : '— Primero municipio —' }}" :disabled="!$municipio_id" required>
-                            @foreach ($parroquiasFiltradas as $p)
-                                <flux:select.option value="{{ $p->id }}">{{ $p->nombre }}</flux:select.option>
-                            @endforeach
-                        </flux:select>
-
-                        <flux:select wire:model.live="comuna_id" label="Comuna *" placeholder="{{ $parroquia_id ? 'Selecciona comuna' : '— Primero parroquia —' }}" :disabled="!$parroquia_id" required>
-                            @foreach ($comunasFiltradas as $c)
-                                <flux:select.option value="{{ $c->id }}">{{ $c->nombre }}</flux:select.option>
-                            @endforeach
-                        </flux:select>
-
-                        <flux:select wire:model="sector_id" label="Sector *" placeholder="{{ $comuna_id ? 'Selecciona sector' : '— Primero comuna —' }}" :disabled="!$comuna_id" required>
-                            @foreach ($sectoresFiltrados as $s)
-                                <flux:select.option value="{{ $s->id }}">{{ $s->nombre }}</flux:select.option>
-                            @endforeach
-                        </flux:select>
-
-                        <flux:input wire:model="director_a" label="Director(a) *" placeholder="Nombre del director" required />
-                        <flux:input wire:model="codigo_dea" label="Código DEA *" placeholder="Ej: OD000000" required />
-                        <flux:input wire:model="codigo_cnae" label="Código CNAE *" placeholder="Ej: 000000" required />
-                        <flux:select wire:model="fase" label="Fase *" required>
-                            <flux:select.option value="FASE 1">FASE 1</flux:select.option>
-                            <flux:select.option value="FASE 2">FASE 2</flux:select.option>
-                            <flux:select.option value="FASE 3">FASE 3</flux:select.option>
-                        </flux:select>
-
-                        <div class="md:col-span-2">
-                            <flux:input wire:model="tema_tratado" label="Tema Tratado *" placeholder="Descripción del tema abordado" required />
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <flux:textarea wire:model="observacion" label="Observación" placeholder="Detalles adicionales..." />
+                        {{-- Ubicación Card --}}
+                        <div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-4 flex items-center gap-2">
+                                <flux:icon.map-pin class="w-4 h-4" /> Ubicación Geográfica
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <flux:select wire:model.live="municipio_id" label="Municipio *" placeholder="Selecciona municipio" required>
+                                        @foreach ($municipios as $m)
+                                            <flux:select.option value="{{ $m->id }}">{{ $m->nombre }}</flux:select.option>
+                                        @endforeach
+                                    </flux:select>
+                                </div>
+                                <div>
+                                    <flux:select wire:model.live="parroquia_id" label="Parroquia *" placeholder="{{ $municipio_id ? 'Selecciona parroquia' : '— Primero municipio —' }}" :disabled="!$municipio_id" required>
+                                        @foreach ($parroquiasFiltradas as $p)
+                                            <flux:select.option value="{{ $p->id }}">{{ $p->nombre }}</flux:select.option>
+                                        @endforeach
+                                    </flux:select>
+                                </div>
+                                <div>
+                                    <flux:select wire:model.live="comuna_id" label="Comuna *" placeholder="{{ $parroquia_id ? 'Selecciona comuna' : '— Primero parroquia —' }}" :disabled="!$parroquia_id" required>
+                                        @foreach ($comunasFiltradas as $c)
+                                            <flux:select.option value="{{ $c->id }}">{{ $c->nombre }}</flux:select.option>
+                                        @endforeach
+                                    </flux:select>
+                                </div>
+                                <div>
+                                    <flux:select wire:model="sector_id" label="Sector *" placeholder="{{ $comuna_id ? 'Selecciona sector' : '— Primero comuna —' }}" :disabled="!$comuna_id" required>
+                                        @foreach ($sectoresFiltrados as $s)
+                                            <flux:select.option value="{{ $s->id }}">{{ $s->nombre }}</flux:select.option>
+                                        @endforeach
+                                    </flux:select>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
 
-                <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-end gap-3">
-                    <flux:button wire:click="closeModal" variant="ghost">Cancelar</flux:button>
+                {{-- Footer --}}
+                <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shrink-0 flex justify-end gap-3 rounded-b-2xl">
+                    <flux:button wire:click="closeModal" variant="ghost" class="hover:bg-zinc-100 dark:hover:bg-zinc-800">Cancelar</flux:button>
                     <flux:button type="submit" form="escuelaForm" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-zinc-900 border-none font-bold shadow-md shadow-lime-500/20">
                         <span wire:loading.remove wire:target="store">Guardar Registro</span>
                         <span wire:loading wire:target="store">Guardando...</span>
@@ -263,58 +381,75 @@
          Modal Ver Detalle
     ═══════════════════════════════════════════════════ --}}
     @if ($isViewModalOpen)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 backdrop-blur-sm p-4">
-            <div class="bg-white dark:bg-zinc-900 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                <div class="h-24 bg-gradient-to-r from-lime-500 to-emerald-600"></div>
-                <div class="px-6 pb-6 -mt-8">
-                    <div class="w-16 h-16 rounded-2xl bg-white dark:bg-zinc-800 flex items-center justify-center shadow-lg mb-4 border-4 border-white dark:border-zinc-900">
-                        <flux:icon.academic-cap class="w-8 h-8 text-emerald-600" />
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4">
+            <div class="bg-white dark:bg-zinc-900 w-full max-w-md p-0 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                <div class="h-20 bg-gradient-to-r from-lime-500 to-emerald-600 relative">
+                    <div class="absolute -bottom-6 left-6 w-12 h-12 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center shadow-md border-[3px] border-white dark:border-zinc-900">
+                        <flux:icon.academic-cap class="w-6 h-6 text-lime-600" />
                     </div>
-                    
-                    <h2 class="text-2xl font-black text-zinc-800 dark:text-zinc-100">{{ $view_nombre_escuela }}</h2>
-                    <p class="text-sm text-zinc-500 mb-6">{{ $view_municipio }} &bull; {{ $view_sector }}</p>
-
-                    <div class="grid grid-cols-2 gap-6 text-sm">
-                        <div>
-                            <p class="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Director(a)</p>
-                            <p class="font-medium text-zinc-800 dark:text-zinc-200">{{ $view_director_a }}</p>
-                        </div>
-                        <div>
-                            <p class="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Responsable</p>
-                            <p class="font-medium text-zinc-800 dark:text-zinc-200">{{ $view_responsable }}</p>
-                        </div>
-                        <div>
-                            <p class="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Código DEA</p>
-                            <p class="font-mono">{{ $view_codigo_dea }}</p>
-                        </div>
-                        <div>
-                            <p class="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Código CNAE</p>
-                            <p class="font-mono">{{ $view_codigo_cnae }}</p>
-                        </div>
-                        <div>
-                            <p class="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Fase Actual</p>
-                            <p class="font-bold text-emerald-600">{{ $view_fase }}</p>
-                        </div>
-                        <div>
-                            <p class="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Fecha</p>
-                            <p class="font-medium">{{ $view_fecha }}</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 p-4 bg-zinc-50 dark:bg-zinc-800 rounded-xl">
-                        <p class="text-zinc-400 font-bold uppercase text-[10px] tracking-widest mb-2">Tema Tratado</p>
-                        <p class="text-sm">{{ $view_tema_tratado }}</p>
-                    </div>
-
-                    @if($view_observacion)
-                        <div class="mt-4 p-4 border border-zinc-100 dark:border-zinc-800 rounded-xl">
-                            <p class="text-zinc-400 font-bold uppercase text-[10px] tracking-widest mb-2">Observaciones</p>
-                            <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $view_observacion }}</p>
-                        </div>
-                    @endif
                 </div>
-                <div class="px-6 py-4 bg-zinc-50 dark:bg-zinc-800/50 flex justify-end">
-                    <flux:button wire:click="closeModal" variant="ghost">Cerrar</flux:button>
+                
+                <div class="px-6 pt-8 pb-5">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="pr-2">
+                            <h2 class="text-xl font-black text-zinc-800 dark:text-zinc-100 leading-tight line-clamp-2">{{ $view_nombre_escuela }}</h2>
+                            <p class="text-xs font-medium text-zinc-500 mt-0.5">{{ $view_fecha }}</p>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-0.5">Fase</span>
+                            <span class="text-lg font-black text-emerald-700 dark:text-emerald-300 leading-none">{{ $view_fase }}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-100 dark:border-zinc-700/50 overflow-hidden">
+                        
+                        <div class="p-3 border-b border-zinc-100 dark:border-zinc-700/50 bg-white dark:bg-zinc-900/50">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Tema Tratado</span>
+                            <p class="text-[11px] font-medium text-zinc-800 dark:text-zinc-200">{{ $view_tema_tratado }}</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 divide-x divide-zinc-100 dark:divide-zinc-700/50 border-b border-zinc-100 dark:border-zinc-700/50">
+                            <div class="p-3">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Responsable</span>
+                                <span class="block text-xs font-semibold text-zinc-800 dark:text-zinc-200">{{ $view_responsable }}</span>
+                            </div>
+                            <div class="p-3">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Director(a)</span>
+                                <span class="block text-xs font-semibold text-zinc-800 dark:text-zinc-200">{{ $view_director_a }}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 divide-x divide-zinc-100 dark:divide-zinc-700/50 border-b border-zinc-100 dark:border-zinc-700/50">
+                            <div class="p-3">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Municipio</span>
+                                <span class="block text-[11px] font-medium text-zinc-700 dark:text-zinc-300">{{ $view_municipio }}</span>
+                            </div>
+                            <div class="p-3">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5">Sector</span>
+                                <span class="block text-[11px] font-medium text-zinc-700 dark:text-zinc-300">{{ $view_sector }}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 divide-x divide-zinc-100 dark:divide-zinc-700/50 border-b border-zinc-100 dark:border-zinc-700/50 bg-white dark:bg-zinc-900/50">
+                            <div class="p-3 text-center">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-0.5">Código DEA</span>
+                                <span class="text-[11px] font-mono font-bold text-sky-700 dark:text-sky-300">{{ $view_codigo_dea }}</span>
+                            </div>
+                            <div class="p-3 text-center">
+                                <span class="block text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-0.5">Código CNAE</span>
+                                <span class="text-[11px] font-mono font-bold text-amber-700 dark:text-amber-300">{{ $view_codigo_cnae }}</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Observación</span>
+                            <p class="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ $view_observacion ?? 'Sin observaciones' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-4 py-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex justify-end">
+                    <flux:button wire:click="closeModal" variant="ghost" size="sm">Cerrar Detalle</flux:button>
                 </div>
             </div>
         </div>

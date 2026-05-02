@@ -247,11 +247,52 @@ class DiversidadDietariaController extends Component
 
             $registrosMes = DiversidadDietaria::whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->count();
 
+            $municipiosConTotales = Municipio::query()
+                ->select('municipios.*')
+                ->addSelect([
+                    'total_anual' => DB::table('diversidad_dietarias')
+                        ->join('sectores', 'diversidad_dietarias.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('diversidad_dietarias.fecha', $now->year)
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+                    
+                    'total_mes' => DB::table('diversidad_dietarias')
+                        ->join('sectores', 'diversidad_dietarias.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('diversidad_dietarias.fecha', $now->year)
+                        ->whereMonth('diversidad_dietarias.fecha', $now->month)
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+                        
+                    'total_semana' => DB::table('diversidad_dietarias')
+                        ->join('sectores', 'diversidad_dietarias.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereBetween('diversidad_dietarias.fecha', [$startOfWeek, $endOfWeek])
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+
+                    'abordajes_mes_count' => DB::table('diversidad_dietarias')
+                        ->join('sectores', 'diversidad_dietarias.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('diversidad_dietarias.fecha', $now->year)
+                        ->whereMonth('diversidad_dietarias.fecha', $now->month)
+                        ->selectRaw('COUNT(*)')
+                ])
+                ->orderBy('nombre')
+                ->get();
+
             return [
                 'totalAnual'           => $totalAnual,
                 'totalMes'             => $totalMes,
                 'totalSemana'          => $totalSemana,
                 'registrosMes'         => $registrosMes,
+                'municipiosConTotales' => $municipiosConTotales,
             ];
         });
 
@@ -280,10 +321,16 @@ class DiversidadDietariaController extends Component
         return view('livewire.actividades.diversidad_dietaria.diversidad_dietaria-index', [
             'registros'            => $registros,
             'municipios'           => Municipio::orderBy('nombre')->get(),
+            'municipiosConTotales' => $metrics['municipiosConTotales'],
             'totalAnual'           => $metrics['totalAnual'],
             'totalMes'             => $metrics['totalMes'],
             'totalSemana'          => $metrics['totalSemana'],
             'registrosMes'         => $metrics['registrosMes'],
         ]);
+    }
+
+    public function openReportModal($municipioId, $type)
+    {
+        // Placeholder para futura implementación
     }
 }

@@ -255,11 +255,52 @@ class LiderazgoTerritorialController extends Component
 
             $registrosMes = LiderazgoTerritorial::whereYear('fecha', $now->year)->whereMonth('fecha', $now->month)->count();
 
+            $municipiosConTotales = Municipio::query()
+                ->select('municipios.*')
+                ->addSelect([
+                    'total_anual' => DB::table('liderazgo_territorials')
+                        ->join('sectores', 'liderazgo_territorials.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('liderazgo_territorials.fecha', $now->year)
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+                    
+                    'total_mes' => DB::table('liderazgo_territorials')
+                        ->join('sectores', 'liderazgo_territorials.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('liderazgo_territorials.fecha', $now->year)
+                        ->whereMonth('liderazgo_territorials.fecha', $now->month)
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+                        
+                    'total_semana' => DB::table('liderazgo_territorials')
+                        ->join('sectores', 'liderazgo_territorials.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereBetween('liderazgo_territorials.fecha', [$startOfWeek, $endOfWeek])
+                        ->selectRaw('COALESCE(SUM(cantidad), 0)'),
+
+                    'abordajes_mes_count' => DB::table('liderazgo_territorials')
+                        ->join('sectores', 'liderazgo_territorials.sector_id', '=', 'sectores.id')
+                        ->join('comunas', 'sectores.comuna_id', '=', 'comunas.id')
+                        ->join('parroquias', 'comunas.parroquia_id', '=', 'parroquias.id')
+                        ->whereColumn('parroquias.municipio_id', 'municipios.id')
+                        ->whereYear('liderazgo_territorials.fecha', $now->year)
+                        ->whereMonth('liderazgo_territorials.fecha', $now->month)
+                        ->selectRaw('COUNT(*)')
+                ])
+                ->orderBy('nombre')
+                ->get();
+
             return [
                 'totalAnual'           => $totalAnual,
                 'totalMes'             => $totalMes,
                 'totalSemana'          => $totalSemana,
                 'registrosMes'         => $registrosMes,
+                'municipiosConTotales' => $municipiosConTotales,
             ];
         });
 
@@ -289,10 +330,16 @@ class LiderazgoTerritorialController extends Component
         return view('livewire.actividades.liderazgo_territorial.liderazgo_territorial-index', [
             'registros'            => $registros,
             'municipios'           => Municipio::orderBy('nombre')->get(),
+            'municipiosConTotales' => $metrics['municipiosConTotales'],
             'totalAnual'           => $metrics['totalAnual'],
             'totalMes'             => $metrics['totalMes'],
             'totalSemana'          => $metrics['totalSemana'],
             'registrosMes'         => $metrics['registrosMes'],
         ]);
+    }
+
+    public function openReportModal($municipioId, $type)
+    {
+        // Placeholder para futura implementación
     }
 }
