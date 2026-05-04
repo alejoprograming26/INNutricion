@@ -35,6 +35,15 @@ class FeriaCampoController extends Component
     public string  $comuna_id    = '';
     public string  $sector_id    = '';
 
+    // ── Nuevos campos ────────────────────────────────────────────────────────
+    public string  $venta_lina_nutrivida = '0';
+    public string  $antrometria          = '0';
+    public ?int    $tipo_a               = null;
+    public ?int    $tipo_b               = null;
+    public ?int    $tipo_a_plus          = null;
+    public string  $campana4s            = '0';
+    public ?string $tema_tratado         = null;
+
     // ── Filtros en cascada ────────────────────────────────────────────────────
     public $parroquiasFiltradas = [];
     public $comunasFiltradas    = [];
@@ -52,6 +61,15 @@ class FeriaCampoController extends Component
     public string  $view_parroquia   = '';
     public string  $view_comuna      = '';
     public string  $view_sector      = '';
+
+    // ── Nuevos campos Ver ─────────────────────────────────────────────────────
+    public string  $view_venta_lina_nutrivida = 'NO';
+    public string  $view_antrometria          = 'NO';
+    public ?int    $view_tipo_a               = null;
+    public ?int    $view_tipo_b               = null;
+    public ?int    $view_tipo_a_plus          = null;
+    public string  $view_campana4s            = 'NO';
+    public ?string $view_tema_tratado         = null;
 
     public function updatingSearch(): void
     {
@@ -131,10 +149,21 @@ class FeriaCampoController extends Component
             'responsable' => 'required|string|max:255',
             'fecha'       => 'required|date',
             'sector_id'   => 'required|exists:sectores,id',
+            'venta_lina_nutrivida' => 'required|in:0,1',
+            'antrometria'          => 'required|in:0,1',
+            'tipo_a'               => 'nullable|required_if:antrometria,1|integer|min:0',
+            'tipo_b'               => 'nullable|required_if:antrometria,1|integer|min:0',
+            'tipo_a_plus'          => 'nullable|required_if:antrometria,1|integer|min:0',
+            'campana4s'            => 'required|in:0,1',
+            'tema_tratado'         => 'nullable|required_if:campana4s,1|string|max:255',
         ], [
             'responsable.required' => 'El responsable es obligatorio.',
             'fecha.required'       => 'La fecha es obligatoria.',
             'sector_id.required'   => 'Selecciona un sector.',
+            'tipo_a.required_if'   => 'El total tipo A es obligatorio si hay antropometría.',
+            'tipo_b.required_if'   => 'El total tipo B es obligatorio si hay antropometría.',
+            'tipo_a_plus.required_if' => 'El total tipo A+ es obligatorio si hay antropometría.',
+            'tema_tratado.required_if' => 'El tema tratado es obligatorio si es Campaña 4S.',
         ]);
 
         $data = [
@@ -142,6 +171,13 @@ class FeriaCampoController extends Component
             'responsable' => mb_strtoupper(trim($this->responsable), 'UTF-8'),
             'fecha'       => $this->fecha,
             'sector_id'   => $this->sector_id,
+            'venta_lina_nutrivida' => (bool)$this->venta_lina_nutrivida,
+            'antrometria'          => (bool)$this->antrometria,
+            'tipo_a'               => $this->antrometria === '1' ? $this->tipo_a : null,
+            'tipo_b'               => $this->antrometria === '1' ? $this->tipo_b : null,
+            'tipo_a_plus'          => $this->antrometria === '1' ? $this->tipo_a_plus : null,
+            'campana4s'            => (bool)$this->campana4s,
+            'tema_tratado'         => $this->campana4s === '1' ? ($this->tema_tratado ? mb_strtoupper(trim($this->tema_tratado), 'UTF-8') : null) : null,
         ];
 
         if ($this->feria_id) {
@@ -170,6 +206,14 @@ class FeriaCampoController extends Component
         $this->parroquia_id = (string) $f->sector->comuna->parroquia_id;
         $this->municipio_id = (string) $f->sector->comuna->parroquia->municipio_id;
 
+        $this->venta_lina_nutrivida = $f->venta_lina_nutrivida ? '1' : '0';
+        $this->antrometria          = $f->antrometria ? '1' : '0';
+        $this->tipo_a               = $f->tipo_a;
+        $this->tipo_b               = $f->tipo_b;
+        $this->tipo_a_plus          = $f->tipo_a_plus;
+        $this->campana4s            = $f->campana4s ? '1' : '0';
+        $this->tema_tratado         = $f->tema_tratado;
+
         // Cargar combos en cascada
         $this->parroquiasFiltradas = Parroquia::where('municipio_id', $this->municipio_id)->orderBy('nombre')->get();
         $this->comunasFiltradas    = Comuna::where('parroquia_id', $this->parroquia_id)->orderBy('nombre')->get();
@@ -189,6 +233,14 @@ class FeriaCampoController extends Component
         $this->view_parroquia   = $f->sector->comuna->parroquia->nombre;
         $this->view_comuna      = $f->sector->comuna->nombre;
         $this->view_sector      = $f->sector->nombre;
+
+        $this->view_venta_lina_nutrivida = $f->venta_lina_nutrivida ? 'SI' : 'NO';
+        $this->view_antrometria          = $f->antrometria ? 'SI' : 'NO';
+        $this->view_tipo_a               = $f->tipo_a;
+        $this->view_tipo_b               = $f->tipo_b;
+        $this->view_tipo_a_plus          = $f->tipo_a_plus;
+        $this->view_campana4s            = $f->campana4s ? 'SI' : 'NO';
+        $this->view_tema_tratado         = $f->tema_tratado;
 
         $this->isViewModalOpen = true;
     }
@@ -219,6 +271,15 @@ class FeriaCampoController extends Component
         $this->parroquiasFiltradas = [];
         $this->comunasFiltradas    = [];
         $this->sectoresFiltrados   = [];
+
+        $this->venta_lina_nutrivida = '0';
+        $this->antrometria          = '0';
+        $this->tipo_a               = null;
+        $this->tipo_b               = null;
+        $this->tipo_a_plus          = null;
+        $this->campana4s            = '0';
+        $this->tema_tratado         = null;
+
         $this->resetValidation();
     }
 

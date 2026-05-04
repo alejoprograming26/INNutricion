@@ -17,6 +17,16 @@ return new class extends Migration
             $table->string('responsable');
             $table->date('fecha');
             $table->foreignId('sector_id')->constrained('sectores')->onDelete('cascade');
+
+            // Nuevos campos solicitados
+            $table->boolean('venta_lina_nutrivida')->default(false);
+            $table->boolean('antrometria')->default(false);
+            $table->integer('tipo_a')->nullable();
+            $table->integer('tipo_b')->nullable();
+            $table->integer('tipo_a_plus')->nullable();
+            $table->boolean('campana4s')->default(false);
+            $table->string('tema_tratado')->nullable();
+
             // Índices para optimización
             $table->index(['sector_id', 'fecha']);
             $table->index('fecha');

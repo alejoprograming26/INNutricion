@@ -335,6 +335,48 @@
                             </div>
                         </div>
 
+                        {{-- Datos Específicos Card --}}
+                        <div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-4 flex items-center gap-2">
+                                <flux:icon.tag class="w-4 h-4" /> Datos de la Jornada
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <flux:select wire:model="venta_lina_nutrivida" label="Venta Línea Nutrivida *" required>
+                                        <flux:select.option value="0">No</flux:select.option>
+                                        <flux:select.option value="1">Si</flux:select.option>
+                                    </flux:select>
+                                </div>
+                                <div>
+                                    <flux:select wire:model.live="antrometria" label="Antropometría *" required>
+                                        <flux:select.option value="0">No</flux:select.option>
+                                        <flux:select.option value="1">Si</flux:select.option>
+                                    </flux:select>
+                                </div>
+
+                                @if($antrometria === '1')
+                                    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-5 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700">
+                                        <flux:input wire:model="tipo_a" type="number" label="Total Tipo A *" min="0" />
+                                        <flux:input wire:model="tipo_b" type="number" label="Total Tipo B *" min="0" />
+                                        <flux:input wire:model="tipo_a_plus" type="number" label="Total Tipo A+ *" min="0" />
+                                    </div>
+                                @endif
+
+                                <div>
+                                    <flux:select wire:model.live="campana4s" label="Campaña 4S *" required>
+                                        <flux:select.option value="0">No</flux:select.option>
+                                        <flux:select.option value="1">Si</flux:select.option>
+                                    </flux:select>
+                                </div>
+
+                                @if($campana4s === '1')
+                                    <div class="md:col-span-1 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700">
+                                        <flux:input wire:model="tema_tratado" label="Tema Tratado *" placeholder="Indique el tema" />
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
                     </form>
                 </div>
 
@@ -393,6 +435,46 @@
                         <div class="p-3 bg-white dark:bg-zinc-900/50">
                             <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Observación</span>
                             <p class="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ $view_observacion ?? 'Sin observaciones' }}</p>
+                        </div>
+
+                        <div class="p-3 border-t border-zinc-100 dark:border-zinc-700/50">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-2">Detalles Adicionales</span>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] text-zinc-500">Venta Línea Nutrivida:</span>
+                                    <span class="text-[10px] font-bold {{ $view_venta_lina_nutrivida === 'SI' ? 'text-emerald-600' : 'text-zinc-400' }}">{{ $view_venta_lina_nutrivida }}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] text-zinc-500">Antropometría:</span>
+                                    <span class="text-[10px] font-bold {{ $view_antrometria === 'SI' ? 'text-emerald-600' : 'text-zinc-400' }}">{{ $view_antrometria }}</span>
+                                </div>
+                                @if($view_antrometria === 'SI')
+                                    <div class="grid grid-cols-3 gap-2 mt-1 py-1 px-2 bg-zinc-100 dark:bg-zinc-800 rounded">
+                                        <div class="text-center">
+                                            <span class="block text-[8px] text-zinc-400 uppercase">Tipo A</span>
+                                            <span class="text-[10px] font-black text-zinc-700 dark:text-zinc-300">{{ $view_tipo_a }}</span>
+                                        </div>
+                                        <div class="text-center border-x border-zinc-200 dark:border-zinc-700">
+                                            <span class="block text-[8px] text-zinc-400 uppercase">Tipo B</span>
+                                            <span class="text-[10px] font-black text-zinc-700 dark:text-zinc-300">{{ $view_tipo_b }}</span>
+                                        </div>
+                                        <div class="text-center">
+                                            <span class="block text-[8px] text-zinc-400 uppercase">Tipo A+</span>
+                                            <span class="text-[10px] font-black text-zinc-700 dark:text-zinc-300">{{ $view_tipo_a_plus }}</span>
+                                        </div>
+                                    </div>
+                                @endif
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] text-zinc-500">Campaña 4S:</span>
+                                    <span class="text-[10px] font-bold {{ $view_campana4s === 'SI' ? 'text-emerald-600' : 'text-zinc-400' }}">{{ $view_campana4s }}</span>
+                                </div>
+                                @if($view_campana4s === 'SI')
+                                    <div class="mt-1 py-1 px-2 bg-zinc-100 dark:bg-zinc-800 rounded">
+                                        <span class="block text-[8px] text-zinc-400 uppercase">Tema Tratado</span>
+                                        <span class="text-[10px] font-medium text-zinc-700 dark:text-zinc-300">{{ $view_tema_tratado }}</span>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
