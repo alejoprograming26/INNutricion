@@ -46,10 +46,10 @@ class MetaAlert extends Component
 
             if ($metaAnual > 0 && $real >= $metaAnual) {
                 $municipio = $municipios->firstWhere('id', $detalle->municipio_id);
-                $sessionKey = "meta_celebrated_{$anoActual}_{$municipio->id}";
+                $cacheKey = "meta_celebrated_{$anoActual}_{$municipio->id}_user_" . auth()->id();
 
-                if (!session()->has($sessionKey)) {
-                    session()->put($sessionKey, true);
+                if (!cache()->has($cacheKey)) {
+                    cache()->forever($cacheKey, true);
                     
                     $this->dispatch('meta-achieved', [
                         'municipio' => $municipio->nombre,

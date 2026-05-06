@@ -1,160 +1,194 @@
 <div class="space-y-6">
     {{-- Header / Navigation --}}
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-lime-100 dark:bg-lime-500/10 flex items-center justify-center border border-lime-200 dark:border-lime-500/20 shadow-inner">
-                <flux:icon.presentation-chart-line class="w-7 h-7 text-lime-600 dark:text-lime-400" />
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm overflow-hidden relative group">
+        {{-- Decorative Background Glow --}}
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-lime-500/5 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/10 transition-all duration-700"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none group-hover:bg-lime-500/10 transition-all duration-700"></div>
+
+        <div class="flex items-center gap-5 relative z-10">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-lime-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                <flux:icon.presentation-chart-line class="w-8 h-8 text-white" />
             </div>
-            <div>
-                <h1 class="text-2xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight">Análisis de Metas Anuales</h1>
-                <p class="text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5 font-medium">
-                    <span class="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-bold border border-zinc-200 dark:border-zinc-700">Año {{ $ano }}</span>
-                    <span>&bull; Visualización de cumplimiento por transcripciones</span>
-                </p>
+            <div class="flex flex-col">
+                <h1 class="text-3xl font-black text-zinc-900 dark:text-zinc-100 tracking-tighter uppercase leading-none">
+                    Análisis de <span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-600 to-emerald-600">Metas Anuales</span>
+                </h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em]">Visualización de Cumplimiento Global</p>
+                    <span class="px-2 py-0.5 rounded-md bg-lime-50 dark:bg-lime-500/10 text-lime-700 dark:text-lime-400 text-[10px] font-black border border-lime-100 dark:border-lime-500/20">AÑO {{ $ano }}</span>
+                </div>
             </div>
         </div>
         
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 relative z-10">
             <flux:button as="a" href="{{ route('admin.metas.index') }}" wire:navigate icon="arrow-left" variant="ghost" class="font-bold">
                 Volver a Metas
-            </flux:button>
-            <flux:button icon="printer" variant="ghost" onclick="window.print()" class="hidden md:flex font-bold">
-                Imprimir Reporte
             </flux:button>
         </div>
     </div>
 
     {{-- Global KPIs --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {{-- Meta Total --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+        <div class="bg-gradient-to-br from-cyan-600 to-blue-700 rounded-2xl p-6 shadow-lg shadow-blue-500/20 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <p class="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1">Meta Anual Global</p>
-                    <h3 class="text-2xl font-black text-zinc-800 dark:text-zinc-100 tabular-nums">{{ number_format($kpis['meta_total']) }}</h3>
+                    <p class="text-xs font-bold text-cyan-50 uppercase tracking-widest mb-1 opacity-90">Meta Global</p>
+                    <h3 class="text-4xl font-black text-white tabular-nums drop-shadow-sm">{{ number_format($kpis['meta_total']) }}</h3>
+                    <div class="mt-4 flex items-center gap-1.5 px-2 py-0.5 rounded bg-white/10 backdrop-blur-sm border border-white/20 w-fit">
+                         <flux:icon.building-office class="w-3 h-3 text-white/80" />
+                         <span class="text-[9px] font-bold text-white tracking-widest uppercase">{{ $kpis['total_municipios'] }} Municipios</span>
+                    </div>
                 </div>
-                <div class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 border border-zinc-200 dark:border-zinc-700">
-                    <flux:icon.flag class="w-4 h-4" />
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
+                    <flux:icon.flag class="w-5 h-5 text-white drop-shadow-sm" />
                 </div>
             </div>
         </div>
 
         {{-- Real Total --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+        <div class="bg-gradient-to-br from-emerald-500 to-teal-700 rounded-2xl p-6 shadow-lg shadow-emerald-500/20 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <p class="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1">Total Alcanzado</p>
-                    <h3 class="text-2xl font-black text-zinc-800 dark:text-zinc-100 tabular-nums">{{ number_format($kpis['real_total']) }}</h3>
+                    <p class="text-xs font-bold text-emerald-50 uppercase tracking-widest mb-1 opacity-90">Total Real</p>
+                    <h3 class="text-4xl font-black text-white tabular-nums drop-shadow-sm">{{ number_format($kpis['real_total']) }}</h3>
+                    <div class="mt-4 flex items-center gap-1.5 px-2 py-0.5 rounded bg-white/10 backdrop-blur-sm border border-white/20 w-fit">
+                         <flux:icon.arrow-path class="w-3 h-3 text-white/80 animate-spin-slow" />
+                         <span class="text-[9px] font-bold text-white tracking-widest uppercase">Actualizado</span>
+                    </div>
                 </div>
-                <div class="w-8 h-8 rounded-lg bg-lime-100 dark:bg-lime-500/10 flex items-center justify-center text-lime-600 border border-lime-200 dark:border-lime-500/20">
-                    <flux:icon.check-circle class="w-4 h-4" />
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
+                    <flux:icon.check-circle class="w-5 h-5 text-white drop-shadow-sm" />
                 </div>
             </div>
         </div>
 
         {{-- Porcentaje --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+        <div class="bg-gradient-to-br from-violet-500 to-purple-700 rounded-2xl p-6 shadow-lg shadow-purple-500/20 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <p class="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1">% Cumplimiento</p>
-                    <h3 class="text-2xl font-black text-zinc-800 dark:text-zinc-100 tabular-nums">{{ $kpis['porcentaje'] }}%</h3>
+                    <p class="text-xs font-bold text-purple-50 uppercase tracking-widest mb-1 opacity-90">Eficiencia</p>
+                    <div class="flex items-baseline gap-1">
+                        <h3 class="text-4xl font-black text-white tabular-nums drop-shadow-sm">{{ $kpis['porcentaje'] }}</h3>
+                        <span class="text-xl font-bold text-white/80">%</span>
+                    </div>
+                    <div class="mt-4 w-32 h-1.5 bg-white/20 rounded-full overflow-hidden p-[1px] border border-white/10">
+                        <div class="h-full bg-white rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(255,255,255,0.5)]" style="width: {{ min(100, $kpis['porcentaje']) }}%"></div>
+                    </div>
                 </div>
-                <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 border border-blue-200 dark:border-blue-500/20">
-                    <flux:icon.arrow-trending-up class="w-4 h-4" />
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
+                    <flux:icon.chart-pie class="w-5 h-5 text-white drop-shadow-sm" />
                 </div>
             </div>
         </div>
 
-        {{-- Municipios Completados --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
-            <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-500/5 rounded-full blur-xl group-hover:bg-amber-500/10 transition-all duration-500"></div>
+        {{-- Logros --}}
+        <div class="bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-6 shadow-lg shadow-orange-500/20 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl transition-transform duration-500 group-hover:scale-150"></div>
             <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <p class="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1">Metas Logradas</p>
-                    <h3 class="text-2xl font-black text-amber-600 dark:text-amber-500 tabular-nums">{{ $kpis['municipios_completados'] }} / {{ $kpis['total_municipios'] }}</h3>
-                    <p class="text-[8px] font-bold text-zinc-400 mt-1 uppercase">Municipios al 100%</p>
+                    <p class="text-xs font-bold text-orange-50 uppercase tracking-widest mb-1 opacity-90">Logros</p>
+                    <h3 class="text-4xl font-black text-white tabular-nums drop-shadow-sm">
+                        {{ $kpis['municipios_completados'] }}<span class="text-xl text-white/50 mx-1.5">/</span>{{ $kpis['total_municipios'] }}
+                    </h3>
+                    <p class="text-[9px] font-bold text-white/80 mt-4 uppercase tracking-widest">Metas Alcanzadas</p>
                 </div>
-                <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center text-amber-600 border border-amber-200 dark:border-amber-500/20">
-                    <flux:icon.trophy class="w-4 h-4" />
-                </div>
-            </div>
-        </div>
-
-        {{-- Faltante --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
-            <div class="flex justify-between items-start relative z-10">
-                <div>
-                    <p class="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1">Restante Global</p>
-                    <h3 class="text-2xl font-black text-zinc-800 dark:text-zinc-100 tabular-nums">{{ number_format($kpis['faltante']) }}</h3>
-                </div>
-                <div class="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-500/10 flex items-center justify-center text-rose-600 border border-rose-200 dark:border-rose-500/20">
-                    <flux:icon.clock class="w-4 h-4" />
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-inner">
+                    <flux:icon.trophy class="w-5 h-5 text-white drop-shadow-sm" />
                 </div>
             </div>
         </div>
     </div>
 
     {{-- Main Comparative Charts --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {{-- Municipality Comparison Chart --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-sm font-black text-zinc-800 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-2">
-                    <div class="w-2 h-6 bg-lime-500 rounded-full"></div>
-                    Cumplimiento por Municipio
-                </h3>
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 bg-lime-500 rounded-full"></div>
-                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Real</span>
+        <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-lime-500/5 rounded-full blur-3xl pointer-events-none group-hover:bg-lime-500/10 transition-all duration-700"></div>
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-lime-50 dark:bg-lime-500/10 flex items-center justify-center border border-lime-100 dark:border-lime-500/20 shadow-inner">
+                        <flux:icon.building-office class="w-6 h-6 text-lime-600 dark:text-lime-400" />
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 bg-zinc-200 dark:bg-zinc-700 rounded-full"></div>
-                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Meta</span>
+                    <div>
+                        <h3 class="text-lg font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tighter leading-none">Rendimiento</h3>
+                        <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em] mt-1">Comparativa por Municipio</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-800/50 p-2 rounded-xl border border-zinc-100 dark:border-zinc-700/50">
+                    <div class="flex items-center gap-1.5 px-2 border-r border-zinc-200 dark:border-zinc-700">
+                        <div class="w-2 h-2 bg-lime-500 rounded-full shadow-[0_0_8px_rgba(132,204,22,0.5)]"></div>
+                        <span class="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Real</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 px-2">
+                        <div class="w-2 h-2 bg-zinc-300 dark:bg-zinc-600 rounded-full"></div>
+                        <span class="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Meta</span>
                     </div>
                 </div>
             </div>
-            <div class="flex-1 min-h-[350px] w-full" wire:ignore>
+            <div class="min-h-[350px] w-full" wire:ignore>
                 <canvas id="municipiosChart"></canvas>
             </div>
         </div>
 
         {{-- Type Distribution Chart --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col">
-            <h3 class="text-sm font-black text-zinc-800 dark:text-zinc-100 uppercase tracking-wider mb-6 flex items-center gap-2">
-                <div class="w-2 h-6 bg-blue-500 rounded-full"></div>
-                Distribución por Tipo de Transcripción
-            </h3>
-            <div class="flex-1 min-h-[350px] w-full flex items-center justify-center" wire:ignore>
+        <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-500/10 transition-all duration-700"></div>
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center border border-blue-100 dark:border-blue-500/20 shadow-inner">
+                    <flux:icon.chart-pie class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tighter leading-none">Distribución</h3>
+                    <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em] mt-1">Por Tipo de Transcripción</p>
+                </div>
+            </div>
+            <div class="min-h-[350px] w-full flex items-center justify-center" wire:ignore>
                 <canvas id="tiposChart"></canvas>
             </div>
         </div>
     </div>
 
     {{-- Monthly Progress Trend --}}
-    <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-sm font-black text-zinc-800 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-2">
-                <div class="w-2 h-6 bg-amber-500 rounded-full"></div>
-                Tendencia Mensual Acumulada
-            </h3>
-            <p class="text-xs text-zinc-500 font-medium">Seguimiento del cumplimiento acumulado vs Meta Anual</p>
+    <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
+        <div class="absolute -right-10 -top-10 w-64 h-64 bg-amber-500/5 rounded-full blur-[100px] pointer-events-none group-hover:bg-amber-500/10 transition-all duration-700"></div>
+        <div class="flex items-center justify-between mb-10">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center border border-amber-100 dark:border-amber-500/20 shadow-inner">
+                    <flux:icon.chart-bar class="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tighter leading-none">Tendencia Mensual</h2>
+                    <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em] mt-1.5">Evolución Acumulada del Ejercicio Anual</p>
+                </div>
+            </div>
         </div>
-        <div class="min-h-[300px] w-full" wire:ignore>
+        <div class="min-h-[400px] w-full" wire:ignore>
             <canvas id="tendenciaMensualChart"></canvas>
         </div>
     </div>
 
     {{-- Municipality Cards Grid --}}
     <div class="pt-4 border-t border-zinc-200 dark:border-zinc-800">
-        <div class="flex items-center gap-2 mb-6">
-            <flux:icon.building-office-2 class="w-5 h-5 text-zinc-400" />
-            <h2 class="text-lg font-black text-zinc-800 dark:text-zinc-100 uppercase tracking-tight">Detalle Individual por Municipio</h2>
+        <div class="flex items-center gap-4 mb-8 relative z-10">
+            <div class="w-12 h-12 rounded-2xl bg-white dark:bg-zinc-900 flex items-center justify-center border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <flux:icon.building-office-2 class="w-6 h-6 text-zinc-600 dark:text-zinc-400" />
+            </div>
+            <div class="flex flex-col">
+                <h2 class="text-2xl font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tighter leading-none">Detalle Individual <span class="text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-zinc-600 dark:from-zinc-500 dark:to-zinc-300">por Municipio</span></h2>
+                <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em] mt-1.5">Desglose Analítico de Rendimiento</p>
+            </div>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             @foreach($municipioCards as $card)
-                <div class="bg-white dark:bg-zinc-900 rounded-[2rem] border {{ $card['porcentaje'] >= 100 ? 'border-lime-500 dark:border-lime-400 shadow-[0_0_20px_rgba(132,204,22,0.15)]' : 'border-zinc-200 dark:border-zinc-800 shadow-md' }} overflow-hidden flex flex-col hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group relative">
+                <div class="bg-white dark:bg-zinc-900 rounded-[2.5rem] border {{ $card['porcentaje'] >= 100 ? 'border-lime-500/50 dark:border-lime-400/30 shadow-[0_20px_50px_rgba(132,204,22,0.1)]' : 'border-zinc-200 dark:border-zinc-800 shadow-sm' }} overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group relative">
+                    {{-- Decorative Background Glow --}}
+                    <div class="absolute -right-20 -bottom-20 w-64 h-64 opacity-[0.03] dark:opacity-[0.05] pointer-events-none blur-[100px] group-hover:opacity-10 transition-all duration-700" style="background-color: {{ $card['color']['hex'] }}"></div>
+                    <div class="absolute -left-20 -top-20 w-48 h-48 opacity-[0.02] dark:opacity-[0.03] pointer-events-none blur-[80px] group-hover:opacity-5 transition-all duration-700" style="background-color: {{ $card['color']['hex'] }}"></div>
                     
                     @if($card['porcentaje'] >= 100)
                         {{-- Meta Cumplida Badge --}}
