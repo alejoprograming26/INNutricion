@@ -3,7 +3,7 @@
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <flux:heading size="xl" level="1">Gestión de Metas</flux:heading>
-            <flux:subheading size="lg">Administra las metas anuales de abordajes por municipio.</flux:subheading>
+            <flux:subheading size="lg">Administra las metas de las transcripciones anuales por municipio.</flux:subheading>
         </div>
         <div>
             <flux:button wire:click="create" icon="plus"
@@ -26,7 +26,7 @@
                     <tr class="text-center">
                         <th class="px-4 py-3 w-12">#</th>
                         <th class="px-4 py-3">Año</th>
-                        <th class="px-4 py-3">Total Abordajes</th>
+                        <th class="px-4 py-3">Total Transcripciones</th>
                         <th class="px-4 py-3">Meta Mensual Aprox.</th>
                         <th class="px-4 py-3">Acciones</th>
                     </tr>
@@ -48,6 +48,8 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center justify-center gap-2">
+                                    <flux:button as="a" href="{{ route('admin.metas.graficos', $meta->id) }}" wire:navigate size="sm" variant="ghost"
+                                        icon="chart-bar-square" class="text-zinc-500 hover:text-lime-500" title="Ver Gráficas" />
                                     <flux:button wire:click="show({{ $meta->id }})" size="sm" variant="ghost"
                                         icon="eye" class="text-zinc-500 hover:text-blue-500" />
                                     <flux:button wire:click="edit({{ $meta->id }})" size="sm" variant="ghost"
@@ -103,7 +105,7 @@
 
             <div>
                 <flux:heading size="lg">{{ $meta_id ? 'Editar Meta' : 'Nueva Meta' }}</flux:heading>
-                <flux:subheading>Define las metas anuales de abordajes por municipio.</flux:subheading>
+                <flux:subheading>Define las metas de las transcripciones anuales por municipio.</flux:subheading>
             </div>
 
             <form wire:submit="store" class="space-y-5">

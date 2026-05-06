@@ -282,6 +282,7 @@
             );
         }
     </script>
+    <livewire:meta.meta-alert />
 </body>
 
 </html>

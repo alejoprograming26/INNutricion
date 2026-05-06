@@ -22,6 +22,7 @@ Route::middleware(['auth', 'check.status'])->group(function () {
         Route::get('/sectores', \App\Livewire\SectorController::class)->name('admin.sectores.index');
         Route::get('/comunas', \App\Livewire\ComunaController::class)->name('admin.comunas.index');
         Route::get('/metas', \App\Livewire\MetaController::class)->name('admin.metas.index');
+        Route::get('/metas/graficos/{id}', \App\Livewire\MetaGraficosController::class)->name('admin.metas.graficos');
         Route::get('/transcripciones', \App\Livewire\TranscripcionController::class)->name('admin.transcripciones.index');
         Route::get('/transcripciones/pdf', [\App\Livewire\ReporteTranscripcionController::class, 'descargar'])->name('admin.transcripciones.pdf');
         Route::get('/transcripciones/graficos', \App\Livewire\GraficosTranscripcionController::class)->name('admin.transcripciones.graficos');

@@ -118,6 +118,7 @@ class MetaController extends Component
             }
 
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Meta actualizada exitosamente.']);
+            $this->dispatch('check-goals');
         } else {
             // ── Crear ────────────────────────────────────────────────────────
             $meta = Meta::create([
@@ -138,6 +139,7 @@ class MetaController extends Component
             }
 
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Meta creada exitosamente.']);
+            $this->dispatch('check-goals');
         }
 
         $this->closeModal();

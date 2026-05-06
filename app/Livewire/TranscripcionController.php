@@ -210,9 +210,11 @@ class TranscripcionController extends Component
         if ($this->transcripcion_id) {
             Transcripcion::findOrFail($this->transcripcion_id)->update($data);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Transcripción actualizada exitosamente.']);
+            $this->dispatch('check-goals');
         } else {
             Transcripcion::create($data);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Transcripción creada exitosamente.']);
+            $this->dispatch('check-goals');
         }
 
         // El Observer de Transcripcion invalida el caché automáticamente.
