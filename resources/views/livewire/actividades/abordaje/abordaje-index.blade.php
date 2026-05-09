@@ -17,7 +17,7 @@
                 </p>
             </div>
         </div>
-        <div class="relative z-10">
+        <div class="relative z-10 flex gap-2">
             <flux:button wire:click="create" icon="plus" class="!bg-gradient-to-r !from-lime-600 !to-emerald-600 hover:!from-lime-500 hover:!to-emerald-500 !text-white border-none font-bold shadow-md shadow-lime-500/20 transition-all duration-300 transform hover:-translate-y-0.5">
                 Registrar Abordaje
             </flux:button>
@@ -254,12 +254,6 @@
                             </td>
                             <td class="px-3 py-3">
                                 <div class="flex items-center justify-center gap-2">
-                                    <flux:button wire:click="openReportModal({{ $m->id }}, 'grafico')"
-                                        size="sm" icon="chart-bar"
-                                        class="!bg-violet-600 !text-white border-none hover:!bg-violet-700 font-bold"
-                                        title="Ver Gráficas para {{ $m->nombre }}">
-                                        Gráficas
-                                    </flux:button>
                                     <flux:button wire:click="openReportModal({{ $m->id }}, 'pdf')"
                                         size="sm" icon="document-text"
                                         class="!bg-red-600 !text-white border-none hover:!bg-red-700 font-semibold"
@@ -484,5 +478,74 @@
         </div>
     @endif
 
+    {{-- ═══════════════════════════════════════════════════
+         Modal Descargar Reporte PDF
+    ═══════════════════════════════════════════════════ --}}
+    @if ($isReportModalOpen)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4">
+            <div class="bg-white dark:bg-zinc-900 w-full max-w-sm rounded-xl shadow-xl flex flex-col border border-zinc-200 dark:border-zinc-800">
+                {{-- Header --}}
+                <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-700 bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-500/5 dark:to-rose-500/5 rounded-t-xl">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <flux:icon.document-text class="w-5 h-5 text-red-600 shrink-0" />
+                        <h2 class="text-base font-bold text-zinc-800 dark:text-zinc-100 truncate">
+                            Generar Reporte PDF
+                        </h2>
+                    </div>
+                    <flux:button wire:click="closeReportModal" variant="ghost" icon="x-mark" class="rounded-full shrink-0" />
+                </div>
 
+                {{-- Body --}}
+                <div class="p-6">
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                        Selecciona el mes y el año para descargar el reporte consolidado
+                        @if($reportMunicipioNombre)
+                            para el municipio <span class="font-bold text-red-600 dark:text-red-400">{{ $reportMunicipioNombre }}</span>.
+                        @else
+                            de todos los municipios.
+                        @endif
+                    </p>
+
+                    <div class="space-y-4">
+                        <flux:select wire:model.live="reportMonth" label="Mes del Reporte">
+                            <flux:select.option value="1">Enero</flux:select.option>
+                            <flux:select.option value="2">Febrero</flux:select.option>
+                            <flux:select.option value="3">Marzo</flux:select.option>
+                            <flux:select.option value="4">Abril</flux:select.option>
+                            <flux:select.option value="5">Mayo</flux:select.option>
+                            <flux:select.option value="6">Junio</flux:select.option>
+                            <flux:select.option value="7">Julio</flux:select.option>
+                            <flux:select.option value="8">Agosto</flux:select.option>
+                            <flux:select.option value="9">Septiembre</flux:select.option>
+                            <flux:select.option value="10">Octubre</flux:select.option>
+                            <flux:select.option value="11">Noviembre</flux:select.option>
+                            <flux:select.option value="12">Diciembre</flux:select.option>
+                        </flux:select>
+
+                        <flux:input wire:model.live="reportYear" type="number" step="1" min="2000" max="2100" label="Año" required />
+                    </div>
+                </div>
+
+                {{-- Footer --}}
+                <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 flex justify-end gap-3 rounded-b-xl">
+                    <flux:button wire:click="closeReportModal" variant="ghost">Cancelar</flux:button>
+                    <flux:button wire:click="viewPdf" icon="arrow-down-tray" class="!bg-gradient-to-r !from-red-600 !to-rose-600 hover:!from-red-500 hover:!to-rose-500 !text-white border-none font-bold shadow-md shadow-red-500/20">
+                        Descargar PDF
+                    </flux:button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @script
+        <script>
+            $wire.on('open-url-in-new-tab', (event) => {
+                if (event.url) {
+                    window.open(event.url, '_blank');
+                } else if (event[0] && event[0].url) {
+                    window.open(event[0].url, '_blank');
+                }
+            });
+        </script>
+    @endscript
 </div>

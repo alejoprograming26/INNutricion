@@ -44,9 +44,14 @@ class AbordajeController extends Component
     public $comunasFiltradas    = [];
     public $sectoresFiltrados   = [];
 
-    // ── Control de modales ────────────────────────────────────────────────────
+    // ── Modales ───────────────────────────────────────────────────────────────
     public bool $isModalOpen     = false;
     public bool $isViewModalOpen = false;
+    public bool $isReportModalOpen = false;
+    public ?string $reportMonth = null;
+    public ?string $reportYear = null;
+    public ?int $reportMunicipioId = null;
+    public ?string $reportMunicipioNombre = null;
 
     // ── Datos del modal "Ver" ─────────────────────────────────────────────────
     public ?string $view_observacion = null;
@@ -277,6 +282,41 @@ class AbordajeController extends Component
         $this->resetValidation();
     }
 
+    // ── Modal de Reporte ──────────────────────────────────────────────────────
+
+    public function openReportModal(?int $municipioId = null): void
+    {
+        if ($municipioId) {
+            $mun = Municipio::find($municipioId);
+            $this->reportMunicipioId = $municipioId;
+            $this->reportMunicipioNombre = $mun ? $mun->nombre : '';
+        } else {
+            $this->reportMunicipioId = null;
+            $this->reportMunicipioNombre = null;
+        }
+
+        $this->reportMonth = (string) now()->month;
+        $this->reportYear  = (string) now()->year;
+        $this->isReportModalOpen = true;
+    }
+
+    public function closeReportModal(): void
+    {
+        $this->isReportModalOpen = false;
+    }
+
+    public function viewPdf()
+    {
+        $url = route('admin.actividades.abordajes.pdf', [
+            'mes' => $this->reportMonth,
+            'año' => $this->reportYear,
+            'municipio_id' => $this->reportMunicipioId
+        ]);
+
+        $this->dispatch('open-url-in-new-tab', url: $url);
+        $this->closeReportModal();
+    }
+
     // ── Render ────────────────────────────────────────────────────────────────
 
     public function render()
@@ -379,10 +419,5 @@ class AbordajeController extends Component
             'totalSemana'          => $metrics['totalSemana'],
             'registrosMes'         => $metrics['registrosMes'],
         ]);
-    }
-
-    public function openReportModal($municipioId, $type)
-    {
-        // Placeholder para futura implementación
     }
 }

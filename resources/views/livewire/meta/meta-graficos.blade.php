@@ -310,7 +310,8 @@
                                 data: mData.map(m => m.real),
                                 backgroundColor: mData.map(m => m.color),
                                 borderRadius: 6,
-                                barPercentage: 0.8,
+                                barPercentage: 0.9,
+                                categoryPercentage: 0.9,
                             },
                             {
                                 label: 'Meta',
@@ -320,7 +321,8 @@
                                 borderWidth: 2,
                                 borderDash: [4, 4],
                                 borderRadius: 6,
-                                barPercentage: 0.8,
+                                barPercentage: 0.9,
+                                categoryPercentage: 0.9,
                             }
                         ]
                     },
@@ -427,7 +429,8 @@
                                         data: card.datos_mes,
                                         backgroundColor: card.color.hex,
                                         borderRadius: 4,
-                                        barPercentage: 0.6,
+                                        barPercentage: 0.85,
+                                        categoryPercentage: 0.85,
                                     },
                                     {
                                         label: 'Meta Mensual',
@@ -437,7 +440,8 @@
                                         borderWidth: 2,
                                         borderDash: [4, 4],
                                         borderRadius: 4,
-                                        barPercentage: 0.8,
+                                        barPercentage: 0.95,
+                                        categoryPercentage: 0.95,
                                     }
                                 ]
                             },

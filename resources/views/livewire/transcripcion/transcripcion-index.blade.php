@@ -631,11 +631,18 @@
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div class="bg-white dark:bg-zinc-900 w-full max-w-sm rounded-xl shadow-xl flex flex-col">
                 {{-- Header --}}
-                <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
-                    <h2 class="text-lg font-bold text-zinc-800 dark:text-zinc-100">
-                        {{ $reportType === 'pdf' ? 'Generar Reporte PDF' : 'Ver Gráficas Estadísticas' }}
-                    </h2>
-                    <flux:button wire:click="closeReportModal" variant="ghost" icon="x-mark" />
+                <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-700 {{ $reportType === 'pdf' ? 'bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-500/5 dark:to-rose-500/5' : 'bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-500/5 dark:to-purple-500/5' }} rounded-t-xl">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        @if ($reportType === 'pdf')
+                            <flux:icon.document-text class="w-5 h-5 text-red-600 shrink-0" />
+                        @else
+                            <flux:icon.chart-bar class="w-5 h-5 text-violet-600 shrink-0" />
+                        @endif
+                        <h2 class="text-base font-bold text-zinc-800 dark:text-zinc-100 truncate">
+                            {{ $reportType === 'pdf' ? 'Generar Reporte PDF' : 'Gráficas Estadísticas' }}
+                        </h2>
+                    </div>
+                    <flux:button wire:click="closeReportModal" variant="ghost" icon="x-mark" class="rounded-full shrink-0" />
                 </div>
 
                 {{-- Body --}}
@@ -644,7 +651,7 @@
                         Selecciona el mes y el año para descargar el reporte de <span
                             class="font-bold">{{ $tipoLabels[$tipoActivo] ?? $tipoActivo }}</span> para el municipio
                         <span
-                            class="font-bold text-emerald-600 dark:text-emerald-400">{{ $reportMunicipioNombre ?? 'Seleccionado' }}</span>.
+                            class="font-bold {{ $reportType === 'pdf' ? 'text-red-600 dark:text-red-400' : 'text-violet-600 dark:text-violet-400' }}">{{ $reportMunicipioNombre ?? 'Seleccionado' }}</span>.
                     </p>
 
                     <div class="space-y-4">
@@ -674,8 +681,8 @@
                     <flux:button wire:click="closeReportModal" variant="ghost">Cancelar</flux:button>
 
                     @if ($reportType === 'pdf')
-                        <flux:button wire:click="viewPdf" icon="arrow-down-tray" variant="primary"
-                            class="!bg-red-600 hover:!bg-red-700">
+                        <flux:button wire:click="viewPdf" icon="arrow-down-tray" 
+                            class="!bg-gradient-to-r !from-red-600 !to-rose-600 hover:!from-red-500 hover:!to-rose-500 !text-white border-none font-bold shadow-md shadow-red-500/20">
                             Descargar PDF
                         </flux:button>
                     @else
