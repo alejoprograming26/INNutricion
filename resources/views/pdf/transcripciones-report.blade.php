@@ -306,7 +306,7 @@
 
                     <!-- Fila Municipio -->
                     <tr class="level-municipio">
-                        <td>MUNICIPIO: {{ $mun }}</td>
+                        <td>&bull; MUNICIPIO: {{ $mun }}</td>
                         <td class="text-right">{{ number_format($dataMun['totales']['cantidad'], 0, ',', '.') }}</td>
                         @if($esSugima)
                             <td class="text-right col-ingreso">{{ number_format($dataMun['totales']['ingreso'], 0, ',', '.') }}</td>
@@ -317,7 +317,7 @@
                     @foreach($dataMun['parroquias'] as $par => $dataPar)
                         <!-- Fila Parroquia -->
                         <tr class="level-parroquia">
-                            <td style="padding-left: 20px;">Parroquia: {{ $par }}</td>
+                            <td style="padding-left: 20px;">&raquo; Parroquia: {{ $par }}</td>
                             <td class="text-right">{{ number_format($dataPar['totales']['cantidad'], 0, ',', '.') }}</td>
                             @if($esSugima)
                                 <td class="text-right col-ingreso">{{ number_format($dataPar['totales']['ingreso'], 0, ',', '.') }}</td>
@@ -328,7 +328,7 @@
                         @foreach($dataPar['comunas'] as $com => $dataCom)
                             <!-- Fila Comuna -->
                             <tr class="level-comuna">
-                                <td style="padding-left: 35px;">Comuna: {{ $com }}</td>
+                                <td style="padding-left: 35px;">&bull; Comuna: {{ $com }}</td>
                                 <td class="text-right">{{ number_format($dataCom['totales']['cantidad'], 0, ',', '.') }}</td>
                                 @if($esSugima)
                                     <td class="text-right col-ingreso">{{ number_format($dataCom['totales']['ingreso'], 0, ',', '.') }}</td>
@@ -339,7 +339,7 @@
                             @foreach($dataCom['sectores'] as $sec => $totales)
                                 <!-- Fila Sector (Datos Mínimos) -->
                                 <tr class="level-sector">
-                                    <td style="padding-left: 55px !important;">Sector: {{ $sec }}</td>
+                                    <td style="padding-left: 55px !important;">&middot; Sector: {{ $sec }}</td>
                                     <td class="text-right">{{ number_format($totales['cantidad'], 0, ',', '.') }}</td>
                                     @if($esSugima)
                                         <td class="text-right col-ingreso">{{ number_format($totales['ingreso'], 0, ',', '.') }}</td>
