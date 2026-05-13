@@ -53,6 +53,25 @@ class LiderazgoTerritorialController extends Component
     public ?int $reportMunicipioId = null;
     public ?string $reportMunicipioNombre = null;
 
+    // ── Gráficas ──────────────────────────────────────────────────────────────
+    public bool    $isGraphView      = false;
+    public bool    $isGraphModalOpen = false;
+    #[Url(as: 'mes')]
+    public ?string $graphMonth       = null;
+    
+    #[Url(as: 'año')]
+    public ?string $graphAno         = null;
+    public ?int    $graphMunicipioId = null;
+    public ?string $graphMunicipioNombre = null;
+    public array   $graphKpis        = [];
+    public array   $graphParroquias  = [];
+    public array   $graphComunas     = [];
+    public array   $graphSectores    = [];
+    public array   $graphDias        = [];
+    public array   $graphTemas       = [];
+    public string  $colorHex         = '#0ea5e9';
+    public string  $colorTw          = 'sky';
+
     // ── Datos del modal "Ver" ─────────────────────────────────────────────────
     public ?string $view_observacion = null;
     public ?string $view_responsable  = null;
@@ -281,7 +300,113 @@ class LiderazgoTerritorialController extends Component
         $this->closeReportModal();
     }
 
+    // ── Modal de Gráficas ─────────────────────────────────────────────────────
+
+    public function openGraphModal(?int $municipioId = null): void
+    {
+        if ($municipioId) {
+            $mun = Municipio::find($municipioId);
+            $this->graphMunicipioId     = $municipioId;
+            $this->graphMunicipioNombre = $mun ? $mun->nombre : '';
+        } else {
+            $this->graphMunicipioId     = null;
+            $this->graphMunicipioNombre = null;
+        }
+        $this->graphMonth       = (string) now()->month;
+        $this->graphAno         = (string) now()->year;
+        $this->isGraphModalOpen = true;
+    }
+
+    public function closeGraphModal(): void
+    {
+        $this->isGraphModalOpen = false;
+    }
+
+    public function viewGraphs(): void
+    {
+        $url = route('admin.actividades.liderazgo.graficos', [
+            'mes'          => $this->graphMonth,
+            'año'          => $this->graphAno,
+            'municipio_id' => $this->graphMunicipioId,
+        ]);
+
+        $this->redirect($url, navigate: true);
+    }
+
+    public function cargarDatosGraficos(): void
+    {
+        $mes   = (int) ($this->graphMonth ?? now()->month);
+        $año   = (int) ($this->graphAno   ?? now()->year);
+        $munId = $this->graphMunicipioId;
+
+        $queryBase = LiderazgoTerritorial::query()
+            ->join('sectores',  'liderazgo_territorials.sector_id', '=', 'sectores.id')
+            ->join('comunas',   'sectores.comuna_id',               '=', 'comunas.id')
+            ->join('parroquias','comunas.parroquia_id',             '=', 'parroquias.id')
+            ->whereYear('liderazgo_territorials.fecha', $año)
+            ->whereMonth('liderazgo_territorials.fecha', $mes)
+            ->when($munId, fn($q) => $q->where('parroquias.municipio_id', $munId));
+
+        $totales = (clone $queryBase)->selectRaw('
+            COUNT(liderazgo_territorials.id) as total_registros,
+            COALESCE(SUM(liderazgo_territorials.cantidad), 0) as total_cantidad
+        ')->first();
+
+        $this->graphKpis = [
+            'total_registros' => $totales->total_registros,
+            'total_cantidad'  => $totales->total_cantidad,
+            'promedio_diario' => $totales->total_cantidad > 0
+                ? round($totales->total_cantidad / max(1, now()->daysInMonth), 1)
+                : 0,
+        ];
+
+        $this->graphParroquias = (clone $queryBase)
+            ->select('parroquias.nombre', DB::raw('SUM(liderazgo_territorials.cantidad) as total'))
+            ->groupBy('parroquias.id', 'parroquias.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        $this->graphComunas = (clone $queryBase)
+            ->select('comunas.nombre', DB::raw('SUM(liderazgo_territorials.cantidad) as total'))
+            ->groupBy('comunas.id', 'comunas.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        $this->graphSectores = (clone $queryBase)
+            ->select('sectores.nombre', DB::raw('SUM(liderazgo_territorials.cantidad) as total'))
+            ->groupBy('sectores.id', 'sectores.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        $this->graphDias = (clone $queryBase)
+            ->select(DB::raw('DAY(liderazgo_territorials.fecha) as dia'), DB::raw('SUM(liderazgo_territorials.cantidad) as total'))
+            ->groupBy(DB::raw('DAY(liderazgo_territorials.fecha)'))
+            ->orderBy('dia')->get()->toArray();
+
+        $this->graphTemas = (clone $queryBase)
+            ->select('tema_tratado as nombre', DB::raw('SUM(cantidad) as total'))
+            ->groupBy('tema_tratado')
+            ->orderByDesc('total')->limit(10)->get()->toArray();
+    }
+
     // ── Render ────────────────────────────────────────────────────────────────
+
+    public function mount(): void
+    {
+        if (request()->routeIs('admin.actividades.liderazgo.graficos')) {
+            $this->isGraphView = true;
+            
+            $this->graphMonth = (string) request()->query('mes', $this->graphMonth ?? now()->month);
+            $this->graphAno   = (string) request()->query('año', $this->graphAno   ?? now()->year);
+            $this->graphMunicipioId = request()->query('municipio_id', $this->graphMunicipioId);
+
+            $this->graphMunicipioNombre = $this->graphMunicipioId
+                ? (Municipio::find($this->graphMunicipioId)?->nombre ?? 'Todos los Municipios')
+                : 'Todos los Municipios';
+
+            $this->cargarDatosGraficos();
+        }
+    }
+
+    public function updatedGraphMonth(): void { $this->cargarDatosGraficos(); $this->dispatch('refreshCharts'); }
+    public function updatedGraphAno(): void   { $this->cargarDatosGraficos(); $this->dispatch('refreshCharts'); }
 
     public function render()
     {
@@ -369,6 +494,19 @@ class LiderazgoTerritorialController extends Component
             ->with(['sector.comuna.parroquia.municipio'])
             ->orderBy('liderazgo_territorials.fecha', $this->sortDirection)
             ->paginate(10);
+
+        if ($this->isGraphView) {
+            $mesesNombres = [
+                1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+                5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+                9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+            ];
+            return view('livewire.actividades.liderazgo_territorial.graficos-index', [
+                'nombreMes'  => $mesesNombres[(int)$this->graphMonth] ?? 'Desconocido',
+                'ano'        => $this->graphAno,
+                'municipios' => Municipio::orderBy('nombre')->get(),
+            ]);
+        }
 
         return view('livewire.actividades.liderazgo_territorial.liderazgo_territorial-index', [
             'registros'            => $registros,

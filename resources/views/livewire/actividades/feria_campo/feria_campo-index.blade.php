@@ -225,6 +225,12 @@
                             </td>
                             <td class="px-3 py-3">
                                 <div class="flex items-center justify-center gap-2">
+                                    <flux:button wire:click="openGraphModal({{ $m->id }})"
+                                        size="sm" icon="chart-pie"
+                                        class="!bg-violet-600 !text-white border-none hover:!bg-violet-700 font-semibold"
+                                        title="Ver Gráficas para {{ $m->nombre }}">
+                                        Gráfica
+                                    </flux:button>
                                     <flux:button wire:click="openReportModal({{ $m->id }}, 'pdf')"
                                         size="sm" icon="document-text"
                                         class="!bg-red-600 !text-white border-none hover:!bg-red-700 font-semibold"
@@ -475,6 +481,59 @@
 
                 <div class="px-4 py-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex justify-end">
                     <flux:button wire:click="closeModal" variant="ghost" size="sm">Cerrar Detalle</flux:button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- ═══════════════════════════════════════════════════
+         Modal de Gráficas
+    ═══════════════════════════════════════════════════ --}}
+    @if ($isGraphModalOpen)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 dark:bg-black/60 backdrop-blur-sm p-4">
+            <div class="bg-white dark:bg-zinc-900 w-full max-w-sm rounded-xl shadow-xl flex flex-col border border-zinc-200 dark:border-zinc-800">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-700 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-500/5 dark:to-purple-500/5 rounded-t-xl">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <flux:icon.chart-bar class="w-5 h-5 text-violet-600 shrink-0" />
+                        <h2 class="text-base font-bold text-zinc-800 dark:text-zinc-100 truncate">Análisis de Gráficas</h2>
+                    </div>
+                    <flux:button wire:click="closeGraphModal" variant="ghost" icon="x-mark" class="rounded-full shrink-0" />
+                </div>
+
+                <div class="p-6">
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                        Visualiza el análisis estadístico detallado
+                        @if($graphMunicipioNombre)
+                            para <span class="font-bold text-violet-600 dark:text-violet-400">{{ $graphMunicipioNombre }}</span>.
+                        @else
+                            de todos los municipios.
+                        @endif
+                    </p>
+
+                    <div class="space-y-4">
+                        <flux:select wire:model.live="graphMonth" label="Mes de Análisis">
+                            <flux:select.option value="1">Enero</flux:select.option>
+                            <flux:select.option value="2">Febrero</flux:select.option>
+                            <flux:select.option value="3">Marzo</flux:select.option>
+                            <flux:select.option value="4">Abril</flux:select.option>
+                            <flux:select.option value="5">Mayo</flux:select.option>
+                            <flux:select.option value="6">Junio</flux:select.option>
+                            <flux:select.option value="7">Julio</flux:select.option>
+                            <flux:select.option value="8">Agosto</flux:select.option>
+                            <flux:select.option value="9">Septiembre</flux:select.option>
+                            <flux:select.option value="10">Octubre</flux:select.option>
+                            <flux:select.option value="11">Noviembre</flux:select.option>
+                            <flux:select.option value="12">Diciembre</flux:select.option>
+                        </flux:select>
+                        <flux:input wire:model.live="graphAno" type="number" step="1" label="Año" required />
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 flex justify-end gap-3 rounded-b-xl">
+                    <flux:button wire:click="closeGraphModal" variant="ghost">Cancelar</flux:button>
+                    <flux:button wire:click="viewGraphs" icon="presentation-chart-line" class="!bg-gradient-to-r !from-violet-600 !to-purple-600 hover:!from-violet-500 hover:!to-purple-500 !text-white border-none font-bold shadow-md shadow-violet-500/20">
+                        Ver Gráficas
+                    </flux:button>
                 </div>
             </div>
         </div>

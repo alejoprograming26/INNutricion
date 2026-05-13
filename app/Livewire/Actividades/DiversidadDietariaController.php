@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 use Livewire\Component;
+use Livewire\Attributes\Url;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 #[Layout('components.layouts.app')]
@@ -50,6 +51,26 @@ class DiversidadDietariaController extends Component
     public ?string $reportYear = null;
     public ?int $reportMunicipioId = null;
     public ?string $reportMunicipioNombre = null;
+
+    // ── Gráficas ──────────────────────────────────────────────────────────────
+    public bool    $isGraphView      = false;
+    public bool    $isGraphModalOpen = false;
+    
+    #[Url(as: 'mes')]
+    public ?string $graphMonth       = null;
+    
+    #[Url(as: 'año')]
+    public ?string $graphAno         = null;
+    #[Url(as: 'municipio_id')]
+    public ?int    $graphMunicipioId = null;
+    public ?string $graphMunicipioNombre = null;
+    public array   $graphKpis        = [];
+    public array   $graphParroquias  = [];
+    public array   $graphComunas     = [];
+    public array   $graphSectores    = [];
+    public array   $graphDias        = [];
+    public string  $colorHex         = '#d946ef';
+    public string  $colorTw          = 'fuchsia';
 
     // ── Datos del modal "Ver" ─────────────────────────────────────────────────
     public ?string $view_observacion = null;
@@ -272,7 +293,108 @@ class DiversidadDietariaController extends Component
         $this->closeReportModal();
     }
 
+    // ── Modal de Gráficas ─────────────────────────────────────────────────────
+
+    public function openGraphModal(?int $municipioId = null): void
+    {
+        if ($municipioId) {
+            $mun = Municipio::find($municipioId);
+            $this->graphMunicipioId     = $municipioId;
+            $this->graphMunicipioNombre = $mun ? $mun->nombre : '';
+        } else {
+            $this->graphMunicipioId     = null;
+            $this->graphMunicipioNombre = null;
+        }
+        $this->graphMonth       = (string) now()->month;
+        $this->graphAno         = (string) now()->year;
+        $this->isGraphModalOpen = true;
+    }
+
+    public function closeGraphModal(): void
+    {
+        $this->isGraphModalOpen = false;
+    }
+
+    public function viewGraphs(): void
+    {
+        $url = route('admin.actividades.diversidad.graficos', [
+            'mes'          => $this->graphMonth,
+            'año'          => $this->graphAno,
+            'municipio_id' => $this->graphMunicipioId,
+        ]);
+
+        $this->redirect($url, navigate: true);
+    }
+
+    public function cargarDatosGraficos(): void
+    {
+        $mes   = (int) ($this->graphMonth ?? now()->month);
+        $año   = (int) ($this->graphAno ?? now()->year);
+        $munId = $this->graphMunicipioId;
+
+        $queryBase = DiversidadDietaria::query()
+            ->join('sectores',  'diversidad_dietarias.sector_id', '=', 'sectores.id')
+            ->join('comunas',   'sectores.comuna_id',             '=', 'comunas.id')
+            ->join('parroquias','comunas.parroquia_id',           '=', 'parroquias.id')
+            ->whereYear('diversidad_dietarias.fecha', $año)
+            ->whereMonth('diversidad_dietarias.fecha', $mes)
+            ->when($munId, fn($q) => $q->where('parroquias.municipio_id', $munId));
+
+        $totales = (clone $queryBase)->selectRaw('
+            COUNT(diversidad_dietarias.id) as total_registros,
+            COALESCE(SUM(diversidad_dietarias.cantidad), 0) as total_cantidad
+        ')->first();
+
+        $this->graphKpis = [
+            'total_registros' => $totales->total_registros,
+            'total_cantidad'  => $totales->total_cantidad,
+            'promedio_diario' => $totales->total_cantidad > 0
+                ? round($totales->total_cantidad / max(1, now()->daysInMonth), 1)
+                : 0,
+        ];
+
+        $this->graphParroquias = (clone $queryBase)
+            ->select('parroquias.nombre', DB::raw('SUM(diversidad_dietarias.cantidad) as total'))
+            ->groupBy('parroquias.id', 'parroquias.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        $this->graphComunas = (clone $queryBase)
+            ->select('comunas.nombre', DB::raw('SUM(diversidad_dietarias.cantidad) as total'))
+            ->groupBy('comunas.id', 'comunas.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        $this->graphSectores = (clone $queryBase)
+            ->select('sectores.nombre', DB::raw('SUM(diversidad_dietarias.cantidad) as total'))
+            ->groupBy('sectores.id', 'sectores.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        $this->graphDias = (clone $queryBase)
+            ->select(DB::raw('DAY(diversidad_dietarias.fecha) as dia'), DB::raw('SUM(diversidad_dietarias.cantidad) as total'))
+            ->groupBy(DB::raw('DAY(diversidad_dietarias.fecha)'))
+            ->orderBy('dia')->get()->toArray();
+    }
+
     // ── Render ────────────────────────────────────────────────────────────────
+
+    public function mount(): void
+    {
+        if (request()->routeIs('admin.actividades.diversidad.graficos')) {
+            $this->isGraphView = true;
+            
+            $this->graphMonth = (string) request()->query('mes', $this->graphMonth ?? now()->month);
+            $this->graphAno   = (string) request()->query('año', $this->graphAno   ?? now()->year);
+            $this->graphMunicipioId = request()->query('municipio_id', $this->graphMunicipioId);
+
+            $this->graphMunicipioNombre = $this->graphMunicipioId
+                ? (Municipio::find($this->graphMunicipioId)?->nombre ?? 'Todos los Municipios')
+                : 'Todos los Municipios';
+
+            $this->cargarDatosGraficos();
+        }
+    }
+
+    public function updatedGraphMonth(): void { $this->cargarDatosGraficos(); $this->dispatch('refreshCharts'); }
+    public function updatedGraphAno(): void   { $this->cargarDatosGraficos(); $this->dispatch('refreshCharts'); }
 
     public function render()
     {
@@ -359,6 +481,19 @@ class DiversidadDietariaController extends Component
             ->with(['sector.comuna.parroquia.municipio'])
             ->orderBy('diversidad_dietarias.fecha', $this->sortDirection)
             ->paginate(10);
+
+        if ($this->isGraphView) {
+            $mesesNombres = [
+                1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+                5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+                9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+            ];
+            return view('livewire.actividades.diversidad_dietaria.graficos-index', [
+                'nombreMes'  => $mesesNombres[(int)$this->graphMonth] ?? 'Desconocido',
+                'ano'        => $this->graphAno,
+                'municipios' => Municipio::orderBy('nombre')->get(),
+            ]);
+        }
 
         return view('livewire.actividades.diversidad_dietaria.diversidad_dietaria-index', [
             'registros'            => $registros,

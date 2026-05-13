@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Url;
 
 #[Layout('components.layouts.app')]
 class AbordajeController extends Component
@@ -52,6 +53,26 @@ class AbordajeController extends Component
     public ?string $reportYear = null;
     public ?int $reportMunicipioId = null;
     public ?string $reportMunicipioNombre = null;
+
+    // ── Gráficas ──────────────────────────────────────────────────────────────
+    public bool    $isGraphView      = false;
+    public bool    $isGraphModalOpen = false;
+    
+    #[Url(as: 'mes')]
+    public ?string $graphMonth       = null;
+    
+    #[Url(as: 'año')]
+    public ?string $graphAno         = null;
+    #[Url(as: 'municipio_id')]
+    public ?int    $graphMunicipioId = null;
+    public ?string $graphMunicipioNombre = null;
+    public array   $graphKpis        = [];
+    public array   $graphParroquias  = [];
+    public array   $graphComunas     = [];
+    public array   $graphSectores    = [];
+    public array   $graphDias        = [];
+    public string  $colorHex         = '#84cc16';
+    public string  $colorTw          = 'lime';
 
     // ── Datos del modal "Ver" ─────────────────────────────────────────────────
     public ?string $view_observacion = null;
@@ -317,7 +338,115 @@ class AbordajeController extends Component
         $this->closeReportModal();
     }
 
+    // ── Modal de Gráficas ─────────────────────────────────────────────────────
+
+    public function openGraphModal(?int $municipioId = null): void
+    {
+        if ($municipioId) {
+            $mun = Municipio::find($municipioId);
+            $this->graphMunicipioId     = $municipioId;
+            $this->graphMunicipioNombre = $mun ? $mun->nombre : '';
+        } else {
+            $this->graphMunicipioId     = null;
+            $this->graphMunicipioNombre = null;
+        }
+        $this->graphMonth       = (string) now()->month;
+        $this->graphAno         = (string) now()->year;
+        $this->isGraphModalOpen = true;
+    }
+
+    public function closeGraphModal(): void
+    {
+        $this->isGraphModalOpen = false;
+    }
+
+    public function viewGraphs(): void
+    {
+        $url = route('admin.actividades.abordajes.graficos', [
+            'mes'          => $this->graphMonth,
+            'año'          => $this->graphAno,
+            'municipio_id' => $this->graphMunicipioId,
+        ]);
+        
+        $this->redirect($url, navigate: true);
+    }
+
+    public function cargarDatosGraficos(): void
+    {
+        $mes   = (int) ($this->graphMonth ?? now()->month);
+        $año   = (int) ($this->graphAno ?? now()->year);
+        $munId = $this->graphMunicipioId;
+
+        $queryBase = Abordaje::query()
+            ->join('sectores',  'abordajes.sector_id',      '=', 'sectores.id')
+            ->join('comunas',   'sectores.comuna_id',        '=', 'comunas.id')
+            ->join('parroquias','comunas.parroquia_id',      '=', 'parroquias.id')
+            ->whereYear('abordajes.fecha', $año)
+            ->whereMonth('abordajes.fecha', $mes)
+            ->when($munId, fn($q) => $q->where('parroquias.municipio_id', $munId));
+
+        $totales = (clone $queryBase)->selectRaw('
+            COUNT(abordajes.id) as total_registros,
+            COALESCE(SUM(abordajes.cantidad), 0) as total_cantidad,
+            COALESCE(SUM(abordajes.total_a), 0) as total_a,
+            COALESCE(SUM(abordajes.total_b), 0) as total_b,
+            COALESCE(SUM(abordajes.total_a_plus), 0) as total_a_plus
+        ')->first();
+
+        $this->graphKpis = [
+            'total_registros'  => $totales->total_registros,
+            'total_cantidad'   => $totales->total_cantidad,
+            'total_a'          => $totales->total_a,
+            'total_b'          => $totales->total_b,
+            'total_a_plus'     => $totales->total_a_plus,
+            'promedio_diario'  => $totales->total_cantidad > 0
+                ? round($totales->total_cantidad / max(1, now()->daysInMonth), 1)
+                : 0,
+        ];
+
+        $this->graphParroquias = (clone $queryBase)
+            ->select('parroquias.nombre', DB::raw('SUM(abordajes.cantidad) as total'))
+            ->groupBy('parroquias.id', 'parroquias.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        $this->graphComunas = (clone $queryBase)
+            ->select('comunas.nombre', DB::raw('SUM(abordajes.cantidad) as total'))
+            ->groupBy('comunas.id', 'comunas.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        $this->graphSectores = (clone $queryBase)
+            ->select('sectores.nombre', DB::raw('SUM(abordajes.cantidad) as total'))
+            ->groupBy('sectores.id', 'sectores.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        $this->graphDias = (clone $queryBase)
+            ->select(DB::raw('DAY(abordajes.fecha) as dia'), DB::raw('SUM(abordajes.cantidad) as total'))
+            ->groupBy(DB::raw('DAY(abordajes.fecha)'))
+            ->orderBy('dia')->get()->toArray();
+    }
+
     // ── Render ────────────────────────────────────────────────────────────────
+
+    public function mount(): void
+    {
+        if (request()->routeIs('admin.actividades.abordajes.graficos')) {
+            $this->isGraphView = true;
+            
+            // Forzamos la carga desde el request para evitar problemas con wire:navigate
+            $this->graphMonth = (string) request()->query('mes', $this->graphMonth ?? now()->month);
+            $this->graphAno   = (string) request()->query('año', $this->graphAno ?? now()->year);
+            $this->graphMunicipioId = request()->query('municipio_id', $this->graphMunicipioId);
+
+            $this->graphMunicipioNombre = $this->graphMunicipioId
+                ? (Municipio::find($this->graphMunicipioId)?->nombre ?? 'Todos los Municipios')
+                : 'Todos los Municipios';
+
+            $this->cargarDatosGraficos();
+        }
+    }
+
+    public function updatedGraphMonth(): void { $this->cargarDatosGraficos(); $this->dispatch('refreshCharts'); }
+    public function updatedGraphAno(): void   { $this->cargarDatosGraficos(); $this->dispatch('refreshCharts'); }
 
     public function render()
     {
@@ -409,6 +538,19 @@ class AbordajeController extends Component
             ->with(['sector.comuna.parroquia.municipio'])
             ->orderBy('abordajes.fecha', $this->sortDirection)
             ->paginate(10);
+
+        if ($this->isGraphView) {
+            $mesesNombres = [
+                1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+                5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+                9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+            ];
+            return view('livewire.actividades.abordaje.graficos-index', [
+                'nombreMes'  => $mesesNombres[(int)$this->graphMonth] ?? 'Desconocido',
+                'ano'        => $this->graphAno,
+                'municipios' => Municipio::orderBy('nombre')->get(),
+            ]);
+        }
 
         return view('livewire.actividades.abordaje.abordaje-index', [
             'abordajes'            => $abordajes,

@@ -28,24 +28,32 @@ Route::middleware(['auth', 'check.status'])->group(function () {
         Route::get('/transcripciones/graficos', \App\Livewire\GraficosTranscripcionController::class)->name('admin.transcripciones.graficos');
         Route::get('/actividades/abordajes', \App\Livewire\Actividades\AbordajeController::class)->name('admin.actividades.abordajes.index');
         Route::get('/actividades/abordajes/pdf', [\App\Http\Controllers\ReporteActividadController::class, 'descargar'])->defaults('actividad', 'abordaje')->name('admin.actividades.abordajes.pdf');
-        
+        Route::get('/actividades/abordajes/graficos', \App\Livewire\Actividades\AbordajeController::class)->name('admin.actividades.abordajes.graficos');
+
         Route::get('/actividades/escuela4s', \App\Livewire\Actividades\Escuela4sController::class)->name('admin.actividades.escuela4s.index');
         Route::get('/actividades/escuela4s/pdf', [\App\Http\Controllers\ReporteActividadController::class, 'descargar'])->defaults('actividad', 'escuela4s')->name('admin.actividades.escuela4s.pdf');
-        
+        Route::get('/actividades/escuela4s/graficos', \App\Livewire\Actividades\Escuela4sController::class)->name('admin.actividades.escuela4s.graficos');
+
         Route::get('/actividades/liderazgo-territorial', \App\Livewire\Actividades\LiderazgoTerritorialController::class)->name('admin.actividades.liderazgo.index');
         Route::get('/actividades/liderazgo-territorial/pdf', [\App\Http\Controllers\ReporteActividadController::class, 'descargar'])->defaults('actividad', 'liderazgo_territorial')->name('admin.actividades.liderazgo.pdf');
-        
+        Route::get('/actividades/liderazgo-territorial/graficos', \App\Livewire\Actividades\LiderazgoTerritorialController::class)->name('admin.actividades.liderazgo.graficos');
+
         Route::get('/actividades/diversidad-dietaria', \App\Livewire\Actividades\DiversidadDietariaController::class)->name('admin.actividades.diversidad.index');
         Route::get('/actividades/diversidad-dietaria/pdf', [\App\Http\Controllers\ReporteActividadController::class, 'descargar'])->defaults('actividad', 'diversidad_dietaria')->name('admin.actividades.diversidad.pdf');
-        
+        Route::get('/actividades/diversidad-dietaria/graficos', \App\Livewire\Actividades\DiversidadDietariaController::class)->name('admin.actividades.diversidad.graficos');
+
         Route::get('/actividades/circulo-lactancia', \App\Livewire\Actividades\CirculoLactanciaController::class)->name('admin.actividades.circulo.index');
         Route::get('/actividades/circulo-lactancia/pdf', [\App\Http\Controllers\ReporteActividadController::class, 'descargar'])->defaults('actividad', 'circulo_lactancia')->name('admin.actividades.circulo.pdf');
-        
+        Route::get('/actividades/circulo-lactancia/graficos', \App\Livewire\Actividades\CirculoLactanciaController::class)->name('admin.actividades.circulo.graficos');
+
         Route::get('/actividades/plan-vulnerabilidad', \App\Livewire\Actividades\PlanVulnerabilidadController::class)->name('admin.actividades.vulnerabilidad.index');
         Route::get('/actividades/plan-vulnerabilidad/pdf', [\App\Http\Controllers\ReporteActividadController::class, 'descargar'])->defaults('actividad', 'plan_vulnerabilidad')->name('admin.actividades.vulnerabilidad.pdf');
-        
+        Route::get('/actividades/plan-vulnerabilidad/graficos', \App\Livewire\Actividades\PlanVulnerabilidadController::class)->name('admin.actividades.vulnerabilidad.graficos');
+
         Route::get('/actividades/feria-campo', \App\Livewire\Actividades\FeriaCampoController::class)->name('admin.actividades.feria.index');
         Route::get('/actividades/feria-campo/pdf', [\App\Http\Controllers\ReporteActividadController::class, 'descargar'])->defaults('actividad', 'feria_campo')->name('admin.actividades.feria.pdf');
+        Route::get('/actividades/feria-campo/graficos', \App\Livewire\Actividades\FeriaCampoController::class)->name('admin.actividades.feria.graficos');
+
         Route::get('/calendario', \App\Livewire\CalendarioController::class)->name('admin.calendario.index');
         
         Route::get('/logout', function () {

@@ -60,6 +60,27 @@ class FeriaCampoController extends Component
     public ?int $reportMunicipioId = null;
     public ?string $reportMunicipioNombre = null;
 
+    // ── Gráficas ──────────────────────────────────────────────────────────────
+    public bool    $isGraphView      = false;
+    public bool    $isGraphModalOpen = false;
+    #[Url(as: 'mes')]
+    public ?string $graphMonth       = null;
+    
+    #[Url(as: 'año')]
+    public ?string $graphAno         = null;
+    #[Url(as: 'municipio_id')]
+    public ?int    $graphMunicipioId = null;
+    public ?string $graphMunicipioNombre = null;
+    // Datos procesados para gráficas
+    public array $graphKpis         = [];
+    public array $graphParroquias   = [];
+    public array $graphComunas      = [];
+    public array $graphSectores     = [];
+    public array $graphDias         = [];
+    public array $graphAntrometria  = [];
+    public string $colorHex         = '#6366f1';
+    public string $colorTw          = 'indigo';
+
     // ── Datos del modal "Ver" ─────────────────────────────────────────────────
     public ?string $view_observacion = null;
     public ?string $view_responsable = null;
@@ -325,7 +346,137 @@ class FeriaCampoController extends Component
         $this->closeReportModal();
     }
 
+    // ── Modal de Gráficas ─────────────────────────────────────────────────────
+
+    public function openGraphModal(?int $municipioId = null): void
+    {
+        if ($municipioId) {
+            $mun = Municipio::find($municipioId);
+            $this->graphMunicipioId     = $municipioId;
+            $this->graphMunicipioNombre = $mun ? $mun->nombre : '';
+        } else {
+            $this->graphMunicipioId     = null;
+            $this->graphMunicipioNombre = null;
+        }
+        $this->graphMonth        = (string) now()->month;
+        $this->graphAno          = (string) now()->year;
+        $this->isGraphModalOpen  = true;
+    }
+
+    public function closeGraphModal(): void
+    {
+        $this->isGraphModalOpen = false;
+    }
+
+    public function viewGraphs(): void
+    {
+        $url = route('admin.actividades.feria.graficos', [
+            'mes'          => $this->graphMonth,
+            'año'          => $this->graphAno,
+            'municipio_id' => $this->graphMunicipioId,
+        ]);
+
+        $this->redirect($url, navigate: true);
+    }
+
+    public function cargarDatosGraficos(): void
+    {
+        $mes  = (int) ($this->graphMonth ?? now()->month);
+        $año  = (int) ($this->graphAno   ?? now()->year);
+        $munId = $this->graphMunicipioId;
+
+        $queryBase = FeriaCampo::query()
+            ->join('sectores',   'feria_campos.sector_id',        '=', 'sectores.id')
+            ->join('comunas',     'sectores.comuna_id',           '=', 'comunas.id')
+            ->join('parroquias',  'comunas.parroquia_id',         '=', 'parroquias.id')
+            ->whereYear('feria_campos.fecha', $año)
+            ->whereMonth('feria_campos.fecha', $mes)
+            ->when($munId, fn($q) => $q->where('parroquias.municipio_id', $munId));
+
+        // KPIs específicos de Feria de Campo
+        $totales = (clone $queryBase)->selectRaw('
+            COUNT(feria_campos.id) as total_ferias,
+            COALESCE(SUM(feria_campos.tipo_a), 0) as total_tipo_a,
+            COALESCE(SUM(feria_campos.tipo_b), 0) as total_tipo_b,
+            COALESCE(SUM(feria_campos.tipo_a_plus), 0) as total_tipo_a_plus,
+            SUM(CASE WHEN feria_campos.antrometria = 1 THEN 1 ELSE 0 END) as con_antrometria,
+            SUM(CASE WHEN feria_campos.venta_lina_nutrivida = 1 THEN 1 ELSE 0 END) as con_venta,
+            SUM(CASE WHEN feria_campos.campana4s = 1 THEN 1 ELSE 0 END) as con_campana
+        ')->first();
+
+        $this->graphKpis = [
+            'total_ferias'      => $totales->total_ferias,
+            'total_tipo_a'      => $totales->total_tipo_a,
+            'total_tipo_b'      => $totales->total_tipo_b,
+            'total_tipo_a_plus' => $totales->total_tipo_a_plus,
+            'con_antrometria'   => $totales->con_antrometria,
+            'con_venta'         => $totales->con_venta,
+            'con_campana'       => $totales->con_campana,
+            // Alias for generic dashboard view
+            'total_cantidad'    => $totales->total_tipo_a + $totales->total_tipo_b + $totales->total_tipo_a_plus,
+            'total_registros'   => $totales->total_ferias,
+            'promedio_diario'   => $totales->total_ferias > 0
+                ? round($totales->total_ferias / max(1, now()->daysInMonth), 1)
+                : 0,
+        ];
+
+        // Distribución por Parroquia
+        $this->graphParroquias = (clone $queryBase)
+            ->select('parroquias.nombre', DB::raw('COUNT(feria_campos.id) as total'))
+            ->groupBy('parroquias.id', 'parroquias.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        // Distribución por Comuna
+        $this->graphComunas = (clone $queryBase)
+            ->select('comunas.nombre', DB::raw('COUNT(feria_campos.id) as total'))
+            ->groupBy('comunas.id', 'comunas.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        // Distribución por Sector
+        $this->graphSectores = (clone $queryBase)
+            ->select('sectores.nombre', DB::raw('COUNT(feria_campos.id) as total'))
+            ->groupBy('sectores.id', 'sectores.nombre')
+            ->orderByDesc('total')->get()->toArray();
+
+        // Evolución por día
+        $this->graphDias = (clone $queryBase)
+            ->select(DB::raw('DAY(feria_campos.fecha) as dia'), DB::raw('COUNT(feria_campos.id) as total'))
+            ->groupBy(DB::raw('DAY(feria_campos.fecha)'))
+            ->orderBy('dia')->get()->toArray();
+
+        // Antropometría: Tipo A, B, A+
+        $this->graphAntrometria = (clone $queryBase)
+            ->selectRaw('
+                parroquias.nombre,
+                COALESCE(SUM(feria_campos.tipo_a), 0) as tipo_a,
+                COALESCE(SUM(feria_campos.tipo_b), 0) as tipo_b,
+                COALESCE(SUM(feria_campos.tipo_a_plus), 0) as tipo_a_plus
+            ')
+            ->groupBy('parroquias.id', 'parroquias.nombre')
+            ->orderByDesc('tipo_a')->get()->toArray();
+    }
+
     // ── Render ────────────────────────────────────────────────────────────────
+
+    public function mount(): void
+    {
+        if (request()->routeIs('admin.actividades.feria.graficos')) {
+            $this->isGraphView = true;
+            
+            $this->graphMonth = (string) request()->query('mes', $this->graphMonth ?? now()->month);
+            $this->graphAno   = (string) request()->query('año', $this->graphAno   ?? now()->year);
+            $this->graphMunicipioId = request()->query('municipio_id', $this->graphMunicipioId);
+
+            $this->graphMunicipioNombre = $this->graphMunicipioId
+                ? (Municipio::find($this->graphMunicipioId)?->nombre ?? 'Todos los Municipios')
+                : 'Todos los Municipios';
+
+            $this->cargarDatosGraficos();
+        }
+    }
+
+    public function updatedGraphMonth(): void { $this->cargarDatosGraficos(); $this->dispatch('refreshCharts'); }
+    public function updatedGraphAno(): void   { $this->cargarDatosGraficos(); $this->dispatch('refreshCharts'); }
 
     public function render()
     {
@@ -412,6 +563,18 @@ class FeriaCampoController extends Component
             ->with(['sector.comuna.parroquia.municipio'])
             ->orderBy('feria_campos.fecha', $this->sortDirection)
             ->paginate(10);
+
+        if ($this->isGraphView) {
+            $mesesNombres = [
+                1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+                5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+                9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+            ];
+            return view('livewire.actividades.feria_campo.graficos-index', [
+                'nombreMes'    => $mesesNombres[(int)$this->graphMonth] ?? 'Desconocido',
+                'municipios'   => Municipio::orderBy('nombre')->get(),
+            ]);
+        }
 
         return view('livewire.actividades.feria_campo.feria_campo-index', [
             'registros'            => $registros,

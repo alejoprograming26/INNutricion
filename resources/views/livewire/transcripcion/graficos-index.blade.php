@@ -11,7 +11,7 @@
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">
                     <span class="text-{{ $colorThemaTw }}-600 dark:text-{{ $colorThemaTw }}-400 font-semibold">{{ $tipo }}</span> 
                     &bull; Municipio: <span class="text-zinc-700 dark:text-zinc-300 font-medium">{{ $municipioNombre }}</span> 
-                    &bull; {{ $nombreMes }} {{ $año }}
+                    &bull; {{ $nombreMes }} {{ $ano }}
                 </p>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     <flux:select.option value="11">Noviembre</flux:select.option>
                     <flux:select.option value="12">Diciembre</flux:select.option>
                 </flux:select>
-                <flux:input wire:model.live="año" type="number" class="w-24" />
+                <flux:input wire:model.live="ano" type="number" class="w-24" />
             </div>
 
             <a href="{{ route('admin.transcripciones.index', ['tipo' => $tipo]) }}" wire:navigate

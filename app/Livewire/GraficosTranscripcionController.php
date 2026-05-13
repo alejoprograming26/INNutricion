@@ -6,13 +6,17 @@ use App\Models\Municipio;
 use App\Models\Transcripcion;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('components.layouts.app')]
 class GraficosTranscripcionController extends Component
 {
+    #[Url(as: 'mes')]
     public $mes;
-    public $año;
+
+    #[Url(as: 'año')]
+    public $ano;
     public $tipo;
     public $municipioId;
     public $municipioNombre;
@@ -31,7 +35,7 @@ class GraficosTranscripcionController extends Component
     public function mount()
     {
         $this->mes = request()->query('mes', now()->month);
-        $this->año = request()->query('año', now()->year);
+        $this->ano = request()->query('año', now()->year);
         $this->tipo = request()->query('tipo', 'VULNERABILIDAD');
         $this->municipioId = request()->query('municipio_id');
         
@@ -70,7 +74,7 @@ class GraficosTranscripcionController extends Component
             ->join('comunas',     'sectores.comuna_id',       '=', 'comunas.id')
             ->join('parroquias',  'comunas.parroquia_id',     '=', 'parroquias.id')
             ->where('transcripciones.tipo', $this->tipo)
-            ->whereYear('transcripciones.fecha', $this->año)
+            ->whereYear('transcripciones.fecha', $this->ano)
             ->whereMonth('transcripciones.fecha', $this->mes)
             ->when($this->municipioId, function ($q) {
                 $q->where('parroquias.municipio_id', $this->municipioId);
@@ -85,7 +89,7 @@ class GraficosTranscripcionController extends Component
         ')->first();
 
         // Evitamos división por cero para el promedio diario
-        $diasEnMes = \Carbon\Carbon::createFromDate($this->año, $this->mes, 1)->daysInMonth;
+        $diasEnMes = \Carbon\Carbon::createFromDate($this->ano, $this->mes, 1)->daysInMonth;
         $promedioDiario = round($totales->total_cantidad / $diasEnMes, 1);
 
         $this->kpis = [
@@ -129,9 +133,8 @@ class GraficosTranscripcionController extends Component
             ->toArray();
     }
 
-    // Permitir recargar datos si cambian mes/año desde el mismo dashboard
     public function updatedMes() { $this->recargar(); }
-    public function updatedAño() { $this->recargar(); }
+    public function updatedAno() { $this->recargar(); }
 
     public function recargar()
     {
@@ -148,7 +151,8 @@ class GraficosTranscripcionController extends Component
         ];
 
         return view('livewire.transcripcion.graficos-index', [
-            'nombreMes' => $mesesNombres[(int)$this->mes] ?? 'Desconocido'
+            'nombreMes' => $mesesNombres[(int)$this->mes] ?? 'Desconocido',
+            'ano' => $this->ano,
         ]);
     }
 }
