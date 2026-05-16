@@ -68,8 +68,8 @@ class AbordajeController extends Component
     public ?string $graphMunicipioNombre = null;
     public array   $graphKpis        = [];
     public array   $graphParroquias  = [];
-    public array   $graphComunas     = [];
-    public array   $graphSectores    = [];
+    public array   $graphClasificacion = [];
+    public array   $graphEvolucionClasificacion = [];
     public array   $graphDias        = [];
     public string  $colorHex         = '#84cc16';
     public string  $colorTw          = 'lime';
@@ -409,15 +409,21 @@ class AbordajeController extends Component
             ->groupBy('parroquias.id', 'parroquias.nombre')
             ->orderByDesc('total')->get()->toArray();
 
-        $this->graphComunas = (clone $queryBase)
-            ->select('comunas.nombre', DB::raw('SUM(abordajes.cantidad) as total'))
-            ->groupBy('comunas.id', 'comunas.nombre')
-            ->orderByDesc('total')->get()->toArray();
+        $this->graphClasificacion = [
+            ['nombre' => 'Caso A', 'total' => $totales->total_a, 'color' => '#f43f5e'],
+            ['nombre' => 'Caso B', 'total' => $totales->total_b, 'color' => '#f59e0b'],
+            ['nombre' => 'Caso A+', 'total' => $totales->total_a_plus, 'color' => '#ec4899']
+        ];
 
-        $this->graphSectores = (clone $queryBase)
-            ->select('sectores.nombre', DB::raw('SUM(abordajes.cantidad) as total'))
-            ->groupBy('sectores.id', 'sectores.nombre')
-            ->orderByDesc('total')->get()->toArray();
+        $this->graphEvolucionClasificacion = (clone $queryBase)
+            ->select(
+                DB::raw('DAY(abordajes.fecha) as dia'),
+                DB::raw('SUM(abordajes.total_a) as total_a'),
+                DB::raw('SUM(abordajes.total_b) as total_b'),
+                DB::raw('SUM(abordajes.total_a_plus) as total_a_plus')
+            )
+            ->groupBy(DB::raw('DAY(abordajes.fecha)'))
+            ->orderBy('dia')->get()->toArray();
 
         $this->graphDias = (clone $queryBase)
             ->select(DB::raw('DAY(abordajes.fecha) as dia'), DB::raw('SUM(abordajes.cantidad) as total'))

@@ -77,6 +77,8 @@ class FeriaCampoController extends Component
     public array $graphComunas      = [];
     public array $graphSectores     = [];
     public array $graphDias         = [];
+    public array $graphServicios    = [];
+    public array $graphTipologia    = [];
     public array $graphAntrometria  = [];
     public string $colorHex         = '#6366f1';
     public string $colorTw          = 'indigo';
@@ -443,6 +445,19 @@ class FeriaCampoController extends Component
             ->select(DB::raw('DAY(feria_campos.fecha) as dia'), DB::raw('COUNT(feria_campos.id) as total'))
             ->groupBy(DB::raw('DAY(feria_campos.fecha)'))
             ->orderBy('dia')->get()->toArray();
+
+        // Arrays para Radar y Polar
+        $this->graphServicios = [
+            $totales->con_venta,
+            $totales->con_antrometria,
+            $totales->con_campana
+        ];
+
+        $this->graphTipologia = [
+            ['nombre' => 'Tipo A', 'total' => $totales->total_tipo_a],
+            ['nombre' => 'Tipo B', 'total' => $totales->total_tipo_b],
+            ['nombre' => 'Tipo A+', 'total' => $totales->total_tipo_a_plus]
+        ];
 
         // Antropometría: Tipo A, B, A+
         $this->graphAntrometria = (clone $queryBase)

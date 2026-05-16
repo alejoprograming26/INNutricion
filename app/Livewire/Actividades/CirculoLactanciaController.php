@@ -72,7 +72,8 @@ class CirculoLactanciaController extends Component
     public array   $graphComunas     = [];
     public array   $graphSectores    = [];
     public array   $graphDias        = [];
-    public string  $colorHex         = '#0891b2';
+    public array   $graphGrupos      = [];
+    public string  $colorHex         = '#14b8a6';
     public string  $colorTw          = 'cyan';
 
     // ── Datos del modal "Ver" ─────────────────────────────────────────────────
@@ -382,6 +383,13 @@ class CirculoLactanciaController extends Component
             ->select(DB::raw('DAY(circulo_lactancias.fecha) as dia'), DB::raw('SUM(circulo_lactancias.cantidad) as total'))
             ->groupBy(DB::raw('DAY(circulo_lactancias.fecha)'))
             ->orderBy('dia')->get()->toArray();
+
+        $this->graphGrupos = (clone $queryBase)
+            ->select('circulo_lactancias.nombre_grupo as nombre', DB::raw('SUM(circulo_lactancias.cantidad) as total'))
+            ->groupBy('circulo_lactancias.nombre_grupo')
+            ->orderByDesc('total')
+            ->limit(10)
+            ->get()->toArray();
     }
 
     // ── Render ────────────────────────────────────────────────────────────────
