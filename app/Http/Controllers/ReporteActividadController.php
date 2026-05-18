@@ -20,43 +20,43 @@ class ReporteActividadController extends Controller
         'abordaje' => [
             'modelo' => Abordaje::class,
             'titulo' => 'Abordaje Comunitario',
-            'color'  => '#3b82f6',
+            'color'  => '#84cc16', // Lime
             'sums'   => ['cantidad', 'total_a', 'total_b', 'total_a_plus']
         ],
         'circulo_lactancia' => [
             'modelo' => CirculoLactancia::class,
             'titulo' => 'Círculo de Lactancia',
-            'color'  => '#ec4899',
+            'color'  => '#14b8a6', // Teal
             'sums'   => ['cantidad']
         ],
         'diversidad_dietaria' => [
             'modelo' => DiversidadDietaria::class,
             'titulo' => 'Diversidad Dietaria',
-            'color'  => '#f59e0b',
+            'color'  => '#d946ef', // Fuchsia
             'sums'   => ['cantidad']
         ],
         'escuela4s' => [
             'modelo' => Escuela4s::class,
             'titulo' => 'Escuela 4S',
-            'color'  => '#8b5cf6',
+            'color'  => '#f59e0b', // Amber
             'sums'   => [] // Solo cuenta
         ],
         'feria_campo' => [
             'modelo' => FeriaCampo::class,
             'titulo' => 'Feria de Campo',
-            'color'  => '#10b981',
+            'color'  => '#6366f1', // Indigo
             'sums'   => ['tipo_a', 'tipo_b', 'tipo_a_plus'] // sum de antropometría
         ],
         'liderazgo_territorial' => [
             'modelo' => LiderazgoTerritorial::class,
             'titulo' => 'Liderazgo Territorial',
-            'color'  => '#06b6d4',
+            'color'  => '#0ea5e9', // Sky
             'sums'   => ['cantidad']
         ],
         'plan_vulnerabilidad' => [
             'modelo' => PlanVulnerabilidad::class,
             'titulo' => 'Plan de Vulnerabilidad',
-            'color'  => '#f43f5e',
+            'color'  => '#f43f5e', // Rose
             'sums'   => ['total_entregas']
         ]
     ];
