@@ -58,6 +58,7 @@ class ComunaController extends Component
 
     public function create(): void
     {
+        abort_if(!auth()->user()->can('Crear Comuna'), 403, 'No tienes permiso para crear comunas.');
         $this->resetInputFields();
         $this->isModalOpen = true;
     }
@@ -89,12 +90,14 @@ class ComunaController extends Component
         }
 
         if ($this->comuna_id) {
+            abort_if(!auth()->user()->can('Editar Comuna'), 403, 'No tienes permiso para editar comunas.');
             Comuna::findOrFail($this->comuna_id)->update([
                 'parroquia_id' => $this->parroquia_id,
                 'nombre'    => mb_strtoupper(trim($this->nombre), 'UTF-8'),
             ]);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Comuna actualizada exitosamente.']);
         } else {
+            abort_if(!auth()->user()->can('Crear Comuna'), 403, 'No tienes permiso para crear comunas.');
             Comuna::create([
                 'parroquia_id' => $this->parroquia_id,
                 'nombre'    => mb_strtoupper(trim($this->nombre), 'UTF-8'),
@@ -107,6 +110,7 @@ class ComunaController extends Component
 
     public function edit(int $id): void
     {
+        abort_if(!auth()->user()->can('Editar Comuna'), 403, 'No tienes permiso para editar comunas.');
         $this->resetInputFields();
         $comuna = Comuna::with('parroquia.municipio')->findOrFail($id);
 
@@ -136,6 +140,7 @@ class ComunaController extends Component
 
     public function delete(int $id): void
     {
+        abort_if(!auth()->user()->can('Eliminar Comuna'), 403, 'No tienes permiso para eliminar comunas.');
         Comuna::findOrFail($id)->delete();
         $this->dispatch('swal', ['icon' => 'success', 'title' => 'Comuna eliminada correctamente.']);
     }

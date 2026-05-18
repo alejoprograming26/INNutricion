@@ -30,6 +30,7 @@ class UsuarioController extends Component
 
     public function create()
     {
+        abort_if(!auth()->user()->can('Crear Usuario'), 403, 'No tienes permiso para crear usuarios.');
         $this->resetInputFields();
         $this->isModalOpen = true;
     }
@@ -67,11 +68,13 @@ class UsuarioController extends Component
         $role = Role::findById($this->role_id);
 
         if ($this->user_id) {
+            abort_if(!auth()->user()->can('Editar Usuario'), 403, 'No tienes permiso para editar usuarios.');
             $user = User::query()->findOrFail($this->user_id);
             $user->update($data);
             $user->syncRoles([$role]);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Usuario actualizado exitosamente.']);
         } else {
+            abort_if(!auth()->user()->can('Crear Usuario'), 403, 'No tienes permiso para crear usuarios.');
             $user = User::query()->create($data);
             $user->assignRole($role);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Usuario creado exitosamente.']);
@@ -82,6 +85,7 @@ class UsuarioController extends Component
 
     public function edit($id)
     {
+        abort_if(!auth()->user()->can('Editar Usuario'), 403, 'No tienes permiso para editar usuarios.');
         $this->resetInputFields();
         $user = User::query()->findOrFail($id);
         $this->user_id = $user->id;
@@ -109,6 +113,7 @@ class UsuarioController extends Component
 
     public function toggleStatus($id)
     {
+        abort_if(!auth()->user()->can('Eliminar Usuario'), 403, 'No tienes permiso para cambiar el estado de usuarios.');
         $user = User::query()->findOrFail($id);
         
         if ($user->id === auth()->id()) {

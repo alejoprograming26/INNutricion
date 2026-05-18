@@ -55,6 +55,7 @@ class MetaController extends Component
 
     public function create(): void
     {
+        abort_if(!auth()->user()->can('Crear Meta'), 403, 'No tienes permiso para crear metas.');
         $this->resetInputFields();
 
         // Inicializar detalles con todos los municipios en 0
@@ -100,6 +101,7 @@ class MetaController extends Component
 
         if ($this->meta_id) {
             // ── Editar ──────────────────────────────────────────────────────
+            abort_if(!auth()->user()->can('Editar Meta'), 403, 'No tienes permiso para editar metas.');
             $meta = Meta::findOrFail($this->meta_id);
             $meta->update([
                 'ano'   => (int) $this->ano,
@@ -121,6 +123,7 @@ class MetaController extends Component
             $this->dispatch('check-goals');
         } else {
             // ── Crear ────────────────────────────────────────────────────────
+            abort_if(!auth()->user()->can('Crear Meta'), 403, 'No tienes permiso para crear metas.');
             $meta = Meta::create([
                 'ano'   => (int) $this->ano,
                 'total' => $total,
@@ -147,6 +150,7 @@ class MetaController extends Component
 
     public function edit(int $id): void
     {
+        abort_if(!auth()->user()->can('Editar Meta'), 403, 'No tienes permiso para editar metas.');
         $this->resetInputFields();
         $meta = Meta::with(['detalles.municipio'])->findOrFail($id);
 
@@ -186,6 +190,7 @@ class MetaController extends Component
 
     public function delete(int $id): void
     {
+        abort_if(!auth()->user()->can('Eliminar Meta'), 403, 'No tienes permiso para eliminar metas.');
         $meta = Meta::findOrFail($id);
         $meta->detalles()->delete(); // Eliminar los detalles primero
         $meta->delete();

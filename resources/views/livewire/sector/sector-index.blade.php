@@ -7,10 +7,12 @@
             </flux:subheading>
         </div>
         <div>
+            @can('Crear Sector')
             <flux:button wire:click="create" icon="plus"
                 class="!bg-lime-500 !text-zinc-900 border-none hover:!bg-lime-400 font-bold">
                 Nuevo Sector
             </flux:button>
+            @endcan
         </div>
     </div>
 
@@ -63,13 +65,17 @@
                                     <flux:button wire:click="show({{ $sector->id }})" size="sm" variant="ghost"
                                         icon="eye" class="text-zinc-500 hover:text-blue-500" />
 
+                                    @can('Editar Sector')
                                     <flux:button wire:click="edit({{ $sector->id }})" size="sm" variant="ghost"
                                         icon="pencil-square" class="text-zinc-500 hover:text-amber-500" />
+                                    @endcan
 
+                                    @can('Eliminar Sector')
                                     <flux:button
                                         @click="confirmAction($wire, {{ $sector->id }}, 'delete', '¿Eliminar sector?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')"
                                         size="sm" variant="ghost" icon="trash"
                                         class="text-zinc-500 hover:text-red-500" />
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

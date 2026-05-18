@@ -6,10 +6,12 @@
             </flux:subheading>
         </div>
         <div>
+            @can('Crear Usuario')
             <flux:button wire:click="create" icon="plus"
                 class="!bg-lime-500 !text-zinc-900 border-none hover:!bg-lime-400 font-bold">
                 Nuevo Usuario
             </flux:button>
+            @endcan
         </div>
     </div>
 
@@ -64,9 +66,13 @@
                                 <div class="flex items-center justify-center gap-2">
                                     <flux:button wire:click="show({{ $user->id }})" size="sm" variant="ghost"
                                         icon="eye" class="text-zinc-500 hover:text-blue-500" />
+                                    
+                                    @can('Editar Usuario')
                                     <flux:button wire:click="edit({{ $user->id }})" size="sm" variant="ghost"
                                         icon="pencil-square" class="text-zinc-500 hover:text-amber-500" />
+                                    @endcan
 
+                                    @can('Eliminar Usuario')
                                     @if ($user->is_active)
                                         <flux:button
                                             @click="confirmAction($wire, {{ $user->id }}, 'toggleStatus', '¿Desactivar usuario?', 'El usuario no podrá ingresar al sistema hasta que sea activado nuevamente.', 'warning', 'Sí, desactivar')"
@@ -78,6 +84,7 @@
                                             size="sm" variant="ghost" icon="arrow-path"
                                             class="text-zinc-500 hover:text-green-500" title="Restaurar" />
                                     @endif
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

@@ -70,6 +70,7 @@ class SectorController extends Component
 
     public function create(): void
     {
+        abort_if(!auth()->user()->can('Crear Sector'), 403, 'No tienes permiso para crear sectores.');
         $this->resetInputFields();
         $this->isModalOpen = true;
     }
@@ -103,12 +104,14 @@ class SectorController extends Component
         }
 
         if ($this->sector_id) {
+            abort_if(!auth()->user()->can('Editar Sector'), 403, 'No tienes permiso para editar sectores.');
             Sector::findOrFail($this->sector_id)->update([
                 'comuna_id' => $this->comuna_id,
                 'nombre'    => mb_strtoupper(trim($this->nombre), 'UTF-8'),
             ]);
             $this->dispatch('swal', ['icon' => 'success', 'title' => 'Sector actualizado exitosamente.']);
         } else {
+            abort_if(!auth()->user()->can('Crear Sector'), 403, 'No tienes permiso para crear sectores.');
             Sector::create([
                 'comuna_id' => $this->comuna_id,
                 'nombre'    => mb_strtoupper(trim($this->nombre), 'UTF-8'),
@@ -121,6 +124,7 @@ class SectorController extends Component
 
     public function edit(int $id): void
     {
+        abort_if(!auth()->user()->can('Editar Sector'), 403, 'No tienes permiso para editar sectores.');
         $this->resetInputFields();
         $sector = Sector::with('comuna.parroquia.municipio')->findOrFail($id);
 
@@ -151,6 +155,7 @@ class SectorController extends Component
 
     public function delete(int $id): void
     {
+        abort_if(!auth()->user()->can('Eliminar Sector'), 403, 'No tienes permiso para eliminar sectores.');
         Sector::findOrFail($id)->delete();
         $this->dispatch('swal', ['icon' => 'success', 'title' => 'Sector eliminado correctamente.']);
     }

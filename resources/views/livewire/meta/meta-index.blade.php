@@ -6,10 +6,12 @@
             <flux:subheading size="lg">Administra las metas de las transcripciones anuales por municipio.</flux:subheading>
         </div>
         <div>
+            @can('Crear Meta')
             <flux:button wire:click="create" icon="plus"
                 class="!bg-lime-500 !text-zinc-900 border-none hover:!bg-lime-400 font-bold">
                 Nueva Meta
             </flux:button>
+            @endcan
         </div>
     </div>
 
@@ -52,12 +54,16 @@
                                         icon="chart-bar-square" class="text-zinc-500 hover:text-lime-500" title="Ver Gráficas" />
                                     <flux:button wire:click="show({{ $meta->id }})" size="sm" variant="ghost"
                                         icon="eye" class="text-zinc-500 hover:text-blue-500" />
+                                    @can('Editar Meta')
                                     <flux:button wire:click="edit({{ $meta->id }})" size="sm" variant="ghost"
                                         icon="pencil-square" class="text-zinc-500 hover:text-amber-500" />
+                                    @endcan
+                                    @can('Eliminar Meta')
                                     <flux:button
                                         @click="confirmAction($wire, {{ $meta->id }}, 'delete', '¿Eliminar meta?', 'Se eliminarán también todos los detalles por municipio. Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')"
                                         size="sm" variant="ghost" icon="trash"
                                         class="text-zinc-500 hover:text-red-500" />
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

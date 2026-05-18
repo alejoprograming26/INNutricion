@@ -18,17 +18,70 @@ class RoleSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Crear roles principales
-        $roleAdmin = Role::create(['name' => 'ADMINISTRADOR']);
-        $roleSecretaria = Role::create(['name' => 'SECRETARIA']);
+        $roleAdmin = Role::firstOrCreate(['name' => 'ADMINISTRADOR', 'guard_name' => 'web']);
+        $roleSecretaria = Role::firstOrCreate(['name' => 'SECRETARIA', 'guard_name' => 'web']);
 
-        // Crear algunos permisos básicos de ejemplo si lo deseas
-        /*
-        Permission::create(['name' => 'ver panel']);
-        Permission::create(['name' => 'gestionar roles']);
-        Permission::create(['name' => 'gestionar usuarios']);
-        */
+        // Módulo Dashboard
+        Permission::firstOrCreate(['name' => 'Ver Inicio', 'guard_name' => 'web'])->syncRoles($roleAdmin);
 
-        // Asignar todos los permisos al rol Admin (si tuvieras permisos)
-        // $roleAdmin->givePermissionTo(Permission::all());
+        // Módulo Ajustes
+        Permission::firstOrCreate(['name' => 'Ajustes del Sistema', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+
+        // Módulo Roles
+        Permission::firstOrCreate(['name' => 'Ver Listado de Roles', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Crear Rol', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Editar Rol', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Eliminar Rol', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+
+        // Módulo Usuarios
+        Permission::firstOrCreate(['name' => 'Ver Listado de Usuarios', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Crear Usuario', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Editar Usuario', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Eliminar Usuario', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+
+        // Módulo Entidades (Sectores, Comunas, Metas)
+        Permission::firstOrCreate(['name' => 'Ver Listado de Sectores', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Crear Sector', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Editar Sector', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Eliminar Sector', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+
+        Permission::firstOrCreate(['name' => 'Ver Listado de Comunas', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Crear Comuna', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Editar Comuna', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Eliminar Comuna', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+
+        Permission::firstOrCreate(['name' => 'Ver Listado de Metas', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Crear Meta', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Editar Meta', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Eliminar Meta', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+
+        // Módulo Transcripciones
+        Permission::firstOrCreate(['name' => 'Ver Transcripciones', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+
+        // Módulo Actividades
+        Permission::firstOrCreate(['name' => 'Ver Abordajes', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Ver Escuela 4S', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Ver Liderazgo Territorial', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Ver Diversidad Dietaria', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Ver Circulo de Lactancia', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Ver Plan Vulnerabilidad', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        Permission::firstOrCreate(['name' => 'Ver Feria del Campo', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+
+        // Módulo Calendario
+        Permission::firstOrCreate(['name' => 'Ver Calendario', 'guard_name' => 'web'])->syncRoles($roleAdmin);
+        
+        // Asignar permisos básicos a la SECRETARIA como ejemplo inicial
+        $roleSecretaria->givePermissionTo([
+            'Ver Inicio',
+            'Ver Transcripciones',
+            'Ver Abordajes',
+            'Ver Escuela 4S',
+            'Ver Liderazgo Territorial',
+            'Ver Diversidad Dietaria',
+            'Ver Circulo de Lactancia',
+            'Ver Plan Vulnerabilidad',
+            'Ver Feria del Campo',
+            'Ver Calendario'
+        ]);
     }
 }

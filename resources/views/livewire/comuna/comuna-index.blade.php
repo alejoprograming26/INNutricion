@@ -7,10 +7,12 @@
             </flux:subheading>
         </div>
         <div>
+            @can('Crear Comuna')
             <flux:button wire:click="create" icon="plus"
                 class="!bg-lime-500 !text-zinc-900 border-none hover:!bg-lime-400 font-bold">
                 Nueva Comuna
             </flux:button>
+            @endcan
         </div>
     </div>
 
@@ -57,13 +59,17 @@
                                     <flux:button wire:click="show({{ $comuna->id }})" size="sm" variant="ghost"
                                         icon="eye" class="text-zinc-500 hover:text-blue-500" />
 
+                                    @can('Editar Comuna')
                                     <flux:button wire:click="edit({{ $comuna->id }})" size="sm" variant="ghost"
                                         icon="pencil-square" class="text-zinc-500 hover:text-amber-500" />
+                                    @endcan
 
+                                    @can('Eliminar Comuna')
                                     <flux:button
                                         @click="confirmAction($wire, {{ $comuna->id }}, 'delete', '¿Eliminar comuna?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')"
                                         size="sm" variant="ghost" icon="trash"
                                         class="text-zinc-500 hover:text-red-500" />
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
