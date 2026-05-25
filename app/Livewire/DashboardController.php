@@ -34,7 +34,7 @@ class DashboardController extends Component
         // Mapeo de actividades y colores usando las versiones Tailwind 500 para máximo contraste
         $actividades = [
             'Abordaje' => ['table' => 'abordajes', 'color' => '#84cc16', 'sum_col' => 'cantidad'],
-            'Feria de Campo' => ['table' => 'feria_campos', 'color' => '#6366f1', 'sum_col' => '(tipo_a + tipo_b + tipo_a_plus)'],
+            'Feria de Campo' => ['table' => 'feria_campos', 'color' => '#6366f1', 'sum_col' => '(COALESCE(tipo_a, 0) + COALESCE(tipo_b, 0) + COALESCE(tipo_a_plus, 0))'],
             'Vulnerabilidad' => ['table' => 'plan_vulnerabilidads', 'color' => '#f43f5e', 'sum_col' => 'total_entregas'],
             'Lactancia' => ['table' => 'circulo_lactancias', 'color' => '#14b8a6', 'sum_col' => 'cantidad'],
             'Escuela 4S' => ['table' => 'escuela4s', 'color' => '#f59e0b', 'sum_col' => '1'],
@@ -54,13 +54,17 @@ class DashboardController extends Component
             $table = $cfg['table'];
             $sumCol = $cfg['sum_col'];
 
-            // 1. Distribución por actividad (Suma de personas)
+            // 1. Conteo de registros totales (Operativos)
+            $registrosCount = DB::table($table)->whereYear('fecha', $year)->count();
+            $totalRegistros += $registrosCount;
+
+            // 2. Distribución por actividad (Suma de personas)
             $totalActividad = DB::table($table)
                 ->whereYear('fecha', $year)
                 ->selectRaw("SUM($sumCol) as total")
                 ->value('total') ?? 0;
 
-            if ($totalActividad > 0) {
+            if ($registrosCount > 0) {
                 $distribution[] = [
                     'nombre' => $nombre,
                     'total' => (int) $totalActividad,
@@ -68,10 +72,6 @@ class DashboardController extends Component
                 ];
                 $totalAtendidos += $totalActividad;
             }
-
-            // 2. Conteo de registros totales (Operativos)
-            $registrosCount = DB::table($table)->whereYear('fecha', $year)->count();
-            $totalRegistros += $registrosCount;
 
             // 3. Gráfica mensual (Evolución Anual)
             $monthlyData = DB::table($table)
@@ -85,8 +85,9 @@ class DashboardController extends Component
             }
 
             // 4. Últimos Registros
+            $subtipoRaw = ($table === 'transcripciones') ? 'tipo' : 'NULL';
             $queries[] = DB::table($table)
-                ->selectRaw("'$nombre' as tipo, fecha, created_at, '{$cfg['color']}' as color")
+                ->selectRaw("'$nombre' as tipo, $subtipoRaw as subtipo, fecha, created_at, '{$cfg['color']}' as color")
                 ->whereYear('fecha', $year);
                 
             // 5. Sectores activos para conteo de municipios
