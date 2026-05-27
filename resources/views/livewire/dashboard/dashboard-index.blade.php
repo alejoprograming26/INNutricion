@@ -223,87 +223,6 @@
             </div>
         </div>
 
-        {{-- WIDGET DE MAPA: ANCHO TOTAL (fuera del grid lateral) --}}
-        <div
-            class="glass-panel rounded-[32px] p-8 shadow-2xl relative overflow-hidden flex flex-col border border-zinc-200/50 dark:border-zinc-800/60 bg-gradient-to-br from-white via-white to-zinc-50/30 dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-900/50 mb-8">
-            <div class="absolute -left-32 -bottom-32 w-64 h-64 bg-lime-500/5 rounded-full blur-3xl pointer-events-none">
-            </div>
-            <div class="absolute -right-32 -top-32 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none">
-            </div>
-
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 relative z-10">
-                <div>
-                    <h3 class="text-lg font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-3">
-                        Distribución Territorial — Estado Lara
-                        @if ($selectedMunicipioNombre)
-                            <span
-                                class="px-3 py-1 rounded-full bg-lime-500/10 text-lime-600 dark:text-lime-400 text-xs font-black uppercase tracking-wider animate-pulse border border-lime-500/20">
-                                Filtrado: {{ $selectedMunicipioNombre }}
-                            </span>
-                        @endif
-                    </h3>
-                    <p class="text-xs text-zinc-400 dark:text-zinc-500 font-medium mt-1">Monitorea y filtra la gestión
-                        alimentaria a nivel de Municipios y Parroquias</p>
-                </div>
-                @if ($selectedMunicipioId)
-                    <button wire:click="selectMunicipio({{ $selectedMunicipioId }})"
-                        class="px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs font-black tracking-wide shadow-sm active:scale-95 transition-all">
-                        Quitar Filtro Regional
-                    </button>
-                @else
-                    <span
-                        class="px-3.5 py-1.5 rounded-full bg-zinc-100/50 dark:bg-zinc-800/30 border border-zinc-200/30 dark:border-zinc-700/20 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-lime-500 shadow-sm animate-ping"></span>
-                        💡 Haz clic en el mapa para interactuar
-                    </span>
-                @endif
-            </div>
-
-            {{-- SVG del mapa a ancho completo --}}
-            <div class="map-container w-full relative z-10 mb-6" wire:ignore>
-                {!! file_get_contents(public_path('images/lara-map.svg')) !!}
-            </div>
-
-            {{-- Leaderboard horizontal de los 9 municipios --}}
-            <div class="relative z-10">
-                <div
-                    class="text-[10px] font-black text-zinc-400 uppercase tracking-widest pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800">
-                    Ranking de Cobertura por Municipio
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-3">
-                    @foreach ($municipiosStats as $m)
-                        @php
-                            $isActive = $selectedMunicipioId == $m['id'];
-                            $isAnyActive = !is_null($selectedMunicipioId);
-                        @endphp
-                        <div wire:click="selectMunicipio({{ $m['id'] }})"
-                            class="flex flex-col gap-2 p-3 rounded-2xl border cursor-pointer transition-all duration-300 group
-                                    {{ $isActive
-                                        ? 'border-lime-500/60 shadow-lg scale-[1.04] bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900'
-                                        : 'border-transparent bg-zinc-50/50 dark:bg-zinc-900/30 hover:bg-zinc-100/70 dark:hover:bg-zinc-800/50 hover:scale-[1.02]' }}
-                                    {{ $isAnyActive && !$isActive ? 'opacity-40 hover:opacity-100' : 'opacity-100' }}">
-                            <div class="flex items-center gap-1.5 min-w-0">
-                                <span class="w-2 h-2 rounded-full flex-shrink-0"
-                                    style="background-color: {{ $m['color'] }}; box-shadow: 0 0 6px {{ $m['color'] }}60;"></span>
-                                <span
-                                    class="text-[10px] font-black text-zinc-700 dark:text-zinc-200 truncate leading-tight">{{ $m['nombre'] }}</span>
-                            </div>
-                            <span class="text-lg font-black tabular-nums leading-none text-zinc-800 dark:text-zinc-100">
-                                {{ number_format($m['total_atendidos'], 0, ',', '.') }}
-                            </span>
-                            <div class="w-full h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full transition-all duration-500"
-                                    style="width: {{ $m['porcentaje'] }}%; background-color: {{ $m['color'] }};">
-                                </div>
-                            </div>
-                            <span
-                                class="text-[9px] font-bold text-zinc-400 tabular-nums">{{ $m['porcentaje'] }}%</span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
         {{-- GRID PRINCIPAL DE 2 COLUMNAS (Estilo Ethereal, tipografía normalizada) --}}
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
 
@@ -437,7 +356,7 @@
                     </div>
                 </div>
 
-                {{-- (mapa movido arriba como full-width, fuera del grid de 2 cols) --}}
+                {{-- (mapa movido abajo como full-width, fuera del grid de 2 cols) --}}
 
                 {{-- Bloque intermedio: Evolución Anual (Bar Chart) --}}
                 <div class="glass-panel rounded-[32px] p-6 shadow-2xl relative overflow-hidden flex flex-col">
@@ -529,6 +448,52 @@
                         </div>
                     </div>
 
+                </div>
+
+                {{-- NUEVA TARJETA: Resumen Estratégico para llenar el espacio --}}
+                <div class="glass-panel rounded-[32px] p-6 shadow-2xl relative overflow-hidden flex flex-col justify-between flex-1 border border-zinc-200/50 dark:border-zinc-800/60 bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50 dark:from-indigo-950/30 dark:via-zinc-900 dark:to-purple-950/20">
+                    <div class="absolute -right-20 -top-20 w-48 h-48 bg-fuchsia-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -left-20 -bottom-20 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="relative z-10 flex items-start justify-between mb-6">
+                        <div>
+                            <h3 class="text-base font-bold text-zinc-800 dark:text-zinc-100">Resumen Estratégico</h3>
+                            <p class="text-xs text-zinc-400 dark:text-zinc-500 font-medium mt-0.5">Métricas destacadas de la gestión</p>
+                        </div>
+                        <span class="w-10 h-10 rounded-2xl bg-fuchsia-500/10 flex items-center justify-center text-fuchsia-500 shadow-inner">
+                            <flux:icon.sparkles class="w-5 h-5" />
+                        </span>
+                    </div>
+
+                    <div class="relative z-10 flex flex-col gap-4 mt-auto">
+                        {{-- Módulo Líder --}}
+                        @if(count($graphDistribution) > 0)
+                        <div class="p-4 rounded-2xl bg-white/60 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-700/50 shadow-sm backdrop-blur-md">
+                            <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> Módulo con mayor impacto
+                            </p>
+                            <div class="flex items-end justify-between">
+                                <h4 class="text-lg font-black text-zinc-800 dark:text-zinc-100 leading-none" style="color: {{ $graphDistribution[0]['color'] }}">{{ $graphDistribution[0]['nombre'] }}</h4>
+                                <span class="text-sm font-bold text-zinc-600 dark:text-zinc-300 tabular-nums leading-none">{{ number_format($graphDistribution[0]['total'], 0, ',', '.') }} <span class="text-[10px]">personas</span></span>
+                            </div>
+                        </div>
+                        @endif
+
+                        {{-- Progreso de Meta Anual (Simulada) --}}
+                        @php
+                            $meta = 500000;
+                            $progreso = $meta > 0 ? min(100, round(($totalAtendidos / $meta) * 100, 1)) : 0;
+                        @endphp
+                        <div class="p-4 rounded-2xl bg-white/60 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-700/50 shadow-sm backdrop-blur-md">
+                            <div class="flex items-center justify-between mb-2.5">
+                                <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Meta Anual de Atención (500k)</p>
+                                <span class="text-xs font-black text-emerald-500 dark:text-emerald-400">{{ $progreso }}%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-zinc-200 dark:bg-zinc-700/50 rounded-full overflow-hidden shadow-inner">
+                                <div class="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-1000 ease-out" style="width: {{ $progreso }}%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -712,6 +677,87 @@
 
             </div>
 
+        </div>
+
+        {{-- WIDGET DE MAPA: ANCHO TOTAL (fuera del grid lateral, ahora al fondo) --}}
+        <div
+            class="glass-panel rounded-[32px] p-8 shadow-2xl relative overflow-hidden flex flex-col border border-zinc-200/50 dark:border-zinc-800/60 bg-gradient-to-br from-white via-white to-zinc-50/30 dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-900/50 mb-8">
+            <div class="absolute -left-32 -bottom-32 w-64 h-64 bg-lime-500/5 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div class="absolute -right-32 -top-32 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none">
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 relative z-10">
+                <div>
+                    <h3 class="text-lg font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-3">
+                        Distribución Territorial — Estado Lara
+                        @if ($selectedMunicipioNombre)
+                            <span
+                                class="px-3 py-1 rounded-full bg-lime-500/10 text-lime-600 dark:text-lime-400 text-xs font-black uppercase tracking-wider animate-pulse border border-lime-500/20">
+                                Filtrado: {{ $selectedMunicipioNombre }}
+                            </span>
+                        @endif
+                    </h3>
+                    <p class="text-xs text-zinc-400 dark:text-zinc-500 font-medium mt-1">Monitorea y filtra la gestión
+                        alimentaria a nivel de Municipios y Parroquias</p>
+                </div>
+                @if ($selectedMunicipioId)
+                    <button wire:click="selectMunicipio({{ $selectedMunicipioId }})"
+                        class="px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs font-black tracking-wide shadow-sm active:scale-95 transition-all">
+                        Quitar Filtro Regional
+                    </button>
+                @else
+                    <span
+                        class="px-3.5 py-1.5 rounded-full bg-zinc-100/50 dark:bg-zinc-800/30 border border-zinc-200/30 dark:border-zinc-700/20 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-lime-500 shadow-sm animate-ping"></span>
+                        💡 Haz clic en el mapa para interactuar
+                    </span>
+                @endif
+            </div>
+
+            {{-- SVG del mapa a ancho completo --}}
+            <div class="map-container w-full relative z-10 mb-6" wire:ignore>
+                {!! file_get_contents(public_path('images/lara-map.svg')) !!}
+            </div>
+
+            {{-- Leaderboard horizontal de los 9 municipios --}}
+            <div class="relative z-10">
+                <div
+                    class="text-[10px] font-black text-zinc-400 uppercase tracking-widest pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800">
+                    Ranking de Cobertura por Municipio
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-3">
+                    @foreach ($municipiosStats as $m)
+                        @php
+                            $isActive = $selectedMunicipioId == $m['id'];
+                            $isAnyActive = !is_null($selectedMunicipioId);
+                        @endphp
+                        <div wire:click="selectMunicipio({{ $m['id'] }})"
+                            class="flex flex-col gap-2 p-3 rounded-2xl border cursor-pointer transition-all duration-300 group
+                                    {{ $isActive
+                                        ? 'border-lime-500/60 shadow-lg scale-[1.04] bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900'
+                                        : 'border-transparent bg-zinc-50/50 dark:bg-zinc-900/30 hover:bg-zinc-100/70 dark:hover:bg-zinc-800/50 hover:scale-[1.02]' }}
+                                    {{ $isAnyActive && !$isActive ? 'opacity-40 hover:opacity-100' : 'opacity-100' }}">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <span class="w-2 h-2 rounded-full flex-shrink-0"
+                                    style="background-color: {{ $m['color'] }}; box-shadow: 0 0 6px {{ $m['color'] }}60;"></span>
+                                <span
+                                    class="text-[10px] font-black text-zinc-700 dark:text-zinc-200 truncate leading-tight">{{ $m['nombre'] }}</span>
+                            </div>
+                            <span class="text-lg font-black tabular-nums leading-none text-zinc-800 dark:text-zinc-100">
+                                {{ number_format($m['total_atendidos'], 0, ',', '.') }}
+                            </span>
+                            <div class="w-full h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-500"
+                                    style="width: {{ $m['porcentaje'] }}%; background-color: {{ $m['color'] }};">
+                                </div>
+                            </div>
+                            <span
+                                class="text-[9px] font-bold text-zinc-400 tabular-nums">{{ $m['porcentaje'] }}%</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
 
     </div>
