@@ -390,3 +390,104 @@
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
     background-color: #52525b;
 }
+
+/* ==========================================================================
+   ─── SweetAlert2 Custom Premium Skin (Dark Mode + Rounded) ─────────────────
+   ========================================================================== */
+
+/* 1. Toasts (Alertas Rápidas en la esquina) */
+.swal2-popup.swal2-toast {
+    border-radius: 16px !important; /* Bordes suaves y modernos */
+    padding: 12px 16px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03) !important;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif !important;
+    background-color: #ffffff !important;
+    color: #1f2937 !important;
+    border: 1px solid #e4e4e7 !important; /* zinc-200 */
+}
+
+/* Modo oscuro para Toasts */
+.dark .swal2-popup.swal2-toast {
+    background-color: #0c0f14 !important; /* El color negro premium de la interfaz */
+    color: #f4f4f5 !important;
+    border: 1px solid #27272a !important; /* zinc-800 */
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.swal2-popup.swal2-toast .swal2-title {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: #1f2937 !important;
+    line-height: 1.4 !important;
+}
+
+.dark .swal2-popup.swal2-toast .swal2-title {
+    color: #f4f4f5 !important;
+}
+
+.swal2-popup.swal2-toast .swal2-icon {
+    margin-right: 12px !important;
+}
+
+/* 2. Modales / Diálogos de Confirmación (ej: Eliminar) */
+.swal2-popup:not(.swal2-toast) {
+    border-radius: 24px !important; /* Curva fluida premium */
+    padding: 28px !important;
+    background-color: #ffffff !important;
+    color: #1f2937 !important;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif !important;
+    border: 1px solid #e4e4e7 !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Modo oscuro para Modales */
+.dark .swal2-popup:not(.swal2-toast) {
+    background-color: #0c0f14 !important;
+    color: #f4f4f5 !important;
+    border: 1px solid #27272a !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.swal2-popup:not(.swal2-toast) .swal2-title {
+    font-size: 1.35rem !important;
+    font-weight: 800 !important;
+    color: #18181b !important;
+    letter-spacing: -0.02em !important;
+}
+
+.dark .swal2-popup:not(.swal2-toast) .swal2-title {
+    color: #ffffff !important;
+}
+
+.swal2-popup:not(.swal2-toast) .swal2-html-container {
+    color: #52525b !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+}
+
+.dark .swal2-popup:not(.swal2-toast) .swal2-html-container {
+    color: #a1a1aa !important;
+}
+
+/* Acciones y Botones Modernos */
+.swal2-popup .swal2-actions {
+    margin-top: 24px !important;
+    gap: 10px !important;
+}
+
+.swal2-popup .swal2-styled {
+    border-radius: 12px !important; /* Botones redondeados modernos */
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    padding: 10px 24px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin: 0 !important;
+}
+
+.swal2-popup .swal2-styled:hover {
+    transform: translateY(-1px) !important;
+}
+
+.swal2-popup .swal2-styled:active {
+    transform: scale(0.98) !important;
+}

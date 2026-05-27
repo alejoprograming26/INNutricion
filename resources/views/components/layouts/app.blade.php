@@ -60,129 +60,130 @@
         </flux:brand>
         <flux:navlist variant="outline">
             @can('Ver Inicio')
-            <flux:navlist.item icon="home" href="/dashboard" :current="request()->routeIs('dashboard')"
-                wire:navigate>Panel Inicial
-            </flux:navlist.item>
+                <flux:navlist.item icon="home" href="/dashboard" :current="request()->routeIs('dashboard')"
+                    wire:navigate>Panel Inicial
+                </flux:navlist.item>
             @endcan
             @can('Ver Listado de Roles')
-            <flux:navlist.item icon="user-group" href="{{ route('admin.roles.index') }}"
-                :current="request()->routeIs('admin.roles.index')" wire:navigate>Roles</flux:navlist.item>
+                <flux:navlist.item icon="user-group" href="{{ route('admin.roles.index') }}"
+                    :current="request()->routeIs('admin.roles.index')" wire:navigate>Roles</flux:navlist.item>
             @endcan
             @can('Ver Listado de Usuarios')
-            <flux:navlist.item icon="users" href="{{ route('admin.usuarios.index') }}"
-                :current="request()->routeIs('admin.usuarios.index')" wire:navigate>Usuarios</flux:navlist.item>
+                <flux:navlist.item icon="users" href="{{ route('admin.usuarios.index') }}"
+                    :current="request()->routeIs('admin.usuarios.index')" wire:navigate>Usuarios</flux:navlist.item>
             @endcan
             @can('Ver Listado de Comunas')
-            <flux:navlist.item icon="building-office-2" href="{{ route('admin.comunas.index') }}"
-                :current="request()->routeIs('admin.comunas.index')" wire:navigate>Comunas</flux:navlist.item>
+                <flux:navlist.item icon="building-office-2" href="{{ route('admin.comunas.index') }}"
+                    :current="request()->routeIs('admin.comunas.index')" wire:navigate>Comunas</flux:navlist.item>
             @endcan
             @can('Ver Listado de Sectores')
-            <flux:navlist.item icon="map-pin" href="{{ route('admin.sectores.index') }}"
-                :current="request()->routeIs('admin.sectores.index')" wire:navigate>
-                Sectores</flux:navlist.item>
+                <flux:navlist.item icon="map-pin" href="{{ route('admin.sectores.index') }}"
+                    :current="request()->routeIs('admin.sectores.index')" wire:navigate>
+                    Sectores</flux:navlist.item>
             @endcan
             @can('Ver Listado de Metas')
-            <flux:navlist.item icon="chart-bar" href="{{ route('admin.metas.index') }}"
-                :current="request()->routeIs('admin.metas.index')" wire:navigate>Metas</flux:navlist.item>
+                <flux:navlist.item icon="chart-bar" href="{{ route('admin.metas.index') }}"
+                    :current="request()->routeIs('admin.metas.index')" wire:navigate>Metas</flux:navlist.item>
             @endcan
 
             @can('Ver Transcripciones')
-            <flux:sidebar.group expandable :expanded="request()->routeIs('admin.transcripciones.*')"
-                heading="Transcripciones" class="grid" icon="book-open">
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'VULNERABILIDAD']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'VULNERABILIDAD'"
-                    wire:navigate>
-                    Vulnerabilidad
-                </flux:sidebar.item>
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'CPLV']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'CPLV'"
-                    wire:navigate>
-                    CPLV
-                </flux:sidebar.item>
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'LACTANCIA MATERNA']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'LACTANCIA MATERNA'"
-                    wire:navigate>
-                    Lactancia Materna
-                </flux:sidebar.item>
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'ENCUESTA DIETARIA']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'ENCUESTA DIETARIA'"
-                    wire:navigate>
-                    Encuesta Dietaria
-                </flux:sidebar.item>
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'MONITOREO DE PRECIO']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'MONITOREO DE PRECIO'"
-                    wire:navigate>
-                    Monitoreo de Precio
-                </flux:sidebar.item>
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'SUGIMA']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'SUGIMA'"
-                    wire:navigate>
-                    SUGIMA
-                </flux:sidebar.item>
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'PERINATAL']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'PERINATAL'"
-                    wire:navigate>
-                    Perinatal
-                </flux:sidebar.item>
-                <flux:sidebar.item
-                    href="{{ route('admin.transcripciones.index', ['tipo' => 'PRIMER NIVEL DE ATENCION']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'PRIMER NIVEL DE ATENCION'"
-                    wire:navigate>
-                    Primer Nivel de Atención
-                </flux:sidebar.item>
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'DESNUTRICION GRAVE']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'DESNUTRICION GRAVE'"
-                    wire:navigate>
-                    Desnutrición Grave
-                </flux:sidebar.item>
-                <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'CONSULTA']) }}"
-                    :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'CONSULTA'"
-                    wire:navigate>
-                    Consulta
-                </flux:sidebar.item>
+                <flux:sidebar.group expandable :expanded="request()->routeIs('admin.transcripciones.*')"
+                    heading="Transcripciones" class="grid" icon="book-open">
+                    <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'VULNERABILIDAD']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'VULNERABILIDAD'"
+                        wire:navigate>
+                        Vulnerabilidad
+                    </flux:sidebar.item>
+                    <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'CPLV']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'CPLV'"
+                        wire:navigate>
+                        CPLV
+                    </flux:sidebar.item>
+                    <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'LACTANCIA MATERNA']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'LACTANCIA MATERNA'"
+                        wire:navigate>
+                        Lactancia Materna
+                    </flux:sidebar.item>
+                    <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'ENCUESTA DIETARIA']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'ENCUESTA DIETARIA'"
+                        wire:navigate>
+                        Encuesta Dietaria
+                    </flux:sidebar.item>
+                    <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'MONITOREO DE PRECIO']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'MONITOREO DE PRECIO'"
+                        wire:navigate>
+                        Monitoreo de Precio
+                    </flux:sidebar.item>
+                    <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'SUGIMA']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'SUGIMA'"
+                        wire:navigate>
+                        SUGIMA
+                    </flux:sidebar.item>
+                    <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'PERINATAL']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'PERINATAL'"
+                        wire:navigate>
+                        Perinatal
+                    </flux:sidebar.item>
+                    <flux:sidebar.item
+                        href="{{ route('admin.transcripciones.index', ['tipo' => 'PRIMER NIVEL DE ATENCION']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'PRIMER NIVEL DE ATENCION'"
+                        wire:navigate>
+                        Primer Nivel de Atención
+                    </flux:sidebar.item>
+                    <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'DESNUTRICION GRAVE']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'DESNUTRICION GRAVE'"
+                        wire:navigate>
+                        Desnutrición Grave
+                    </flux:sidebar.item>
+                    <flux:sidebar.item href="{{ route('admin.transcripciones.index', ['tipo' => 'CONSULTA']) }}"
+                        :current="request()->routeIs('admin.transcripciones.index') && request()->get('tipo') === 'CONSULTA'"
+                        wire:navigate>
+                        Consulta
+                    </flux:sidebar.item>
 
-            </flux:sidebar.group>
+                </flux:sidebar.group>
             @endcan
             <flux:sidebar.group expandable :expanded="request()->routeIs('admin.actividades.*')" heading="Actividades"
                 class="grid" icon="clipboard-document-list">
                 @can('Ver Abordajes')
-                <flux:navlist.item href="{{ route('admin.actividades.abordajes.index') }}"
-                    :current="request()->routeIs('admin.actividades.abordajes.index')" wire:navigate>Abordajes
-                </flux:navlist.item>
+                    <flux:navlist.item href="{{ route('admin.actividades.abordajes.index') }}"
+                        :current="request()->routeIs('admin.actividades.abordajes.index')" wire:navigate>Abordajes
+                    </flux:navlist.item>
                 @endcan
                 @can('Ver Escuela 4S')
-                <flux:navlist.item href="{{ route('admin.actividades.escuela4s.index') }}"
-                    :current="request()->routeIs('admin.actividades.escuela4s.index')" wire:navigate>C.Escuela 4S
-                </flux:navlist.item>
+                    <flux:navlist.item href="{{ route('admin.actividades.escuela4s.index') }}"
+                        :current="request()->routeIs('admin.actividades.escuela4s.index')" wire:navigate>C.Escuela 4S
+                    </flux:navlist.item>
                 @endcan
                 @can('Ver Liderazgo Territorial')
-                <flux:navlist.item href="{{ route('admin.actividades.liderazgo.index') }}"
-                    :current="request()->routeIs('admin.actividades.liderazgo.index')" wire:navigate>F.Liderazgo
-                    Territorial
-                </flux:navlist.item>
+                    <flux:navlist.item href="{{ route('admin.actividades.liderazgo.index') }}"
+                        :current="request()->routeIs('admin.actividades.liderazgo.index')" wire:navigate>F.Liderazgo
+                        Territorial
+                    </flux:navlist.item>
                 @endcan
                 @can('Ver Diversidad Dietaria')
-                <flux:navlist.item href="{{ route('admin.actividades.diversidad.index') }}"
-                    :current="request()->routeIs('admin.actividades.diversidad.index')" wire:navigate>E.Diversidad
-                    Dietaria
-                </flux:navlist.item>
+                    <flux:navlist.item href="{{ route('admin.actividades.diversidad.index') }}"
+                        :current="request()->routeIs('admin.actividades.diversidad.index')" wire:navigate>E.Diversidad
+                        Dietaria
+                    </flux:navlist.item>
                 @endcan
                 @can('Ver Circulo de Lactancia')
-                <flux:navlist.item href="{{ route('admin.actividades.circulo.index') }}"
-                    :current="request()->routeIs('admin.actividades.circulo.index')" wire:navigate>Círculo
-                    de Lactancia
-                </flux:navlist.item>
+                    <flux:navlist.item href="{{ route('admin.actividades.circulo.index') }}"
+                        :current="request()->routeIs('admin.actividades.circulo.index')" wire:navigate>Círculo
+                        de Lactancia
+                    </flux:navlist.item>
                 @endcan
                 @can('Ver Plan Vulnerabilidad')
-                <flux:navlist.item href="{{ route('admin.actividades.vulnerabilidad.index') }}"
-                    :current="request()->routeIs('admin.actividades.vulnerabilidad.index')" wire:navigate>P. Atención de
-                    Vulnerabilidad
-                </flux:navlist.item>
+                    <flux:navlist.item href="{{ route('admin.actividades.vulnerabilidad.index') }}"
+                        :current="request()->routeIs('admin.actividades.vulnerabilidad.index')" wire:navigate>P. Atención
+                        de
+                        Vulnerabilidad
+                    </flux:navlist.item>
                 @endcan
                 @can('Ver Feria del Campo')
-                <flux:navlist.item href="{{ route('admin.actividades.feria.index') }}"
-                    :current="request()->routeIs('admin.actividades.feria.index')" wire:navigate>Feria de Campo
-                </flux:navlist.item>
+                    <flux:navlist.item href="{{ route('admin.actividades.feria.index') }}"
+                        :current="request()->routeIs('admin.actividades.feria.index')" wire:navigate>Feria de Campo
+                    </flux:navlist.item>
                 @endcan
 
 
@@ -193,15 +194,15 @@
 
 
             @can('Ver Calendario')
-            <flux:navlist.item icon="calendar" href="{{ route('admin.calendario.index') }}"
-                :current="request()->routeIs('admin.calendario.index')" wire:navigate>Calendario
-            </flux:navlist.item>
+                <flux:navlist.item icon="calendar" href="{{ route('admin.calendario.index') }}"
+                    :current="request()->routeIs('admin.calendario.index')" wire:navigate>Calendario
+                </flux:navlist.item>
             @endcan
 
             @can('Ajustes del Sistema')
-            <flux:navlist.item icon="cog-6-tooth" href="{{ route('admin.ajustes.index') }}"
-                :current="request()->routeIs('admin.ajustes.index')" wire:navigate>Ajustes
-            </flux:navlist.item>
+                <flux:navlist.item icon="cog-6-tooth" href="{{ route('admin.ajustes.index') }}"
+                    :current="request()->routeIs('admin.ajustes.index')" wire:navigate>Ajustes
+                </flux:navlist.item>
             @endcan
 
         </flux:navlist>
@@ -242,7 +243,6 @@
                         name="{{ auth()->user()->name ?? 'Dra. Nutricionista' }}" />
 
                     <flux:menu>
-                        <flux:menu.item icon="user">Mi Perfil</flux:menu.item>
                         <flux:menu.separator />
                         <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">Cerrar
                             Sesión
