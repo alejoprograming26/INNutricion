@@ -16,6 +16,8 @@ class DashboardController extends Component
     public $totalRegistros       = 0;
     public $municipiosAbordados  = 0;
     public $promedioDiario       = 0;
+    public $metaTrans            = 0;
+    public $realTrans            = 0;
 
     // ── Mapa interactivo ────────────────────────────────────────────
     public $selectedMunicipioId     = null;
@@ -157,6 +159,24 @@ class DashboardController extends Component
 
         $diasTranscurridos    = ($year == date('Y')) ? (date('z') + 1) : 365;
         $this->promedioDiario = $diasTranscurridos > 0 ? round($totalAtendidos / $diasTranscurridos, 1) : 0;
+
+        // ── Meta de Transcripciones Anuales ──────────────────────────
+        $metaModel = \App\Models\Meta::where('ano', $year)->first();
+        $this->metaTrans = 0;
+        if ($metaModel) {
+            if ($selectedMunicipioId) {
+                $detalle = $metaModel->detalles()->where('municipio_id', $selectedMunicipioId)->first();
+                $this->metaTrans = $detalle ? $detalle->meta_anual : 0;
+            } else {
+                $this->metaTrans = $metaModel->total;
+            }
+        }
+
+        $realTransBase = DB::table('transcripciones')->whereYear('fecha', $year);
+        if ($selectedMunicipioId && $validSectors !== null) {
+            $realTransBase->whereIn('sector_id', $validSectors);
+        }
+        $this->realTrans = (int) ($realTransBase->sum('cantidad') ?? 0);
 
         // ── Municipios abordados (siempre global) ───────────────────
         $this->municipiosAbordados = 0;

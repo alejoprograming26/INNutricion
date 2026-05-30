@@ -479,15 +479,18 @@
                         </div>
                         @endif
 
-                        {{-- Progreso de Meta Anual (Simulada) --}}
+                        {{-- Progreso de Meta Anual de Transcripciones --}}
                         @php
-                            $meta = 500000;
-                            $progreso = $meta > 0 ? min(100, round(($totalAtendidos / $meta) * 100, 1)) : 0;
+                            $progreso = $metaTrans > 0 ? min(100, round(($realTrans / $metaTrans) * 100, 1)) : 0;
                         @endphp
                         <div class="p-4 rounded-2xl bg-white/60 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-700/50 shadow-sm backdrop-blur-md">
                             <div class="flex items-center justify-between mb-2.5">
-                                <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Meta Anual de Atención (500k)</p>
-                                <span class="text-xs font-black text-emerald-500 dark:text-emerald-400">{{ $progreso }}%</span>
+                                <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                                    Meta Anual de Transcripciones ({{ $metaTrans > 0 ? number_format($metaTrans, 0, ',', '.') : 'Sin definir' }})
+                                </p>
+                                <span class="text-xs font-black text-emerald-500 dark:text-emerald-400">
+                                    {{ number_format($realTrans, 0, ',', '.') }} ({{ $progreso }}%)
+                                </span>
                             </div>
                             <div class="w-full h-2.5 bg-zinc-200 dark:bg-zinc-700/50 rounded-full overflow-hidden shadow-inner">
                                 <div class="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-1000 ease-out" style="width: {{ $progreso }}%"></div>

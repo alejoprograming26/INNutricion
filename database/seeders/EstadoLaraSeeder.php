@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Municipio;
 use App\Models\Parroquia;
+use Illuminate\Database\Seeder;
 
 class EstadoLaraSeeder extends Seeder
 {
@@ -17,7 +17,7 @@ class EstadoLaraSeeder extends Seeder
                 'TAMACA', 'UNIÓN',
             ],
             'TORRES' => [
-                'ALTAGRACIA', 'ANTONIA OLAVO', 'CAMACARO', 'CASTAÑEDA', 'CHIQUINQUIRÁ',
+                'ALTAGRACIA', 'ANTONIO DIAZ', 'CAMACARO', 'CASTAÑEDA', 'CHIQUINQUIRÁ',
                 'EL BLANCO', 'ESPINOZA DE LOS MONTEROS', 'HERIBERTO ARROYO', 'LARA',
                 'LAS MERCEDES', 'MANUEL MORILLO', 'MONTAÑA VERDE', 'MONTES DE OCA',
                 'REYES VARGAS', 'TRINIDAD SAMUEL', 'TORRES',
@@ -54,7 +54,7 @@ class EstadoLaraSeeder extends Seeder
             foreach ($parroquias as $nombreParroquia) {
                 Parroquia::create([
                     'municipio_id' => $municipio->id,
-                    'nombre'       => $nombreParroquia,
+                    'nombre' => $nombreParroquia,
                 ]);
             }
         }
