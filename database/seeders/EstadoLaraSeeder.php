@@ -17,19 +17,19 @@ class EstadoLaraSeeder extends Seeder
                 'TAMACA', 'UNIÓN',
             ],
             'TORRES' => [
-                'ALTAGRACIA', 'ANTONIO DIAZ', 'CAMACARO', 'CASTAÑEDA', 'CHIQUINQUIRÁ',
+                'ALTAGRACIA', 'ANTONIO DIAZ','CECILIO ZUBILLAGA', 'CAMACARO', 'CASTAÑEDA', 'CHIQUINQUIRÁ',
                 'EL BLANCO', 'ESPINOZA DE LOS MONTEROS', 'HERIBERTO ARROYO', 'LARA',
                 'LAS MERCEDES', 'MANUEL MORILLO', 'MONTAÑA VERDE', 'MONTES DE OCA',
                 'REYES VARGAS', 'TRINIDAD SAMUEL', 'TORRES',
             ],
             'JIMÉNEZ' => [
-                'JUAN BAUTISTA RODRÍGUEZ', 'CUARA', 'DIEGO DE LOZADA',
+                'JUAN BAUTISTA RODRÍGUEZ', 'CORONEL MARIANO PERAZA','CUARA', 'DIEGO DE LOZADA',
                 'PARAÍSO DE SAN JOSÉ', 'SAN MIGUEL', 'TINTORERO',
-                'JOSÉ BERNARDO DORANTE', 'MARIANO PERAZA',
+                'JOSÉ BERNARDO DORANTE',
             ],
             'MORÁN' => [
                 'ANZOÁTEGUI', 'BOLÍVAR', 'GUÁRICO', 'HILARIO LUNA Y LUNA',
-                'HUMOCARO ALTO', 'HUMOCARO BAJO', 'LA CONCORDIA', 'MORÁN',
+                'HUMOCARO ALTO', 'HUMOCARO BAJO', 'LA CANDELARIA', 'MORÁN',
             ],
             'PALAVECINO' => [
                 'CABUDARE', 'AGUA VIVA', 'JOSÉ GREGORIO BASTIDAS',

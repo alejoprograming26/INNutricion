@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         $this->call(RoleSeeder::class);
         $this->call(EstadoLaraSeeder::class);
+        $this->call(MunicipioMoranSeeder::class);
 
         Ajuste::create([
             'nombre' => 'INNutricion',
@@ -37,12 +38,12 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('ADMINISTRADOR');
 
         User::create([
-            'name' => 'Nutricionista',
-            'email' => 'nutricionista@gmail.com',
+            'name' => 'Yoelisett Jimenez',
+            'email' => 'innlaramarivic@gmail.com',
             'password' => bcrypt('12345678'),
-            'telefono' => '3121234567',
+            'telefono' => '04121473081',
             'is_active' => true,
-        ])->assignRole('SECRETARIA');
+        ])->assignRole('ADMINISTRADOR');
 
         $this->command->info('Usuarios de prueba creados y rol Administrador asignado.');
     }
