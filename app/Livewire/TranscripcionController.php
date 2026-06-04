@@ -37,6 +37,12 @@ class TranscripcionController extends Component
     public string  $sector_id        = '';
     public string  $comuna_id        = '';
     public string  $cantidad         = '';
+    public ?string $cantidad_femeninos = null;
+    public ?string $cantidad_masculinos = null;
+    public ?string $cantidad_gestantes = null;
+    public ?string $cantidad_lactantes = null;
+    public ?string $escuela          = null;
+    public ?string $organismo_de_salud = null;
     public ?string $ingreso          = null;
     public ?string $egreso           = null;
 
@@ -65,6 +71,12 @@ class TranscripcionController extends Component
     public string  $view_sector      = '';
     public string  $view_comuna      = '';
     public string  $view_cantidad    = '';
+    public ?string $view_cantidad_femeninos = null;
+    public ?string $view_cantidad_masculinos = null;
+    public ?string $view_cantidad_gestantes = null;
+    public ?string $view_cantidad_lactantes = null;
+    public ?string $view_escuela          = null;
+    public ?string $view_organismo_de_salud = null;
     public ?string $view_ingreso     = null;
     public ?string $view_egreso      = null;
 
@@ -186,6 +198,17 @@ class TranscripcionController extends Component
             $rules['egreso']  = 'required|integer|min:0';
         }
 
+        if ($this->tipo === 'VULNERABILIDAD') {
+            $rules['cantidad_femeninos'] = 'nullable|integer|min:0';
+            $rules['cantidad_masculinos'] = 'nullable|integer|min:0';
+            $rules['cantidad_gestantes'] = 'nullable|integer|min:0';
+            $rules['cantidad_lactantes'] = 'nullable|integer|min:0';
+        } elseif ($this->tipo === 'CPLV') {
+            $rules['escuela'] = 'required|string|max:255';
+        } elseif (in_array($this->tipo, ['PERINATAL', 'PRIMER NIVEL DE ATENCION', 'DESNUTRICION GRAVE', 'CONSULTA'])) {
+            $rules['organismo_de_salud'] = 'nullable|string|max:255';
+        }
+
         $this->validate($rules, [
             'responsable.required'  => 'El responsable es obligatorio.',
             'fecha.required'        => 'La fecha es obligatoria.',
@@ -194,17 +217,24 @@ class TranscripcionController extends Component
             'cantidad.required'     => 'La cantidad es obligatoria.',
             'ingreso.required'      => 'El ingreso es obligatorio para SUGIMA.',
             'egreso.required'       => 'El egreso es obligatorio para SUGIMA.',
+            'escuela.required'      => 'La escuela es obligatoria para CPLV.',
         ]);
 
         $data = [
-            'observacion'  => $this->observacion ? mb_strtoupper(trim($this->observacion), 'UTF-8') : null,
-            'responsable'  => mb_strtoupper(trim($this->responsable), 'UTF-8'),
-            'fecha'        => $this->fecha,
-            'tipo'         => $this->tipo,
-            'sector_id'    => $this->sector_id,
-            'cantidad'     => (int) $this->cantidad,
-            'ingreso'      => $esSugima ? (int) $this->ingreso : null,
-            'egreso'       => $esSugima ? (int) $this->egreso  : null,
+            'observacion'         => $this->observacion ? mb_strtoupper(trim($this->observacion), 'UTF-8') : null,
+            'responsable'         => mb_strtoupper(trim($this->responsable), 'UTF-8'),
+            'fecha'               => $this->fecha,
+            'tipo'                => $this->tipo,
+            'sector_id'           => $this->sector_id,
+            'cantidad'            => (int) $this->cantidad,
+            'cantidad_femeninos'  => $this->tipo === 'VULNERABILIDAD' && $this->cantidad_femeninos !== '' && $this->cantidad_femeninos !== null ? (int) $this->cantidad_femeninos : null,
+            'cantidad_masculinos' => $this->tipo === 'VULNERABILIDAD' && $this->cantidad_masculinos !== '' && $this->cantidad_masculinos !== null ? (int) $this->cantidad_masculinos : null,
+            'cantidad_gestantes'  => $this->tipo === 'VULNERABILIDAD' && $this->cantidad_gestantes !== '' && $this->cantidad_gestantes !== null ? (int) $this->cantidad_gestantes : null,
+            'cantidad_lactantes'  => $this->tipo === 'VULNERABILIDAD' && $this->cantidad_lactantes !== '' && $this->cantidad_lactantes !== null ? (int) $this->cantidad_lactantes : null,
+            'escuela'             => $this->tipo === 'CPLV' ? mb_strtoupper(trim($this->escuela), 'UTF-8') : null,
+            'organismo_de_salud'  => in_array($this->tipo, ['PERINATAL', 'PRIMER NIVEL DE ATENCION', 'DESNUTRICION GRAVE', 'CONSULTA']) && $this->organismo_de_salud !== '' && $this->organismo_de_salud !== null ? mb_strtoupper(trim($this->organismo_de_salud), 'UTF-8') : null,
+            'ingreso'             => $esSugima ? (int) $this->ingreso : null,
+            'egreso'              => $esSugima ? (int) $this->egreso  : null,
         ];
 
         if ($this->transcripcion_id) {
@@ -237,9 +267,15 @@ class TranscripcionController extends Component
         $this->parroquia_id = (string) $t->sector->comuna->parroquia_id;
         $this->municipio_id = (string) $t->sector->comuna->parroquia->municipio_id;
 
-        $this->cantidad         = (string) $t->cantidad;
-        $this->ingreso          = $t->ingreso !== null ? (string) $t->ingreso : null;
-        $this->egreso           = $t->egreso  !== null ? (string) $t->egreso  : null;
+        $this->cantidad            = (string) $t->cantidad;
+        $this->cantidad_femeninos  = $t->cantidad_femeninos !== null ? (string) $t->cantidad_femeninos : null;
+        $this->cantidad_masculinos = $t->cantidad_masculinos !== null ? (string) $t->cantidad_masculinos : null;
+        $this->cantidad_gestantes  = $t->cantidad_gestantes !== null ? (string) $t->cantidad_gestantes : null;
+        $this->cantidad_lactantes  = $t->cantidad_lactantes !== null ? (string) $t->cantidad_lactantes : null;
+        $this->escuela             = $t->escuela;
+        $this->organismo_de_salud  = $t->organismo_de_salud;
+        $this->ingreso             = $t->ingreso !== null ? (string) $t->ingreso : null;
+        $this->egreso              = $t->egreso  !== null ? (string) $t->egreso  : null;
 
         // Cargar combos
         $this->parroquiasFiltradas = Parroquia::where('municipio_id', $this->municipio_id)->orderBy('nombre')->get();
@@ -262,6 +298,12 @@ class TranscripcionController extends Component
         $this->view_sector      = $t->sector->nombre;
         $this->view_comuna      = $t->sector->comuna->nombre;
         $this->view_cantidad    = (string) $t->cantidad;
+        $this->view_cantidad_femeninos  = $t->cantidad_femeninos !== null ? (string) $t->cantidad_femeninos : null;
+        $this->view_cantidad_masculinos = $t->cantidad_masculinos !== null ? (string) $t->cantidad_masculinos : null;
+        $this->view_cantidad_gestantes  = $t->cantidad_gestantes !== null ? (string) $t->cantidad_gestantes : null;
+        $this->view_cantidad_lactantes  = $t->cantidad_lactantes !== null ? (string) $t->cantidad_lactantes : null;
+        $this->view_escuela             = $t->escuela;
+        $this->view_organismo_de_salud  = $t->organismo_de_salud;
         $this->view_ingreso     = $t->ingreso !== null ? (string) $t->ingreso : null;
         $this->view_egreso      = $t->egreso  !== null ? (string) $t->egreso  : null;
 
@@ -340,6 +382,12 @@ class TranscripcionController extends Component
         $this->sector_id           = '';
         $this->comuna_id           = '';
         $this->cantidad            = '';
+        $this->cantidad_femeninos   = null;
+        $this->cantidad_masculinos  = null;
+        $this->cantidad_gestantes   = null;
+        $this->cantidad_lactantes   = null;
+        $this->escuela              = null;
+        $this->organismo_de_salud   = null;
         $this->ingreso             = null;
         $this->egreso              = null;
         $this->parroquiasFiltradas = [];
@@ -355,6 +403,12 @@ class TranscripcionController extends Component
         $this->view_sector         = '';
         $this->view_comuna         = '';
         $this->view_cantidad       = '';
+        $this->view_cantidad_femeninos  = null;
+        $this->view_cantidad_masculinos = null;
+        $this->view_cantidad_gestantes  = null;
+        $this->view_cantidad_lactantes  = null;
+        $this->view_escuela             = null;
+        $this->view_organismo_de_salud  = null;
         $this->view_ingreso        = null;
         $this->view_egreso         = null;
         $this->resetValidation();

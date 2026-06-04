@@ -30,6 +30,12 @@ return new class extends Migration
             $table->index('tipo');
             $table->index('fecha');
             $table->integer('cantidad')->default(0);
+            $table->integer('cantidad_femeninos')->nullable();
+            $table->integer('cantidad_masculinos')->nullable();
+            $table->integer('cantidad_gestantes')->nullable();
+            $table->integer('cantidad_lactantes')->nullable();
+            $table->string('escuela')->nullable();
+            $table->string('organismo_de_salud')->nullable();
             $table->integer('ingreso')->nullable();
             $table->integer('egreso')->nullable();
             $table->timestamps();

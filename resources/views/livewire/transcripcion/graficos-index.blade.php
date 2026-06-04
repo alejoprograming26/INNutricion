@@ -127,7 +127,7 @@
     </div>
 
     {{-- Fila de Gráficos 1 --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <div class="grid grid-cols-1 {{ $tipo === 'VULNERABILIDAD' ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-6 mb-6">
         
         {{-- Gráfico de Dona: Parroquias --}}
         <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] col-span-1 flex flex-col">
@@ -139,6 +139,19 @@
                 <canvas id="parroquiasChart"></canvas>
             </div>
         </div>
+
+        @if ($tipo === 'VULNERABILIDAD')
+            {{-- Gráfico de Dona: Detalle de Población Vulnerable --}}
+            <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] col-span-1 flex flex-col">
+                <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <flux:icon.users class="w-4 h-4 text-rose-500" />
+                    Detalle de Población Vulnerable
+                </h3>
+                <div class="flex-1 relative w-full flex items-center justify-center min-h-[250px]" wire:ignore>
+                    <canvas id="vulnerabilidadChart"></canvas>
+                </div>
+            </div>
+        @endif
 
         {{-- Gráfico de Líneas: Tendencia por Días --}}
         <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] col-span-1 lg:col-span-2 flex flex-col">
@@ -190,7 +203,7 @@
         const renderCharts = () => {
             // Destruir gráficos anteriores buscando instancias existentes en los canvas
             // Esto es necesario porque al usar wire:ignore los canvas persisten entre refrescos de Livewire
-            ['parroquiasChart', 'diasChart', 'comunasChart', 'sectoresChart'].forEach(id => {
+            ['parroquiasChart', 'vulnerabilidadChart', 'diasChart', 'comunasChart', 'sectoresChart'].forEach(id => {
                 const existingChart = Chart.getChart(id);
                 if (existingChart) existingChart.destroy();
             });
@@ -201,6 +214,7 @@
             const datosComunas = $wire.datosComunas;
             const datosSectores = $wire.datosSectores;
             const datosDias = $wire.datosDias;
+            const datosVulnerabilidad = $wire.datosVulnerabilidad;
 
             // Determinar colores según el modo actual
             const isDarkMode = document.documentElement.classList.contains('dark');
@@ -410,6 +424,46 @@
                                 borderRadius: 4,
                                 borderJoinStyle: 'round'
                             }
+                        }
+                    }
+                });
+            }
+
+            // 1.5 Gráfico de Dona (Vulnerabilidad)
+            const ctxVulnerabilidad = document.getElementById('vulnerabilidadChart');
+            if(ctxVulnerabilidad && datosVulnerabilidad && datosVulnerabilidad.length > 0) {
+                charts.vulnerabilidad = new Chart(ctxVulnerabilidad, {
+                    type: 'doughnut',
+                    data: {
+                        labels: datosVulnerabilidad.map(d => d.nombre),
+                        datasets: [{
+                            data: datosVulnerabilidad.map(d => d.total),
+                            backgroundColor: ['#f43f5e', '#3b82f6', '#f59e0b', '#8b5cf6'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        ...baseOptions,
+                        plugins: {
+                            ...baseOptions.plugins,
+                            legend: {
+                                position: 'right',
+                                align: 'center',
+                                labels: {
+                                    usePointStyle: true,
+                                    pointStyle: 'circle',
+                                    padding: 20,
+                                    font: { family: 'Inter, sans-serif', weight: '500', size: 12 }
+                                }
+                            }
+                        },
+                        cutout: '75%',
+                        elements: {
+                            arc: {
+                                borderRadius: 4,
+                                borderJoinStyle: 'round'
+                              }
                         }
                     }
                 });

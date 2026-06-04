@@ -27,6 +27,7 @@ class GraficosTranscripcionController extends Component
     public $datosComunas = [];
     public $datosSectores = [];
     public $datosDias = [];
+    public $datosVulnerabilidad = [];
     
     public $esSugima = false;
     public $colorThemaHex = '#84cc16';
@@ -131,6 +132,25 @@ class GraficosTranscripcionController extends Component
             ->orderBy('dia')
             ->get()
             ->toArray();
+
+        // 6. Detalle de Población Vulnerable (Doughnut Chart)
+        if ($this->tipo === 'VULNERABILIDAD') {
+            $vulnerabilidadTotales = (clone $queryBase)->selectRaw('
+                COALESCE(SUM(transcripciones.cantidad_femeninos), 0) as total_femeninos,
+                COALESCE(SUM(transcripciones.cantidad_masculinos), 0) as total_masculinos,
+                COALESCE(SUM(transcripciones.cantidad_gestantes), 0) as total_gestantes,
+                COALESCE(SUM(transcripciones.cantidad_lactantes), 0) as total_lactantes
+            ')->first();
+
+            $this->datosVulnerabilidad = [
+                ['nombre' => 'Femeninos', 'total' => (int)$vulnerabilidadTotales->total_femeninos],
+                ['nombre' => 'Masculinos', 'total' => (int)$vulnerabilidadTotales->total_masculinos],
+                ['nombre' => 'Gestantes', 'total' => (int)$vulnerabilidadTotales->total_gestantes],
+                ['nombre' => 'Lactantes', 'total' => (int)$vulnerabilidadTotales->total_lactantes],
+            ];
+        } else {
+            $this->datosVulnerabilidad = [];
+        }
     }
 
     public function updatedMes() { $this->recargar(); }

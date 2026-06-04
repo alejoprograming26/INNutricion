@@ -223,6 +223,23 @@
                                         <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
                                             Por <span class="text-zinc-700 dark:text-zinc-300">{{ $t->responsable }}</span> &bull; {{ \Carbon\Carbon::parse($t->fecha)->format('d \d\e F, Y') }}
                                         </p>
+                                        @if($t->tipo === 'CPLV')
+                                            <p class="text-xs text-blue-600 dark:text-blue-400 font-semibold mt-1">
+                                                Escuela: {{ $t->escuela }}
+                                            </p>
+                                        @endif
+                                        @if(in_array($t->tipo, ['PERINATAL', 'PRIMER NIVEL DE ATENCION', 'DESNUTRICION GRAVE', 'CONSULTA']))
+                                            @if($t->organismo_de_salud)
+                                                <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
+                                                    Organismo: <span class="font-medium">{{ $t->organismo_de_salud }}</span>
+                                                </p>
+                                            @endif
+                                        @endif
+                                        @if($t->tipo === 'VULNERABILIDAD')
+                                            <p class="text-xs text-rose-500 dark:text-rose-400 font-medium mt-1">
+                                                Fem: <span class="font-bold">{{ $t->cantidad_femeninos ?? 0 }}</span> | Masc: <span class="font-bold">{{ $t->cantidad_masculinos ?? 0 }}</span> | Gest: <span class="font-bold">{{ $t->cantidad_gestantes ?? 0 }}</span> | Lact: <span class="font-bold">{{ $t->cantidad_lactantes ?? 0 }}</span>
+                                            </p>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
@@ -517,6 +534,47 @@
                                 </div>
                             @endif
 
+                            @if ($tipo === 'VULNERABILIDAD')
+                                <div>
+                                    <flux:input wire:model="cantidad_femeninos" type="number" min="0" label="Cant. Femeninos" placeholder="0" />
+                                    @error('cantidad_femeninos')
+                                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <flux:input wire:model="cantidad_masculinos" type="number" min="0" label="Cant. Masculinos" placeholder="0" />
+                                    @error('cantidad_masculinos')
+                                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <flux:input wire:model="cantidad_gestantes" type="number" min="0" label="Cant. Gestantes" placeholder="0" />
+                                    @error('cantidad_gestantes')
+                                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <flux:input wire:model="cantidad_lactantes" type="number" min="0" label="Cant. Lactantes" placeholder="0" />
+                                    @error('cantidad_lactantes')
+                                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @elseif ($tipo === 'CPLV')
+                                <div class="md:col-span-2">
+                                    <flux:input wire:model="escuela" label="Escuela *" placeholder="Nombre de la escuela" required />
+                                    @error('escuela')
+                                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @elseif (in_array($tipo, ['PERINATAL', 'PRIMER NIVEL DE ATENCION', 'DESNUTRICION GRAVE', 'CONSULTA']))
+                                <div class="md:col-span-2">
+                                    <flux:input wire:model="organismo_de_salud" label="Organismo de Salud" placeholder="Nombre del organismo" />
+                                    @error('organismo_de_salud')
+                                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
+
                         </div>
                     </form>
                 </div>
@@ -599,6 +657,35 @@
                         <span
                             class="block text-sm font-semibold text-zinc-800 dark:text-zinc-100">{{ number_format((int) $view_cantidad) }}</span>
                     </div>
+
+                    @if ($view_tipo === 'VULNERABILIDAD')
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Cant. Femeninos</span>
+                            <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_cantidad_femeninos ?? '0' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Cant. Masculinos</span>
+                            <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_cantidad_masculinos ?? '0' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Cant. Gestantes</span>
+                            <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_cantidad_gestantes ?? '0' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Cant. Lactantes</span>
+                            <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_cantidad_lactantes ?? '0' }}</span>
+                        </div>
+                    @elseif ($view_tipo === 'CPLV')
+                        <div class="col-span-2">
+                            <span class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Escuela</span>
+                            <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_escuela }}</span>
+                        </div>
+                    @elseif (in_array($view_tipo, ['PERINATAL', 'PRIMER NIVEL DE ATENCION', 'DESNUTRICION GRAVE', 'CONSULTA']))
+                        <div class="col-span-2">
+                            <span class="block text-xs font-semibold uppercase tracking-wide text-zinc-500 mb-0.5">Organismo de Salud</span>
+                            <span class="block text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $view_organismo_de_salud ?? '—' }}</span>
+                        </div>
+                    @endif
                     @if ($view_tipo === 'SUGIMA')
                         <div>
                             <span

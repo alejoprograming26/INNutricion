@@ -27,15 +27,25 @@ class Transcripcion extends Model
         'tipo',
         'sector_id',
         'cantidad',
+        'cantidad_femeninos',
+        'cantidad_masculinos',
+        'cantidad_gestantes',
+        'cantidad_lactantes',
+        'escuela',
+        'organismo_de_salud',
         'ingreso',
         'egreso',
     ];
 
     protected $casts = [
-        'fecha'    => 'date',
-        'cantidad' => 'integer',
-        'ingreso'  => 'integer',
-        'egreso'   => 'integer',
+        'fecha'              => 'date',
+        'cantidad'           => 'integer',
+        'cantidad_femeninos' => 'integer',
+        'cantidad_masculinos'=> 'integer',
+        'cantidad_gestantes' => 'integer',
+        'cantidad_lactantes' => 'integer',
+        'ingreso'            => 'integer',
+        'egreso'             => 'integer',
     ];
 
     // Tipos disponibles

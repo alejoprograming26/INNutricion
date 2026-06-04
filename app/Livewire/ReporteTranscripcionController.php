@@ -20,6 +20,7 @@ class ReporteTranscripcionController extends Controller
         }
 
         $esSugima = ($tipo === Transcripcion::TIPO_CON_INGRESOS_EGRESOS);
+        $esVulnerabilidad = ($tipo === 'VULNERABILIDAD');
         $meses = [
             1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
             5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
@@ -41,7 +42,7 @@ class ReporteTranscripcionController extends Controller
             ->select('transcripciones.*') // Evitar colisión de IDs con los joins
             ->get();
 
-        $resultadoAgrupado = $this->agruparDatos($transcripciones, $esSugima);
+        $resultadoAgrupado = $this->agruparDatos($transcripciones, $esSugima, $esVulnerabilidad);
         $styles = $this->getColorStyles($tipo);
 
         $datos = array_merge([
@@ -51,6 +52,7 @@ class ReporteTranscripcionController extends Controller
             'datosAgrupados' => $resultadoAgrupado['datos'],
             'totalesGenerales' => $resultadoAgrupado['totales'],
             'esSugima' => $esSugima,
+            'esVulnerabilidad' => $esVulnerabilidad,
             'fechaEmision' => now()->format('d/m/Y H:i A'),
             'municipioSeleccionado' => $municipioId ? \App\Models\Municipio::find($municipioId)->nombre : 'TODOS',
             'ajuste' => \App\Models\Ajuste::first(),
@@ -68,10 +70,18 @@ class ReporteTranscripcionController extends Controller
     /**
      * Agrupa las transcripciones en una estructura jerárquica y calcula totales.
      */
-    private function agruparDatos(iterable $transcripciones, bool $esSugima): array
+    private function agruparDatos(iterable $transcripciones, bool $esSugima, bool $esVulnerabilidad): array
     {
         $datosAgrupados = [];
-        $totalesGenerales = ['cantidad' => 0, 'ingreso' => 0, 'egreso' => 0];
+        $totalesGenerales = [
+            'cantidad' => 0, 
+            'ingreso' => 0, 
+            'egreso' => 0,
+            'cantidad_femeninos' => 0,
+            'cantidad_masculinos' => 0,
+            'cantidad_gestantes' => 0,
+            'cantidad_lactantes' => 0,
+        ];
 
         foreach ($transcripciones as $t) {
             $mun = $t->sector->comuna->parroquia->municipio->nombre ?? 'Desconocido';
@@ -81,31 +91,45 @@ class ReporteTranscripcionController extends Controller
 
             if (!isset($datosAgrupados[$mun])) {
                 $datosAgrupados[$mun] = [
-                    'totales' => ['cantidad' => 0, 'ingreso' => 0, 'egreso' => 0],
+                    'totales' => [
+                        'cantidad' => 0, 'ingreso' => 0, 'egreso' => 0,
+                        'cantidad_femeninos' => 0, 'cantidad_masculinos' => 0, 'cantidad_gestantes' => 0, 'cantidad_lactantes' => 0
+                    ],
                     'parroquias' => []
                 ];
             }
             if (!isset($datosAgrupados[$mun]['parroquias'][$par])) {
                 $datosAgrupados[$mun]['parroquias'][$par] = [
-                    'totales' => ['cantidad' => 0, 'ingreso' => 0, 'egreso' => 0],
+                    'totales' => [
+                        'cantidad' => 0, 'ingreso' => 0, 'egreso' => 0,
+                        'cantidad_femeninos' => 0, 'cantidad_masculinos' => 0, 'cantidad_gestantes' => 0, 'cantidad_lactantes' => 0
+                    ],
                     'comunas' => []
                 ];
             }
             if (!isset($datosAgrupados[$mun]['parroquias'][$par]['comunas'][$com])) {
                 $datosAgrupados[$mun]['parroquias'][$par]['comunas'][$com] = [
-                    'totales' => ['cantidad' => 0, 'ingreso' => 0, 'egreso' => 0],
+                    'totales' => [
+                        'cantidad' => 0, 'ingreso' => 0, 'egreso' => 0,
+                        'cantidad_femeninos' => 0, 'cantidad_masculinos' => 0, 'cantidad_gestantes' => 0, 'cantidad_lactantes' => 0
+                    ],
                     'sectores' => []
                 ];
             }
             if (!isset($datosAgrupados[$mun]['parroquias'][$par]['comunas'][$com]['sectores'][$sec])) {
                 $datosAgrupados[$mun]['parroquias'][$par]['comunas'][$com]['sectores'][$sec] = [
                     'cantidad' => 0, 'ingreso' => 0, 'egreso' => 0,
+                    'cantidad_femeninos' => 0, 'cantidad_masculinos' => 0, 'cantidad_gestantes' => 0, 'cantidad_lactantes' => 0
                 ];
             }
 
             $cant = $t->cantidad;
             $ing  = $esSugima ? $t->ingreso : 0;
             $egr  = $esSugima ? $t->egreso : 0;
+            $fem  = $esVulnerabilidad ? ($t->cantidad_femeninos ?? 0) : 0;
+            $masc = $esVulnerabilidad ? ($t->cantidad_masculinos ?? 0) : 0;
+            $gest = $esVulnerabilidad ? ($t->cantidad_gestantes ?? 0) : 0;
+            $lact = $esVulnerabilidad ? ($t->cantidad_lactantes ?? 0) : 0;
 
             // Sumar a todos los niveles
             $levels = [
@@ -120,6 +144,10 @@ class ReporteTranscripcionController extends Controller
                 $level['cantidad'] += $cant;
                 $level['ingreso'] += $ing;
                 $level['egreso'] += $egr;
+                $level['cantidad_femeninos'] += $fem;
+                $level['cantidad_masculinos'] += $masc;
+                $level['cantidad_gestantes'] += $gest;
+                $level['cantidad_lactantes'] += $lact;
             }
         }
 

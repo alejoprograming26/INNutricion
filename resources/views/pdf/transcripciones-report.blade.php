@@ -289,11 +289,17 @@
         <table class="report-table">
             <thead>
                 <tr>
-                    <th width="40%">Ubicación Geográfica (Mun / Parr / Com / Sector)</th>
-                    <th width="20%" class="text-right">Suma de Cantidades (Total)</th>
+                    <th width="{{ $esSugima ? '40%' : ($esVulnerabilidad ? '30%' : '80%') }}">Ubicación Geográfica (Mun / Parr / Com / Sector)</th>
+                    <th width="{{ $esSugima ? '20%' : ($esVulnerabilidad ? '14%' : '20%') }}" class="text-right">Suma de Cantidades (Total)</th>
                     @if($esSugima)
                         <th width="20%" class="text-right col-ingreso">Ingresos</th>
                         <th width="20%" class="text-right col-egreso">Egresos</th>
+                    @endif
+                    @if($esVulnerabilidad)
+                        <th width="14%" class="text-right">Fem.</th>
+                        <th width="14%" class="text-right">Masc.</th>
+                        <th width="14%" class="text-right">Gest.</th>
+                        <th width="14%" class="text-right">Lact.</th>
                     @endif
                 </tr>
             </thead>
@@ -301,7 +307,7 @@
                 @foreach($datosAgrupados as $mun => $dataMun)
                     <!-- Spacer -->
                     @if(!$loop->first)
-                        <tr class="spacer-row"><td colspan="{{ $esSugima ? 4 : 2 }}"></td></tr>
+                        <tr class="spacer-row"><td colspan="{{ $esSugima ? 4 : ($esVulnerabilidad ? 6 : 2) }}"></td></tr>
                     @endif
 
                     <!-- Fila Municipio -->
@@ -311,6 +317,12 @@
                         @if($esSugima)
                             <td class="text-right col-ingreso">{{ number_format($dataMun['totales']['ingreso'], 0, ',', '.') }}</td>
                             <td class="text-right col-egreso">{{ number_format($dataMun['totales']['egreso'], 0, ',', '.') }}</td>
+                        @endif
+                        @if($esVulnerabilidad)
+                            <td class="text-right">{{ number_format($dataMun['totales']['cantidad_femeninos'], 0, ',', '.') }}</td>
+                            <td class="text-right">{{ number_format($dataMun['totales']['cantidad_masculinos'], 0, ',', '.') }}</td>
+                            <td class="text-right">{{ number_format($dataMun['totales']['cantidad_gestantes'], 0, ',', '.') }}</td>
+                            <td class="text-right">{{ number_format($dataMun['totales']['cantidad_lactantes'], 0, ',', '.') }}</td>
                         @endif
                     </tr>
                     
@@ -323,6 +335,12 @@
                                 <td class="text-right col-ingreso">{{ number_format($dataPar['totales']['ingreso'], 0, ',', '.') }}</td>
                                 <td class="text-right col-egreso">{{ number_format($dataPar['totales']['egreso'], 0, ',', '.') }}</td>
                             @endif
+                            @if($esVulnerabilidad)
+                                <td class="text-right">{{ number_format($dataPar['totales']['cantidad_femeninos'], 0, ',', '.') }}</td>
+                                <td class="text-right">{{ number_format($dataPar['totales']['cantidad_masculinos'], 0, ',', '.') }}</td>
+                                <td class="text-right">{{ number_format($dataPar['totales']['cantidad_gestantes'], 0, ',', '.') }}</td>
+                                <td class="text-right">{{ number_format($dataPar['totales']['cantidad_lactantes'], 0, ',', '.') }}</td>
+                            @endif
                         </tr>
 
                         @foreach($dataPar['comunas'] as $com => $dataCom)
@@ -334,6 +352,12 @@
                                     <td class="text-right col-ingreso">{{ number_format($dataCom['totales']['ingreso'], 0, ',', '.') }}</td>
                                     <td class="text-right col-egreso">{{ number_format($dataCom['totales']['egreso'], 0, ',', '.') }}</td>
                                 @endif
+                                @if($esVulnerabilidad)
+                                    <td class="text-right">{{ number_format($dataCom['totales']['cantidad_femeninos'], 0, ',', '.') }}</td>
+                                    <td class="text-right">{{ number_format($dataCom['totales']['cantidad_masculinos'], 0, ',', '.') }}</td>
+                                    <td class="text-right">{{ number_format($dataCom['totales']['cantidad_gestantes'], 0, ',', '.') }}</td>
+                                    <td class="text-right">{{ number_format($dataCom['totales']['cantidad_lactantes'], 0, ',', '.') }}</td>
+                                @endif
                             </tr>
 
                             @foreach($dataCom['sectores'] as $sec => $totales)
@@ -344,6 +368,12 @@
                                     @if($esSugima)
                                         <td class="text-right col-ingreso">{{ number_format($totales['ingreso'], 0, ',', '.') }}</td>
                                         <td class="text-right col-egreso">{{ number_format($totales['egreso'], 0, ',', '.') }}</td>
+                                    @endif
+                                    @if($esVulnerabilidad)
+                                        <td class="text-right">{{ number_format($totales['cantidad_femeninos'], 0, ',', '.') }}</td>
+                                        <td class="text-right">{{ number_format($totales['cantidad_masculinos'], 0, ',', '.') }}</td>
+                                        <td class="text-right">{{ number_format($totales['cantidad_gestantes'], 0, ',', '.') }}</td>
+                                        <td class="text-right">{{ number_format($totales['cantidad_lactantes'], 0, ',', '.') }}</td>
                                     @endif
                                 </tr>
                             @endforeach
@@ -371,6 +401,24 @@
                 <tr>
                     <th>Total Egresos</th>
                     <td class="col-egreso">{{ number_format($totalesGenerales['egreso'], 0, ',', '.') }}</td>
+                </tr>
+                @endif
+                @if($esVulnerabilidad)
+                <tr>
+                    <th>Total Femeninos</th>
+                    <td>{{ number_format($totalesGenerales['cantidad_femeninos'], 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <th>Total Masculinos</th>
+                    <td>{{ number_format($totalesGenerales['cantidad_masculinos'], 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <th>Total Gestantes</th>
+                    <td>{{ number_format($totalesGenerales['cantidad_gestantes'], 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <th>Total Lactantes</th>
+                    <td>{{ number_format($totalesGenerales['cantidad_lactantes'], 0, ',', '.') }}</td>
                 </tr>
                 @endif
             </table>
