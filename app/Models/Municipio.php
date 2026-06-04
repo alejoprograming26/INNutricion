@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\ClearsActivityCaches;
+
 class Municipio extends Model
 {
-    use HasFactory;
+    use HasFactory, ClearsActivityCaches;
 
     protected $table = 'municipios';
 
