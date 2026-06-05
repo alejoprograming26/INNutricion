@@ -39,6 +39,16 @@ class AbordajeController extends Component
     public string  $total_a      = '0';
     public string  $total_b      = '0';
     public string  $total_a_plus = '0';
+    // Condición de la población
+    public string  $embarazada      = '0';
+    public string  $mujer_lactante  = '0';
+    public string  $menor_72_meses  = '0';
+    public string  $escolar         = '0';
+    public string  $adolescente     = '0';
+    public string  $adulto          = '0';
+    public string  $adulto_mayor    = '0';
+    public string  $encamado        = '0';
+    public string  $discapacidad    = '0';
 
     // ── Filtros en cascada ────────────────────────────────────────────────────
     public $parroquiasFiltradas = [];
@@ -71,6 +81,7 @@ class AbordajeController extends Component
     public array   $graphClasificacion = [];
     public array   $graphEvolucionClasificacion = [];
     public array   $graphDias        = [];
+    public array   $graphCondicion   = [];
     public string  $colorHex         = '#84cc16';
     public string  $colorTw          = 'lime';
 
@@ -86,6 +97,16 @@ class AbordajeController extends Component
     public string  $view_total_a      = '0';
     public string  $view_total_b      = '0';
     public string  $view_total_a_plus = '0';
+    // Condición (vista)
+    public string  $view_embarazada      = '0';
+    public string  $view_mujer_lactante  = '0';
+    public string  $view_menor_72_meses  = '0';
+    public string  $view_escolar         = '0';
+    public string  $view_adolescente     = '0';
+    public string  $view_adulto          = '0';
+    public string  $view_adulto_mayor    = '0';
+    public string  $view_encamado        = '0';
+    public string  $view_discapacidad    = '0';
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -196,6 +217,16 @@ class AbordajeController extends Component
             'total_a'      => (int) $this->total_a,
             'total_b'      => (int) $this->total_b,
             'total_a_plus' => (int) $this->total_a_plus,
+            // Condición
+            'embarazada'      => (int) $this->embarazada,
+            'mujer_lactante'  => (int) $this->mujer_lactante,
+            'menor_72_meses'  => (int) $this->menor_72_meses,
+            'escolar'         => (int) $this->escolar,
+            'adolescente'     => (int) $this->adolescente,
+            'adulto'          => (int) $this->adulto,
+            'adulto_mayor'    => (int) $this->adulto_mayor,
+            'encamado'        => (int) $this->encamado,
+            'discapacidad'    => (int) $this->discapacidad,
         ];
 
         if ($this->abordaje_id) {
@@ -229,6 +260,16 @@ class AbordajeController extends Component
         $this->total_a      = (string) $a->total_a;
         $this->total_b      = (string) $a->total_b;
         $this->total_a_plus = (string) $a->total_a_plus;
+        // Condición
+        $this->embarazada      = (string) ($a->embarazada ?? 0);
+        $this->mujer_lactante  = (string) ($a->mujer_lactante ?? 0);
+        $this->menor_72_meses  = (string) ($a->menor_72_meses ?? 0);
+        $this->escolar         = (string) ($a->escolar ?? 0);
+        $this->adolescente     = (string) ($a->adolescente ?? 0);
+        $this->adulto          = (string) ($a->adulto ?? 0);
+        $this->adulto_mayor    = (string) ($a->adulto_mayor ?? 0);
+        $this->encamado        = (string) ($a->encamado ?? 0);
+        $this->discapacidad    = (string) ($a->discapacidad ?? 0);
 
         // Cargar combos en cascada
         $this->parroquiasFiltradas = Parroquia::where('municipio_id', $this->municipio_id)->orderBy('nombre')->get();
@@ -253,6 +294,16 @@ class AbordajeController extends Component
         $this->view_total_a      = (string) $a->total_a;
         $this->view_total_b      = (string) $a->total_b;
         $this->view_total_a_plus = (string) $a->total_a_plus;
+        // Condición (vista)
+        $this->view_embarazada      = (string) ($a->embarazada ?? 0);
+        $this->view_mujer_lactante  = (string) ($a->mujer_lactante ?? 0);
+        $this->view_menor_72_meses  = (string) ($a->menor_72_meses ?? 0);
+        $this->view_escolar         = (string) ($a->escolar ?? 0);
+        $this->view_adolescente     = (string) ($a->adolescente ?? 0);
+        $this->view_adulto          = (string) ($a->adulto ?? 0);
+        $this->view_adulto_mayor    = (string) ($a->adulto_mayor ?? 0);
+        $this->view_encamado        = (string) ($a->encamado ?? 0);
+        $this->view_discapacidad    = (string) ($a->discapacidad ?? 0);
 
         $this->isViewModalOpen = true;
     }
@@ -296,10 +347,28 @@ class AbordajeController extends Component
         $this->view_total_a       = '0';
         $this->view_total_b       = '0';
         $this->view_total_a_plus  = '0';
+        $this->view_embarazada      = '0';
+        $this->view_mujer_lactante  = '0';
+        $this->view_menor_72_meses  = '0';
+        $this->view_escolar         = '0';
+        $this->view_adolescente     = '0';
+        $this->view_adulto          = '0';
+        $this->view_adulto_mayor    = '0';
+        $this->view_encamado        = '0';
+        $this->view_discapacidad    = '0';
         $this->responsable        = null;
         $this->total_a            = '0';
         $this->total_b            = '0';
         $this->total_a_plus       = '0';
+        $this->embarazada         = '0';
+        $this->mujer_lactante     = '0';
+        $this->menor_72_meses     = '0';
+        $this->escolar            = '0';
+        $this->adolescente        = '0';
+        $this->adulto             = '0';
+        $this->adulto_mayor       = '0';
+        $this->encamado           = '0';
+        $this->discapacidad       = '0';
         $this->resetValidation();
     }
 
@@ -429,6 +498,31 @@ class AbordajeController extends Component
             ->select(DB::raw('DAY(abordajes.fecha) as dia'), DB::raw('SUM(abordajes.cantidad) as total'))
             ->groupBy(DB::raw('DAY(abordajes.fecha)'))
             ->orderBy('dia')->get()->toArray();
+
+        // Distribución por Condición de la Población
+        $condTotales = (clone $queryBase)->selectRaw('
+            COALESCE(SUM(abordajes.embarazada), 0)     as embarazada,
+            COALESCE(SUM(abordajes.mujer_lactante), 0) as mujer_lactante,
+            COALESCE(SUM(abordajes.menor_72_meses), 0) as menor_72_meses,
+            COALESCE(SUM(abordajes.escolar), 0)        as escolar,
+            COALESCE(SUM(abordajes.adolescente), 0)    as adolescente,
+            COALESCE(SUM(abordajes.adulto), 0)         as adulto,
+            COALESCE(SUM(abordajes.adulto_mayor), 0)   as adulto_mayor,
+            COALESCE(SUM(abordajes.encamado), 0)       as encamado,
+            COALESCE(SUM(abordajes.discapacidad), 0)   as discapacidad
+        ')->first();
+
+        $this->graphCondicion = [
+            ['nombre' => 'Embarazada',   'total' => (int)($condTotales->embarazada ?? 0),     'color' => '#ec4899'],
+            ['nombre' => 'M. Lactante',  'total' => (int)($condTotales->mujer_lactante ?? 0), 'color' => '#f43f5e'],
+            ['nombre' => '< 72 meses',   'total' => (int)($condTotales->menor_72_meses ?? 0), 'color' => '#f97316'],
+            ['nombre' => 'Escolar',      'total' => (int)($condTotales->escolar ?? 0),        'color' => '#eab308'],
+            ['nombre' => 'Adolescente',  'total' => (int)($condTotales->adolescente ?? 0),    'color' => '#22c55e'],
+            ['nombre' => 'Adulto',       'total' => (int)($condTotales->adulto ?? 0),         'color' => '#84cc16'],
+            ['nombre' => 'Adulto Mayor', 'total' => (int)($condTotales->adulto_mayor ?? 0),   'color' => '#8b5cf6'],
+            ['nombre' => 'Encamado',     'total' => (int)($condTotales->encamado ?? 0),       'color' => '#0ea5e9'],
+            ['nombre' => 'Discapacidad', 'total' => (int)($condTotales->discapacidad ?? 0),   'color' => '#14b8a6'],
+        ];
     }
 
     // ── Render ────────────────────────────────────────────────────────────────

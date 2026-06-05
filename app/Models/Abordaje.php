@@ -29,22 +29,37 @@ class Abordaje extends Model
         'total_a',
         'total_b',
         'total_a_plus',
+        // Condición
+        'embarazada',
+        'mujer_lactante',
+        'menor_72_meses',
+        'escolar',
+        'adolescente',
+        'adulto',
+        'adulto_mayor',
+        'encamado',
+        'discapacidad',
     ];
 
     protected $casts = [
-        'fecha'        => 'date',
-        'cantidad'     => 'integer',
-        'total_a'      => 'integer',
-        'total_b'      => 'integer',
-        'total_a_plus' => 'integer',
+        'fecha'          => 'date',
+        'cantidad'       => 'integer',
+        'total_a'        => 'integer',
+        'total_b'        => 'integer',
+        'total_a_plus'   => 'integer',
+        'embarazada'     => 'integer',
+        'mujer_lactante' => 'integer',
+        'menor_72_meses' => 'integer',
+        'escolar'        => 'integer',
+        'adolescente'    => 'integer',
+        'adulto'         => 'integer',
+        'adulto_mayor'   => 'integer',
+        'encamado'       => 'integer',
+        'discapacidad'   => 'integer',
     ];
 
     public function sector()
     {
         return $this->belongsTo(Sector::class, 'sector_id');
     }
-
-
-
-
 }

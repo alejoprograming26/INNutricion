@@ -45,6 +45,16 @@ class FeriaCampoController extends Component
     public ?int    $tipo_a_plus          = null;
     public string  $campana4s            = '0';
     public ?string $tema_tratado         = null;
+    // Condición de la población
+    public string  $embarazada      = '0';
+    public string  $mujer_lactante  = '0';
+    public string  $menor_72_meses  = '0';
+    public string  $escolar         = '0';
+    public string  $adolescente     = '0';
+    public string  $adulto          = '0';
+    public string  $adulto_mayor    = '0';
+    public string  $encamado        = '0';
+    public string  $discapacidad    = '0';
 
     // ── Filtros en cascada ────────────────────────────────────────────────────
     public $parroquiasFiltradas = [];
@@ -80,6 +90,7 @@ class FeriaCampoController extends Component
     public array $graphServicios    = [];
     public array $graphTipologia    = [];
     public array $graphAntrometria  = [];
+    public array $graphCondicion    = [];
     public string $colorHex         = '#6366f1';
     public string $colorTw          = 'indigo';
 
@@ -100,6 +111,16 @@ class FeriaCampoController extends Component
     public ?int    $view_tipo_a_plus          = null;
     public string  $view_campana4s            = 'NO';
     public ?string $view_tema_tratado         = null;
+    // Condición (vista)
+    public string  $view_embarazada      = '0';
+    public string  $view_mujer_lactante  = '0';
+    public string  $view_menor_72_meses  = '0';
+    public string  $view_escolar         = '0';
+    public string  $view_adolescente     = '0';
+    public string  $view_adulto          = '0';
+    public string  $view_adulto_mayor    = '0';
+    public string  $view_encamado        = '0';
+    public string  $view_discapacidad    = '0';
 
     public function updatingSearch(): void
     {
@@ -208,6 +229,16 @@ class FeriaCampoController extends Component
             'tipo_a_plus'          => $this->antrometria === '1' ? $this->tipo_a_plus : null,
             'campana4s'            => (bool)$this->campana4s,
             'tema_tratado'         => $this->campana4s === '1' ? ($this->tema_tratado ? mb_strtoupper(trim($this->tema_tratado), 'UTF-8') : null) : null,
+            // Condición
+            'embarazada'      => $this->antrometria === '1' ? (int) $this->embarazada : null,
+            'mujer_lactante'  => $this->antrometria === '1' ? (int) $this->mujer_lactante : null,
+            'menor_72_meses'  => $this->antrometria === '1' ? (int) $this->menor_72_meses : null,
+            'escolar'         => $this->antrometria === '1' ? (int) $this->escolar : null,
+            'adolescente'     => $this->antrometria === '1' ? (int) $this->adolescente : null,
+            'adulto'          => $this->antrometria === '1' ? (int) $this->adulto : null,
+            'adulto_mayor'    => $this->antrometria === '1' ? (int) $this->adulto_mayor : null,
+            'encamado'        => $this->antrometria === '1' ? (int) $this->encamado : null,
+            'discapacidad'    => $this->antrometria === '1' ? (int) $this->discapacidad : null,
         ];
 
         if ($this->feria_id) {
@@ -243,6 +274,16 @@ class FeriaCampoController extends Component
         $this->tipo_a_plus          = $f->tipo_a_plus;
         $this->campana4s            = $f->campana4s ? '1' : '0';
         $this->tema_tratado         = $f->tema_tratado;
+        // Condición
+        $this->embarazada      = (string) ($f->embarazada ?? 0);
+        $this->mujer_lactante  = (string) ($f->mujer_lactante ?? 0);
+        $this->menor_72_meses  = (string) ($f->menor_72_meses ?? 0);
+        $this->escolar         = (string) ($f->escolar ?? 0);
+        $this->adolescente     = (string) ($f->adolescente ?? 0);
+        $this->adulto          = (string) ($f->adulto ?? 0);
+        $this->adulto_mayor    = (string) ($f->adulto_mayor ?? 0);
+        $this->encamado        = (string) ($f->encamado ?? 0);
+        $this->discapacidad    = (string) ($f->discapacidad ?? 0);
 
         // Cargar combos en cascada
         $this->parroquiasFiltradas = Parroquia::where('municipio_id', $this->municipio_id)->orderBy('nombre')->get();
@@ -271,6 +312,16 @@ class FeriaCampoController extends Component
         $this->view_tipo_a_plus          = $f->tipo_a_plus;
         $this->view_campana4s            = $f->campana4s ? 'SI' : 'NO';
         $this->view_tema_tratado         = $f->tema_tratado;
+        // Condición (vista)
+        $this->view_embarazada      = (string) ($f->embarazada ?? 0);
+        $this->view_mujer_lactante  = (string) ($f->mujer_lactante ?? 0);
+        $this->view_menor_72_meses  = (string) ($f->menor_72_meses ?? 0);
+        $this->view_escolar         = (string) ($f->escolar ?? 0);
+        $this->view_adolescente     = (string) ($f->adolescente ?? 0);
+        $this->view_adulto          = (string) ($f->adulto ?? 0);
+        $this->view_adulto_mayor    = (string) ($f->adulto_mayor ?? 0);
+        $this->view_encamado        = (string) ($f->encamado ?? 0);
+        $this->view_discapacidad    = (string) ($f->discapacidad ?? 0);
 
         $this->isViewModalOpen = true;
     }
@@ -309,6 +360,26 @@ class FeriaCampoController extends Component
         $this->tipo_a_plus          = null;
         $this->campana4s            = '0';
         $this->tema_tratado         = null;
+        // Condición
+        $this->embarazada      = '0';
+        $this->mujer_lactante  = '0';
+        $this->menor_72_meses  = '0';
+        $this->escolar         = '0';
+        $this->adolescente     = '0';
+        $this->adulto          = '0';
+        $this->adulto_mayor    = '0';
+        $this->encamado        = '0';
+        $this->discapacidad    = '0';
+        // Condición (vista)
+        $this->view_embarazada      = '0';
+        $this->view_mujer_lactante  = '0';
+        $this->view_menor_72_meses  = '0';
+        $this->view_escolar         = '0';
+        $this->view_adolescente     = '0';
+        $this->view_adulto          = '0';
+        $this->view_adulto_mayor    = '0';
+        $this->view_encamado        = '0';
+        $this->view_discapacidad    = '0';
 
         $this->resetValidation();
     }
@@ -469,6 +540,31 @@ class FeriaCampoController extends Component
             ')
             ->groupBy('parroquias.id', 'parroquias.nombre')
             ->orderByDesc('tipo_a')->get()->toArray();
+
+        // Distribución por Condición de la Población
+        $condicionTotales = (clone $queryBase)->selectRaw('
+            COALESCE(SUM(feria_campos.embarazada), 0)     as embarazada,
+            COALESCE(SUM(feria_campos.mujer_lactante), 0) as mujer_lactante,
+            COALESCE(SUM(feria_campos.menor_72_meses), 0) as menor_72_meses,
+            COALESCE(SUM(feria_campos.escolar), 0)        as escolar,
+            COALESCE(SUM(feria_campos.adolescente), 0)    as adolescente,
+            COALESCE(SUM(feria_campos.adulto), 0)         as adulto,
+            COALESCE(SUM(feria_campos.adulto_mayor), 0)   as adulto_mayor,
+            COALESCE(SUM(feria_campos.encamado), 0)       as encamado,
+            COALESCE(SUM(feria_campos.discapacidad), 0)   as discapacidad
+        ')->first();
+
+        $this->graphCondicion = [
+            ['nombre' => 'Embarazada',     'total' => (int)($condicionTotales->embarazada ?? 0),     'color' => '#ec4899'],
+            ['nombre' => 'M. Lactante',    'total' => (int)($condicionTotales->mujer_lactante ?? 0), 'color' => '#f43f5e'],
+            ['nombre' => '< 72 meses',     'total' => (int)($condicionTotales->menor_72_meses ?? 0), 'color' => '#f97316'],
+            ['nombre' => 'Escolar',        'total' => (int)($condicionTotales->escolar ?? 0),        'color' => '#eab308'],
+            ['nombre' => 'Adolescente',    'total' => (int)($condicionTotales->adolescente ?? 0),    'color' => '#22c55e'],
+            ['nombre' => 'Adulto',         'total' => (int)($condicionTotales->adulto ?? 0),         'color' => '#6366f1'],
+            ['nombre' => 'Adulto Mayor',   'total' => (int)($condicionTotales->adulto_mayor ?? 0),   'color' => '#8b5cf6'],
+            ['nombre' => 'Encamado',       'total' => (int)($condicionTotales->encamado ?? 0),       'color' => '#0ea5e9'],
+            ['nombre' => 'Discapacidad',   'total' => (int)($condicionTotales->discapacidad ?? 0),   'color' => '#14b8a6'],
+        ];
     }
 
     // ── Render ────────────────────────────────────────────────────────────────

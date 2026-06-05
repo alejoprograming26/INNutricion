@@ -121,8 +121,9 @@
                 <thead class="bg-white dark:bg-zinc-900 text-xs uppercase font-semibold text-zinc-500 border-b border-zinc-200 dark:border-zinc-800">
                     <tr>
                         <th class="px-6 py-4 w-12 text-center">#</th>
-                        <th class="px-6 py-4">Responsable / Fecha</th>
-                        <th class="px-6 py-4">Ubicación</th>
+                        <th class="px-6 py-4">Información de la Jornada</th>
+                        <th class="px-6 py-4">Ubicación Geográfica</th>
+                        <th class="px-6 py-4">Servicios & Impacto</th>
                         <th class="px-6 py-4 text-right">Acciones</th>
                     </tr>
                 </thead>
@@ -142,28 +143,89 @@
                                             {{ $f->responsable }}
                                         </p>
                                         <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
-                                            {{ \Carbon\Carbon::parse($f->fecha)->format('d/m/Y') }}
+                                            {{ \Carbon\Carbon::parse($f->fecha)->format('d \d\e F, Y') }}
                                         </p>
+                                        @if($f->observacion)
+                                            <p class="text-[11px] text-zinc-450 dark:text-zinc-500 italic mt-0.5 line-clamp-1" title="{{ $f->observacion }}">
+                                                "{{ $f->observacion }}"
+                                            </p>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex flex-col gap-1">
-                                    <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $f->sector->comuna->parroquia->municipio->nombre }}</span>
-                                    <span class="text-zinc-500 text-xs">{{ $f->sector->nombre }}</span>
+                                <div class="flex flex-col gap-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                                        <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $f->sector->comuna->parroquia->municipio->nombre }}</span>
+                                        <span class="text-zinc-400 text-xs">&bull;</span>
+                                        <span class="text-zinc-600 dark:text-zinc-400 text-xs">{{ $f->sector->comuna->parroquia->nombre }}</span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                                        <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-500/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                                            <flux:icon.building-office-2 class="w-3.5 h-3.5" />
+                                            <span>{{ $f->sector->comuna->nombre }}</span>
+                                        </div>
+                                        <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-200/60 dark:border-sky-500/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                                            <flux:icon.map-pin class="w-3.5 h-3.5" />
+                                            <span>{{ $f->sector->nombre }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap gap-1.5">
+                                    {{-- Venta Nutrivida --}}
+                                    @if($f->venta_lina_nutrivida)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-500/20">
+                                            <flux:icon.shopping-bag class="w-3 h-3" />
+                                            Nutrivida
+                                        </span>
+                                    @endif
+
+                                    {{-- Antropometría --}}
+                                    @if($f->antrometria)
+                                        @php
+                                            $totalEvaluados = ($f->tipo_a ?? 0) + ($f->tipo_b ?? 0) + ($f->tipo_a_plus ?? 0);
+                                        @endphp
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-500/20">
+                                            <flux:icon.scale class="w-3 h-3" />
+                                            Antropometría ({{ $totalEvaluados }})
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 border border-zinc-200/40 dark:border-zinc-700/40">
+                                            Sin Antropometría
+                                        </span>
+                                    @endif
+
+                                    {{-- Campaña 4S --}}
+                                    @if($f->campana4s)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-400 border border-violet-200/50 dark:border-violet-500/20" title="{{ $f->tema_tratado }}">
+                                            <flux:icon.academic-cap class="w-3 h-3" />
+                                            Campaña 4S
+                                        </span>
+                                    @endif
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-1">
-                                    <flux:button wire:click="show({{ $f->id }})" size="sm" variant="ghost" icon="eye" class="text-zinc-500 hover:text-blue-600" />
-                                    <flux:button wire:click="edit({{ $f->id }})" size="sm" variant="ghost" icon="pencil-square" class="text-zinc-500 hover:text-amber-600" />
-                                    <flux:button @click="confirmAction($wire, {{ $f->id }}, 'delete', '¿Eliminar registro?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')" size="sm" variant="ghost" icon="trash" class="text-zinc-500 hover:text-red-600" />
+                                    <flux:button wire:click="show({{ $f->id }})" size="sm" variant="ghost" icon="eye" class="text-zinc-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10" />
+                                    <flux:button wire:click="edit({{ $f->id }})" size="sm" variant="ghost" icon="pencil-square" class="text-zinc-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10" />
+                                    <flux:button @click="confirmAction($wire, {{ $f->id }}, 'delete', '¿Eliminar registro?', 'Esta acción no se puede deshacer.', 'warning', 'Sí, eliminar')" size="sm" variant="ghost" icon="trash" class="text-zinc-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10" />
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-zinc-500">No se encontraron registros.</td>
+                            <td colspan="5" class="px-6 py-12 text-center text-zinc-500">
+                                <div class="flex flex-col items-center justify-center text-center">
+                                    <div class="w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-4">
+                                        <flux:icon.inbox class="w-8 h-8 text-zinc-400" />
+                                    </div>
+                                    <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200">No hay ferias registradas</h3>
+                                    <p class="text-xs text-zinc-500 mt-1 max-w-sm">No se encontraron resultados para los filtros actuales.</p>
+                                </div>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -355,10 +417,34 @@
                                 </div>
 
                                 @if($antrometria === '1')
-                                    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-5 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700">
-                                        <flux:input wire:model="tipo_a" type="number" label="Total Tipo A *" min="0" />
-                                        <flux:input wire:model="tipo_b" type="number" label="Total Tipo B *" min="0" />
-                                        <flux:input wire:model="tipo_a_plus" type="number" label="Total Tipo A+ *" min="0" />
+                                    <div class="md:col-span-2 p-4 bg-indigo-50/50 dark:bg-indigo-500/5 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 space-y-4">
+                                        <div>
+                                            <h4 class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-3 flex items-center gap-1">
+                                                <flux:icon.chart-pie class="w-3.5 h-3.5" /> Clasificación Nutricional
+                                            </h4>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <flux:input wire:model="tipo_a" type="number" label="Total Tipo A *" min="0" />
+                                                <flux:input wire:model="tipo_b" type="number" label="Total Tipo B *" min="0" />
+                                                <flux:input wire:model="tipo_a_plus" type="number" label="Total Tipo A+ *" min="0" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-[10px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-3 flex items-center gap-1">
+                                                <flux:icon.user-group class="w-3.5 h-3.5" /> Condición de la Población
+                                                <span class="font-normal normal-case text-zinc-400">(opcional)</span>
+                                            </h4>
+                                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                                                <flux:input wire:model="embarazada" type="number" min="0" label="Embarazada" placeholder="0" />
+                                                <flux:input wire:model="mujer_lactante" type="number" min="0" label="M. Lactante" placeholder="0" />
+                                                <flux:input wire:model="menor_72_meses" type="number" min="0" label="Menor 72m" placeholder="0" />
+                                                <flux:input wire:model="escolar" type="number" min="0" label="Escolar" placeholder="0" />
+                                                <flux:input wire:model="adolescente" type="number" min="0" label="Adolescente" placeholder="0" />
+                                                <flux:input wire:model="adulto" type="number" min="0" label="Adulto" placeholder="0" />
+                                                <flux:input wire:model="adulto_mayor" type="number" min="0" label="Adulto Mayor" placeholder="0" />
+                                                <flux:input wire:model="encamado" type="number" min="0" label="Encamado" placeholder="0" />
+                                                <flux:input wire:model="discapacidad" type="number" min="0" label="Discapacidad" placeholder="0" />
+                                            </div>
+                                        </div>
                                     </div>
                                 @endif
 
@@ -476,6 +562,37 @@
                                 @endif
                             </div>
                         </div>
+
+                        {{-- Condición --}}
+                        @php
+                            $condiciones = [
+                                'Embarazada'     => $view_embarazada,
+                                'M. Lactante'    => $view_mujer_lactante,
+                                'Menor 72m'      => $view_menor_72_meses,
+                                'Escolar'        => $view_escolar,
+                                'Adolescente'    => $view_adolescente,
+                                'Adulto'         => $view_adulto,
+                                'Adulto Mayor'   => $view_adulto_mayor,
+                                'Encamado'       => $view_encamado,
+                                'Discapacidad'   => $view_discapacidad,
+                            ];
+                            $tieneCondicion = collect($condiciones)->sum() > 0;
+                        @endphp
+                        @if($tieneCondicion)
+                        <div class="border-t border-zinc-100 dark:border-zinc-700/50 p-3">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-2">Distribución por Condición</span>
+                            <div class="grid grid-cols-3 gap-1.5">
+                                @foreach($condiciones as $etiqueta => $valor)
+                                    @if((int)$valor > 0)
+                                    <div class="flex items-center justify-between bg-violet-50 dark:bg-violet-500/10 rounded-md px-2 py-1 border border-violet-100 dark:border-violet-500/20">
+                                        <span class="text-[9px] font-bold text-violet-700 dark:text-violet-300 uppercase">{{ $etiqueta }}</span>
+                                        <span class="text-xs font-black text-violet-800 dark:text-violet-200 ml-1">{{ $valor }}</span>
+                                    </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
 

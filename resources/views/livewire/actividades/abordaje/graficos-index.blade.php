@@ -176,6 +176,68 @@
         </div>
     </div>
     
+    {{-- Gráfica de Condición por Población --}}
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6">
+        {{-- Chart: Condición (Barras Verticales) --}}
+        <div class="lg:col-span-2 bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-violet-500"></div>
+                    Distribución por Condición
+                </h3>
+            </div>
+            <div class="flex-1 relative w-full flex items-center justify-center min-h-[320px]" wire:ignore>
+                <canvas id="condicionChart"></canvas>
+            </div>
+        </div>
+
+        {{-- Barras horizontales con totales por condición --}}
+        <div class="lg:col-span-3 bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-2">
+                    <flux:icon.user-group class="w-4 h-4 text-violet-500" />
+                    Detalle por Condición de la Población
+                </h3>
+                <span class="text-xs font-medium bg-violet-100 dark:bg-violet-500/20 text-violet-700 dark:text-violet-300 px-2 py-1 rounded-md">
+                    {{ $nombreMes }} {{ $graphAno }}
+                </span>
+            </div>
+            @php
+                $condicionData = $graphCondicion;
+                $totalCondicion = collect($condicionData)->sum('total');
+            @endphp
+            @if($totalCondicion > 0)
+            <div class="space-y-3 flex-1 overflow-y-auto">
+                @foreach($condicionData as $cond)
+                    @if($cond['total'] > 0)
+                    <div class="flex items-center gap-3">
+                        <span class="w-24 text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide text-right shrink-0">
+                            {{ $cond['nombre'] }}
+                        </span>
+                        <div class="flex-1 bg-zinc-100 dark:bg-zinc-800 rounded-full h-6 overflow-hidden">
+                            <div class="h-full rounded-full flex items-center justify-end pr-2 transition-all duration-500"
+                                 style="width: {{ $totalCondicion > 0 ? round(($cond['total'] / $totalCondicion) * 100, 1) : 0 }}%; background-color: {{ $cond['color'] }}">
+                                <span class="text-[10px] font-black text-white drop-shadow">{{ $cond['total'] }}</span>
+                            </div>
+                        </div>
+                        <span class="w-10 text-[11px] font-bold text-zinc-500 shrink-0">
+                            {{ $totalCondicion > 0 ? round(($cond['total'] / $totalCondicion) * 100, 1) : 0 }}%
+                        </span>
+                    </div>
+                    @endif
+                @endforeach
+            </div>
+            @else
+            <div class="flex-1 flex items-center justify-center text-zinc-400 text-sm">
+                <div class="text-center">
+                    <flux:icon.user-group class="w-10 h-10 mx-auto mb-2 opacity-30" />
+                    <p>Sin datos de condición registrados</p>
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     @script
@@ -184,7 +246,7 @@
 
         const initCharts = () => {
             // Limpieza
-            ['clasificacionChart', 'evolucionClasificacionChart', 'parroquiasChart', 'diasChart'].forEach(id => {
+            ['clasificacionChart', 'evolucionClasificacionChart', 'parroquiasChart', 'diasChart', 'condicionChart'].forEach(id => {
                 const existing = Chart.getChart(id);
                 if (existing) existing.destroy();
             });
@@ -200,6 +262,7 @@
             const dataEvolClasif = $wire.graphEvolucionClasificacion;
             const dataParroquias = $wire.graphParroquias;
             const dataDias = $wire.graphDias;
+            const dataCondicion = $wire.graphCondicion;
 
             Chart.defaults.color = textColor;
             Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
@@ -347,6 +410,45 @@
                         },
                         plugins: { legend: { display: false }, tooltip: tooltipOptions },
                         interaction: { mode: 'nearest', axis: 'x', intersect: false }
+                    }
+                });
+            }
+
+            // 5. Condición por Población (Barras Verticales)
+            const ctxCond = document.getElementById('condicionChart');
+            const condFiltered = dataCondicion ? dataCondicion.filter(d => d.total > 0) : [];
+            if (ctxCond && condFiltered.length) {
+                chartInstances.condicion = new Chart(ctxCond, {
+                    type: 'bar',
+                    data: {
+                        labels: condFiltered.map(d => d.nombre),
+                        datasets: [{
+                            label: 'Total Atendidos',
+                            data: condFiltered.map(d => d.total),
+                            backgroundColor: condFiltered.map(d => d.color),
+                            borderRadius: 6,
+                            borderWidth: 0,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: gridColor, borderDash: [4, 4] },
+                                border: { display: false }
+                            },
+                            x: {
+                                grid: { display: false },
+                                border: { display: false }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: tooltipOptions
+                        }
                     }
                 });
             }

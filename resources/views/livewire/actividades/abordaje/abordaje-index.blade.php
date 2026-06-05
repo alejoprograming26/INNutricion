@@ -385,6 +385,43 @@
                             </div>
                         </div>
 
+                        {{-- Condición Card --}}
+                        <div class="bg-violet-50/50 dark:bg-violet-500/5 p-5 rounded-xl border border-violet-100 dark:border-violet-500/20 shadow-sm">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-4 flex items-center gap-2">
+                                <flux:icon.user-group class="w-4 h-4" /> Condición del Abordaje
+                                <span class="ml-1 text-zinc-400 font-normal normal-case">(opcional)</span>
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                                <div>
+                                    <flux:input wire:model="embarazada" type="number" min="0" label="Embarazada" placeholder="0" />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="mujer_lactante" type="number" min="0" label="Mujer Lactante" placeholder="0" />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="menor_72_meses" type="number" min="0" label="Menor 72 Meses" placeholder="0" />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="escolar" type="number" min="0" label="Escolar" placeholder="0" />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="adolescente" type="number" min="0" label="Adolescente" placeholder="0" />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="adulto" type="number" min="0" label="Adulto" placeholder="0" />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="adulto_mayor" type="number" min="0" label="Adulto Mayor" placeholder="0" />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="encamado" type="number" min="0" label="Encamado" placeholder="0" />
+                                </div>
+                                <div>
+                                    <flux:input wire:model="discapacidad" type="number" min="0" label="Discapacidad" placeholder="0" />
+                                </div>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
 
@@ -469,6 +506,37 @@
                                 <span class="text-sm font-black text-purple-700 dark:text-purple-300">{{ number_format((int) $view_total_a_plus) }}</span>
                             </div>
                         </div>
+
+                        {{-- Condición --}}
+                        @php
+                            $condiciones = [
+                                'Embarazada'     => $view_embarazada,
+                                'M. Lactante'    => $view_mujer_lactante,
+                                'Menor 72m'      => $view_menor_72_meses,
+                                'Escolar'        => $view_escolar,
+                                'Adolescente'    => $view_adolescente,
+                                'Adulto'         => $view_adulto,
+                                'Adulto Mayor'   => $view_adulto_mayor,
+                                'Encamado'       => $view_encamado,
+                                'Discapacidad'   => $view_discapacidad,
+                            ];
+                            $tieneCondicion = collect($condiciones)->sum() > 0;
+                        @endphp
+                        @if($tieneCondicion)
+                        <div class="border-t border-zinc-100 dark:border-zinc-700/50 p-3">
+                            <span class="block text-[9px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-2">Distribución por Condición</span>
+                            <div class="grid grid-cols-3 gap-1.5">
+                                @foreach($condiciones as $etiqueta => $valor)
+                                    @if((int)$valor > 0)
+                                    <div class="flex items-center justify-between bg-violet-50 dark:bg-violet-500/10 rounded-md px-2 py-1 border border-violet-100 dark:border-violet-500/20">
+                                        <span class="text-[9px] font-bold text-violet-700 dark:text-violet-300 uppercase">{{ $etiqueta }}</span>
+                                        <span class="text-xs font-black text-violet-800 dark:text-violet-200 ml-1">{{ $valor }}</span>
+                                    </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
 
                         <div class="p-3">
                             <span class="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Observación</span>
