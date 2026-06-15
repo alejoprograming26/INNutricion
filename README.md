@@ -33,6 +33,12 @@
 *   **Tematización Dinámica e Interfaz Premium**: Diseño responsivo y estético con temas claro/oscuro que adaptan su paleta de colores dinámicamente según el módulo seleccionado, utilizando **Flux UI** y **Tailwind CSS 4**.
 *   **Optimización del Rendimiento**: Caché inteligente en memoria (`Cache::rememberForever`) para mitigar peticiones redundantes y garantizar tiempos de carga inferiores a 200ms en entornos remotos.
 
+### ✨ Novedades y Últimas Mejoras
+*   **Mejoras en Actividades (Ferias del Campo):** Integración de nuevos indicadores (Línea Nutrivida, Antropometría detallada, Campañas 4S, condiciones poblacionales). Además se incorporaron reportes en PDF y análisis gráfico estadístico.
+*   **Limpieza de Caché de Territorios:** Optimización para limpiar automáticamente la caché al realizar cambios en la geografía.
+*   **Actualización de Seeders:** Inclusión y corrección de datos territoriales, incluyendo la adición del Municipio Morán.
+*   **Mejoras en Transcripciones:** Refinamiento general en el módulo de captura de datos para garantizar consistencia.
+
 ---
 
 ## 🛠️ Arquitectura y Tecnologías
